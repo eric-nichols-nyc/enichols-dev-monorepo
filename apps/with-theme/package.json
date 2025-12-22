@@ -1,8 +1,8 @@
 {
-  "name": "app",
+  "name": "with-theme",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "next dev -p 3007",
     "build": "next build",
     "start": "next start",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
