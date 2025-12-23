@@ -2,6 +2,7 @@ import {
   NeonAuthUIProvider,
   UserButton,
 } from "@neondatabase/neon-js/auth/react/ui";
+import { ModeToggle } from "@repo/design-system/components/mode-toggle";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { authClient } from "@/lib/auth/client";
@@ -38,6 +39,7 @@ export default function RootLayout({
           redirectTo="/account/settings"
         >
           <header className="flex h-16 items-center justify-end gap-4 p-4">
+            <ModeToggle />
             <UserButton size="icon" />
           </header>
 

@@ -13,9 +13,6 @@ const HomePage = () => (
   <main className="flex min-h-screen items-center justify-center bg-background p-8">
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
-        <div className="absolute right-4 top-4">
-          <ModeToggle />
-        </div>
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
           <Database className="h-6 w-6 text-primary" />
         </div>
@@ -38,4 +35,3 @@ const HomePage = () => (
 );
 
 export default HomePage;
-

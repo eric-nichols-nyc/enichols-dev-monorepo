@@ -14,7 +14,7 @@ export default async function ServerRenderedPage() {
         </span>
       </p>
 
-      {user && <p className="text-gray-400">User ID: {user.id}</p>}
+      {user ? <p className="text-gray-400">User ID: {user.id}</p> : null}
 
       <p className="font-medium text-gray-700 dark:text-gray-200">
         Session and User Data:
