@@ -40,6 +40,16 @@ const HomePage = () => (
               Loading Status
             </Button>
           </Link>
+          <Link href="/real-time-notifications">
+            <Button className="w-full" variant="outline">
+              Real-Time Notifications
+            </Button>
+          </Link>
+          <Link href="/test-dashboard">
+            <Button className="w-full" variant="outline">
+              Test Dashboard
+            </Button>
+          </Link>
         </div>
       </CardContent>
     </Card>
