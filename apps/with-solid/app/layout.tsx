@@ -1,6 +1,7 @@
 import "./styles.css";
 import { fonts } from "@repo/design-system/lib/fonts";
 import { ThemeProvider } from "@repo/design-system/providers/theme";
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import {
   SidebarInset,
@@ -8,6 +9,16 @@ import {
 } from "@repo/design-system/components/ui/sidebar";
 import { Sidenav } from "@/components/sidenav";
 import { Header } from "@/components/header";
+import { Chatbot } from "@/components/chatbot";
+import { PageContextProvider } from "@/contexts/page-context";
+
+export const metadata: Metadata = {
+  title: "SOLID Principles",
+  description: "Learn SOLID principles with interactive React examples",
+  icons: {
+    icon: "/icon.svg",
+  },
+};
 
 type RootLayoutProperties = {
   readonly children: ReactNode;
@@ -17,13 +28,16 @@ const RootLayout = ({ children }: RootLayoutProperties) => (
   <html className={fonts} lang="en" suppressHydrationWarning>
     <body>
       <ThemeProvider>
-        <SidebarProvider>
-          <Sidenav />
-          <SidebarInset>
-            <Header />
-            {children}
-          </SidebarInset>
-        </SidebarProvider>
+        <PageContextProvider>
+          <SidebarProvider>
+            <Sidenav />
+            <SidebarInset>
+              <Header />
+              {children}
+            </SidebarInset>
+          </SidebarProvider>
+          <Chatbot />
+        </PageContextProvider>
       </ThemeProvider>
     </body>
   </html>
