@@ -18,13 +18,13 @@ export const SplitLayout = ({
 }: SplitLayoutProperties) => (
   <div
     className={cn(
-      "flex min-h-[calc(100vh-4rem)] flex-col gap-4 p-4 lg:flex-row",
+      "flex min-h-full flex-col gap-4 p-4 lg:flex-row",
       className
     )}
   >
     <div
       className={cn(
-        "flex flex-1 flex-col overflow-auto rounded-lg border bg-card p-6",
+        "flex flex-1 flex-col overflow-hidden rounded-lg border bg-card",
         leftClassName
       )}
     >
@@ -32,7 +32,7 @@ export const SplitLayout = ({
     </div>
     <div
       className={cn(
-        "flex flex-1 flex-col overflow-auto rounded-lg border bg-card p-6",
+        "flex flex-1 flex-col overflow-hidden rounded-lg border bg-card",
         rightClassName
       )}
     >

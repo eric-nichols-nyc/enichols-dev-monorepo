@@ -7,78 +7,177 @@ import {
   CardHeader,
   CardTitle,
 } from "@repo/design-system/components/ui/card";
+import { ComponentCodeLayout } from "@/components/component-code-layout";
 import { SplitLayout } from "@/components/split-layout";
 import { BadUserProfile } from "./components/bad-user-profile";
 import { UserProfile } from "./components/good-user-profile";
 
-const SRPPage = () => (
-  <div className="space-y-6 p-6">
+const badCode = `"use client";
+
+import { Button } from "@repo/design-system/components/ui/button";
+import { Card, CardContent } from "@repo/design-system/components/ui/card";
+import { useState } from "react";
+
+/**
+ * ❌ BAD: This component violates SRP
+ * It handles:
+ * - Displaying user data
+ * - Fetching data
+ * - Saving to localStorage
+ * - Sending analytics
+ * - Formatting dates
+ */
+export const BadUserProfile = () => {
+  const user = {
+    name: "John Doe",
+    email: "john@example.com",
+  };
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = () => {
+    // Saving to localStorage
+    localStorage.setItem("user", JSON.stringify(user));
+
+    // Sending analytics
+    fetch("/api/analytics", {
+      method: "POST",
+      body: JSON.stringify({ event: "user_saved", userId: user.email }),
+    });
+
+    // Formatting and displaying
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  const formatDate = (date: Date) =>
+    date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+  return (
     <Card>
-      <CardHeader>
-        <CardTitle>Single Responsibility Principle</CardTitle>
-        <CardDescription>
-          A class should have only one reason to change
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 pt-6">
         <div>
-          <h3 className="mb-2 font-semibold">Definition</h3>
-          <p className="text-muted-foreground text-sm">
-            The Single Responsibility Principle states that a class or module
-            should have only one reason to change, meaning it should have only
-            one job or responsibility.
+          <h3 className="font-semibold">{user.name}</h3>
+          <p className="text-muted-foreground text-sm">{user.email}</p>
+          <p className="mt-2 text-muted-foreground text-xs">
+            Last updated: {formatDate(new Date())}
           </p>
         </div>
-        <div>
-          <h3 className="mb-2 font-semibold">Benefits</h3>
-          <ul className="list-inside list-disc space-y-1 text-muted-foreground text-sm">
-            <li>Easier to understand and maintain</li>
-            <li>Reduced coupling between components</li>
-            <li>Improved testability</li>
-            <li>Better code organization</li>
-          </ul>
-        </div>
+        <Button disabled={saved} onClick={handleSave}>
+          {saved ? "Saved!" : "Save User"}
+        </Button>
       </CardContent>
     </Card>
+  );
+};`;
 
-    <SplitLayout
-      left={
-        <div className="space-y-4">
-          <div>
-            <h3 className="mb-3 font-semibold text-destructive">
-              ❌ Bad Component
-            </h3>
-            <p className="mb-3 text-muted-foreground text-xs">
-              Component handles display, storage, analytics, and formatting
-            </p>
-          </div>
-          <BadUserProfile />
+const goodCode = `"use client";
+
+import { Button } from "@repo/design-system/components/ui/button";
+import { Card, CardContent } from "@repo/design-system/components/ui/card";
+
+type User = {
+  name: string;
+  email: string;
+  lastUpdated: Date;
+};
+
+type UserProfileProps = {
+  user: User;
+  onSave?: () => void;
+  isSaving?: boolean;
+};
+
+/**
+ * ✅ GOOD: Single Responsibility - Only displays user data
+ */
+export const UserProfile = ({ user, onSave, isSaving }: UserProfileProps) => {
+  return (
+    <Card>
+      <CardContent className="pt-6 space-y-4">
+        <div>
+          <h3 className="font-semibold">{user.name}</h3>
+          <p className="text-muted-foreground text-sm">{user.email}</p>
+          <p className="text-muted-foreground text-xs mt-2">
+            Last updated: {user.lastUpdated.toLocaleDateString()}
+          </p>
         </div>
-      }
-      right={
-        <div className="space-y-4">
+        {onSave && (
+          <Button onClick={onSave} disabled={isSaving}>
+            {isSaving ? "Saving..." : "Save User"}
+          </Button>
+        )}
+      </CardContent>
+    </Card>
+  );
+};`;
+
+const SRPPage = () => (
+  <div className="flex min-h-[calc(100vh-4rem)] flex-col">
+    <div className="shrink-0 p-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Single Responsibility Principle</CardTitle>
+          <CardDescription>
+            A class should have only one reason to change
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
           <div>
-            <h3 className="mb-3 font-semibold text-green-600 dark:text-green-400">
-              ✅ Good Component
-            </h3>
-            <p className="mb-3 text-muted-foreground text-xs">
-              Component only displays data. Logic handled by parent/hooks
+            <h3 className="mb-2 font-semibold">Definition</h3>
+            <p className="text-muted-foreground text-sm">
+              The Single Responsibility Principle states that a class or module
+              should have only one reason to change, meaning it should have only
+              one job or responsibility.
             </p>
           </div>
-          <UserProfile
-            onSave={() => {
-              // Save logic handled externally
-              console.log("Save logic handled externally");
-            }}
-            user={{
-              name: "Jane Doe",
-              email: "jane@example.com",
-              lastUpdated: new Date(),
-            }}
+          <div>
+            <h3 className="mb-2 font-semibold">Benefits</h3>
+            <ul className="list-inside list-disc space-y-1 text-muted-foreground text-sm">
+              <li>Easier to understand and maintain</li>
+              <li>Reduced coupling between components</li>
+              <li>Improved testability</li>
+              <li>Better code organization</li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+
+    <div className="flex-1">
+      <SplitLayout
+        left={
+          <ComponentCodeLayout
+            code={badCode}
+            component={<BadUserProfile />}
+            description="Component handles display, storage, analytics, and formatting"
+            title="❌ Bad Component"
           />
-        </div>
-      }
-    />
+        }
+        right={
+          <ComponentCodeLayout
+            code={goodCode}
+            component={
+              <UserProfile
+                onSave={() => {
+                  console.log("Save logic handled externally");
+                }}
+                user={{
+                  name: "Jane Doe",
+                  email: "jane@example.com",
+                  lastUpdated: new Date(),
+                }}
+              />
+            }
+            description="Component only displays data. Logic handled by parent/hooks"
+            title="✅ Good Component"
+          />
+        }
+      />
+    </div>
   </div>
 );
 
