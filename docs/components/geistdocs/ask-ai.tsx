@@ -5,10 +5,12 @@ import { useChatContext } from "@/hooks/geistdocs/use-chat";
 
 type AskAIProps = {
   href: string;
+  title?: string;
+  content?: string;
 };
 
-export const AskAI = ({ href }: AskAIProps) => {
-  const { setIsOpen, setPrompt } = useChatContext();
+export const AskAI = ({ href, title, content }: AskAIProps) => {
+  const { setIsOpen, setPrompt, setPageContext } = useChatContext();
 
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
   const url = new URL(
@@ -21,6 +23,16 @@ export const AskAI = ({ href }: AskAIProps) => {
     <button
       className="flex items-center gap-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground"
       onClick={() => {
+        // Set page context if available
+        if (title && content) {
+          setPageContext({
+            title,
+            url: href,
+            content,
+          });
+        } else {
+          setPageContext(null);
+        }
         setPrompt(query);
         setIsOpen(true);
       }}

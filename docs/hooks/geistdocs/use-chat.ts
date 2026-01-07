@@ -10,14 +10,24 @@ export const chatOpenAtom = atomWithStorage<boolean>(
   false
 );
 
+// Export the page context atom for passing page-specific context
+export const chatPageContextAtom = atom<{
+  title: string;
+  url: string;
+  content: string;
+} | null>(null);
+
 export const useChatContext = () => {
   const [prompt, setPrompt] = useAtom(chatPromptAtom);
   const [isOpen, setIsOpen] = useAtom(chatOpenAtom);
+  const [pageContext, setPageContext] = useAtom(chatPageContextAtom);
 
   return {
     prompt,
     setPrompt,
     isOpen,
     setIsOpen,
+    pageContext,
+    setPageContext,
   };
 };

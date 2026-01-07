@@ -211,6 +211,98 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  apps/optimization-lab:
+    dependencies:
+      '@repo/design-system':
+        specifier: workspace:*
+        version: link:../../packages/design-system
+      lucide-react:
+        specifier: ^0.556.0
+        version: 0.556.0(react@19.2.1)
+      next:
+        specifier: 16.0.10
+        version: 16.0.10(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      next-themes:
+        specifier: ^0.4.6
+        version: 0.4.6(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react:
+        specifier: 19.2.1
+        version: 19.2.1
+      react-dom:
+        specifier: 19.2.1
+        version: 19.2.1(react@19.2.1)
+      swr:
+        specifier: ^2.2.5
+        version: 2.3.4(react@19.2.1)
+    devDependencies:
+      '@next/bundle-analyzer':
+        specifier: ^15.1.5
+        version: 15.5.9(bufferutil@4.0.9)
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@tailwindcss/postcss':
+        specifier: ^4.1.17
+        version: 4.1.17
+      '@types/node':
+        specifier: 24.10.1
+        version: 24.10.1
+      '@types/react':
+        specifier: 19.2.7
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: 19.2.3
+        version: 19.2.3(@types/react@19.2.7)
+      tailwindcss:
+        specifier: ^4.1.17
+        version: 4.1.17
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  apps/render-lab:
+    dependencies:
+      '@repo/design-system':
+        specifier: workspace:*
+        version: link:../../packages/design-system
+      lucide-react:
+        specifier: ^0.556.0
+        version: 0.556.0(react@19.2.1)
+      next:
+        specifier: 16.0.10
+        version: 16.0.10(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      next-themes:
+        specifier: ^0.4.6
+        version: 0.4.6(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react:
+        specifier: 19.2.1
+        version: 19.2.1
+      react-dom:
+        specifier: 19.2.1
+        version: 19.2.1(react@19.2.1)
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@tailwindcss/postcss':
+        specifier: ^4.1.17
+        version: 4.1.17
+      '@types/node':
+        specifier: 24.10.1
+        version: 24.10.1
+      '@types/react':
+        specifier: 19.2.7
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: 19.2.3
+        version: 19.2.3(@types/react@19.2.7)
+      tailwindcss:
+        specifier: ^4.1.17
+        version: 4.1.17
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   apps/security-lab:
     dependencies:
       '@repo/design-system':
@@ -537,6 +629,55 @@ importers:
         specifier: 19.2.1
         version: 19.2.1(react@19.2.1)
     devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@tailwindcss/postcss':
+        specifier: ^4.1.17
+        version: 4.1.17
+      '@types/node':
+        specifier: 24.10.1
+        version: 24.10.1
+      '@types/react':
+        specifier: 19.2.7
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: 19.2.3
+        version: 19.2.3(@types/react@19.2.7)
+      tailwindcss:
+        specifier: ^4.1.17
+        version: 4.1.17
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  apps/with-optimization:
+    dependencies:
+      '@repo/design-system':
+        specifier: workspace:*
+        version: link:../../packages/design-system
+      lucide-react:
+        specifier: ^0.556.0
+        version: 0.556.0(react@19.2.1)
+      next:
+        specifier: 16.0.10
+        version: 16.0.10(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      next-themes:
+        specifier: ^0.4.6
+        version: 0.4.6(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react:
+        specifier: 19.2.1
+        version: 19.2.1
+      react-dom:
+        specifier: 19.2.1
+        version: 19.2.1(react@19.2.1)
+      swr:
+        specifier: ^2.2.5
+        version: 2.3.4(react@19.2.1)
+    devDependencies:
+      '@next/bundle-analyzer':
+        specifier: ^15.1.5
+        version: 15.5.9(bufferutil@4.0.9)
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -3438,6 +3579,9 @@ packages:
   '@neondatabase/serverless@1.0.2':
     resolution: {integrity: sha512-I5sbpSIAHiB+b6UttofhrN/UJXII+4tZPAq1qugzwCwLIL8EZLV7F/JyHUrEIiGgQpEXzpnjlJ+zwcEhheGvCw==}
     engines: {node: '>=19.0.0'}
+
+  '@next/bundle-analyzer@15.5.9':
+    resolution: {integrity: sha512-lT1EBpFyGVN9u8M43f2jE78DsCu0A5KPA5OkF5PdIHrKDo4oTJ4lUQKciA9T2u9gccSXIPQcZb5TYkHF4f8iiw==}
 
   '@next/bundle-analyzer@16.0.7':
     resolution: {integrity: sha512-Um2YA3TSQND+DpqlMDuPZsdjdpcgLzo1wF3zx4zcBCLecS7ucP7O9YFqvHhg000HXTgt++KIjZ9FUwyJSKk1Kw==}
@@ -14539,6 +14683,13 @@ snapshots:
     dependencies:
       '@types/node': 22.18.8
       '@types/pg': 8.15.6
+
+  '@next/bundle-analyzer@15.5.9(bufferutil@4.0.9)':
+    dependencies:
+      webpack-bundle-analyzer: 4.10.1(bufferutil@4.0.9)
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
 
   '@next/bundle-analyzer@16.0.7(bufferutil@4.0.9)':
     dependencies:

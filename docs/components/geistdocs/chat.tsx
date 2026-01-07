@@ -2,6 +2,7 @@
 
 import type { UIMessage } from "@ai-sdk/react";
 import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
 import { useLiveQuery } from "dexie-react-hooks";
 import { ChevronRightIcon, MessagesSquareIcon, Trash } from "lucide-react";
 import { Portal } from "radix-ui";
@@ -117,11 +118,26 @@ const ChatInner = () => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [localPrompt, setLocalPrompt] = useState("");
   const [providerKey, setProviderKey] = useState(0);
-  const { prompt, setPrompt, setIsOpen } = useChatContext();
+  const { prompt, setPrompt, setIsOpen, pageContext, setPageContext } =
+    useChatContext();
   const { initialMessages, isLoading, saveMessages, clearMessages } =
     useChatPersistence();
 
   const { messages, sendMessage, status, setMessages } = useChat({
+    transport: new DefaultChatTransport({
+      api: "/api/chat",
+      prepareSendMessagesRequest(request) {
+        return {
+          body: {
+            messages: request.messages,
+            currentRoute:
+              typeof window !== "undefined" ? window.location.pathname : "",
+            pageContext: pageContext || undefined,
+            ...request.body,
+          },
+        };
+      },
+    }),
     onError: (error) => {
       toast.error(error.message, {
         description: error.message,
@@ -173,6 +189,8 @@ const ChatInner = () => {
     await sendMessage({ text });
     setLocalPrompt("");
     setPrompt("");
+    // Clear page context after sending so it doesn't persist for subsequent messages
+    setPageContext(null);
   };
 
   const handleClearChat = async () => {
