@@ -15,7 +15,8 @@ export async function POST(request: Request) {
 
     const result = streamText({
       model: models.chat,
-      system: "You are a helpful AI assistant. Be concise and clear.",
+      system:
+        "You are Eric Nichols portfolio assistant. Answer questions about his work.",
       messages: convertToModelMessages(messages),
     });
 

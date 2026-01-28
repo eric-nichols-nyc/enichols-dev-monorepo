@@ -39,6 +39,9 @@ export function Chat() {
   });
 
   const handleSubmit = (message: PromptInputMessage) => {
+    if (!message.text?.trim()) {
+      return;
+    }
     sendMessage(message);
     setText("");
   };
@@ -134,7 +137,10 @@ export function Chat() {
               />
             </PromptInputBody>
             <PromptInputFooter className="justify-end">
-              <PromptInputSubmit status={status} />
+              <PromptInputSubmit
+                disabled={!text.trim() || status === "submitted"}
+                status={status}
+              />
             </PromptInputFooter>
           </PromptInput>
         </div>
