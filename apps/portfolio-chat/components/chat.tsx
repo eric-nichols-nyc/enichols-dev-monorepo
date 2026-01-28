@@ -22,8 +22,19 @@ import {
   PromptInputSubmit,
   PromptInputTextarea,
 } from "@repo/design-system/components/ai-elements/prompt-input";
+import {
+  Suggestion,
+  Suggestions,
+} from "@repo/design-system/components/ai-elements/suggestion";
 import { MessageSquare } from "lucide-react";
 import { useState } from "react";
+
+const SUGGESTIONS = [
+  "What are the latest trends in AI?",
+  "How does machine learning work?",
+  "Explain quantum computing",
+  "Best practices for React development",
+];
 
 export function Chat() {
   const [text, setText] = useState("");
@@ -36,8 +47,13 @@ export function Chat() {
     setText("");
   };
 
+  const handleSuggestionClick = (suggestion: string) => {
+    sendMessage({ text: suggestion, files: [] });
+    setText("");
+  };
+
   return (
-    <div className="flex h-[min(80vh,32rem)] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-card">
       <div className="flex flex-1 flex-col overflow-hidden">
         <Conversation>
           <ConversationContent>
@@ -86,7 +102,19 @@ export function Chat() {
         </Conversation>
       </div>
 
-      <div className="shrink-0 border-border border-t p-3">
+      <div className="flex shrink-0 flex-col gap-3 border-border border-t p-3">
+        {messages.length === 0 && (
+          <Suggestions className="grid w-full grid-cols-1 gap-2 lg:w-1/2 lg:grid-cols-2">
+            {SUGGESTIONS.map((suggestion) => (
+              <Suggestion
+                className="w-full justify-center"
+                key={suggestion}
+                onClick={handleSuggestionClick}
+                suggestion={suggestion}
+              />
+            ))}
+          </Suggestions>
+        )}
         <PromptInput globalDrop multiple onSubmit={handleSubmit}>
           <PromptInputBody>
             <PromptInputTextarea
@@ -95,7 +123,7 @@ export function Chat() {
               value={text}
             />
           </PromptInputBody>
-          <PromptInputFooter>
+          <PromptInputFooter className="justify-end">
             <PromptInputSubmit status={status} />
           </PromptInputFooter>
         </PromptInput>
