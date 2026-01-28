@@ -29,12 +29,7 @@ import {
 import { MessageSquare } from "lucide-react";
 import { useState } from "react";
 
-const SUGGESTIONS = [
-  "What are the latest trends in AI?",
-  "How does machine learning work?",
-  "Explain quantum computing",
-  "Best practices for React development",
-];
+const SUGGESTIONS = ["Show projects", "Experience", "About Me", "Contact"];
 
 export function Chat() {
   const [text, setText] = useState("");
@@ -56,7 +51,7 @@ export function Chat() {
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-card">
       <div className="flex flex-1 flex-col overflow-hidden">
         <Conversation>
-          <ConversationContent>
+          <ConversationContent className="mx-auto w-full max-w-2xl">
             {messages.length === 0 ? (
               <ConversationEmptyState
                 description="Send a message to start the conversation."
@@ -102,9 +97,9 @@ export function Chat() {
         </Conversation>
       </div>
 
-      <div className="flex shrink-0 flex-col gap-3 border-border border-t p-3">
+      <div className="flex shrink-0 flex-col items-center gap-3 border-border border-t p-3">
         {messages.length === 0 && (
-          <Suggestions className="grid w-full grid-cols-1 gap-2 lg:w-1/2 lg:grid-cols-2">
+          <Suggestions className="mx-auto grid w-full max-w-2xl grid-cols-1 gap-2 lg:w-1/2 lg:grid-cols-2">
             {SUGGESTIONS.map((suggestion) => (
               <Suggestion
                 className="w-full justify-center"
@@ -115,18 +110,20 @@ export function Chat() {
             ))}
           </Suggestions>
         )}
-        <PromptInput globalDrop multiple onSubmit={handleSubmit}>
-          <PromptInputBody>
-            <PromptInputTextarea
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Type a message…"
-              value={text}
-            />
-          </PromptInputBody>
-          <PromptInputFooter className="justify-end">
-            <PromptInputSubmit status={status} />
-          </PromptInputFooter>
-        </PromptInput>
+        <div className="w-full max-w-2xl">
+          <PromptInput globalDrop multiple onSubmit={handleSubmit}>
+            <PromptInputBody>
+              <PromptInputTextarea
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Type a message…"
+                value={text}
+              />
+            </PromptInputBody>
+            <PromptInputFooter className="justify-end">
+              <PromptInputSubmit status={status} />
+            </PromptInputFooter>
+          </PromptInput>
+        </div>
       </div>
     </div>
   );
