@@ -26,7 +26,8 @@ import {
   Suggestion,
   Suggestions,
 } from "@repo/design-system/components/ai-elements/suggestion";
-import { MessageSquare } from "lucide-react";
+import { cn } from "@repo/design-system/lib/utils";
+import { Bot, MessageSquare } from "lucide-react";
 import { useState } from "react";
 
 const SUGGESTIONS = ["Show projects", "Experience", "About Me", "Contact"];
@@ -62,20 +63,33 @@ export function Chat() {
               />
             ) : (
               messages.map((msg) => (
-                <Message className="max-w-[90%]" from={msg.role} key={msg.id}>
-                  <MessageContent>
-                    {msg.parts.map((part, i) => {
-                      if (part.type === "text") {
-                        return (
-                          <MessageResponse key={`${msg.id}-${i}`}>
-                            {part.text}
-                          </MessageResponse>
-                        );
-                      }
-                      return null;
-                    })}
-                  </MessageContent>
-                </Message>
+                <div
+                  className={cn(
+                    "flex w-full max-w-[90%] gap-2",
+                    msg.role === "user" && "ml-auto"
+                  )}
+                  key={msg.id}
+                >
+                  {msg.role === "assistant" && (
+                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted">
+                      <Bot className="size-4 text-muted-foreground" />
+                    </div>
+                  )}
+                  <Message className="min-w-0 flex-1" from={msg.role}>
+                    <MessageContent>
+                      {msg.parts.map((part, i) => {
+                        if (part.type === "text") {
+                          return (
+                            <MessageResponse key={`${msg.id}-${i}`}>
+                              {part.text}
+                            </MessageResponse>
+                          );
+                        }
+                        return null;
+                      })}
+                    </MessageContent>
+                  </Message>
+                </div>
               ))
             )}
             {status === "submitted" && (
