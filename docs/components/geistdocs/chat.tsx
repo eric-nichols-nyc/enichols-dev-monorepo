@@ -253,11 +253,7 @@ const ChatInner = () => {
       <Conversation>
         <ConversationContent>
           {messages.map((message) => (
-            <Message
-              className="max-w-[90%]"
-              from={message.role}
-              key={message.id}
-            >
+            <Message className="max-w" from={message.role} key={message.id}>
               <MessageMetadata
                 inProgress={status === "submitted"}
                 parts={message.parts as MyUIMessage["parts"]}

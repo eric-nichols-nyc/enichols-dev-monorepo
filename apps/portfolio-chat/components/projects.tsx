@@ -14,12 +14,12 @@ export function Projects({ projectCount, projects }: ProjectsProps) {
   return (
     <div className="space-y-4">
       <div className="text-muted-foreground text-sm">
-        Showing {projects.length} of {projectCount} projects
+        {projectCount} projects
       </div>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="-mx-4 md:-mx-0 flex gap-4 overflow-x-auto px-4 pb-2 md:px-0">
         {projects.map((project) => (
           <div
-            className="group relative flex flex-col overflow-hidden rounded-lg border bg-card transition-all hover:shadow-lg"
+            className="group relative flex w-[280px] shrink-0 flex-col overflow-hidden rounded-lg border bg-card transition-all hover:shadow-lg"
             key={project.id}
           >
             <div className="relative aspect-video w-full overflow-hidden bg-muted">

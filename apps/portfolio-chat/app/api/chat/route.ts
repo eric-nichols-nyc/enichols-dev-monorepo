@@ -11,8 +11,8 @@ const tools = {
     inputSchema: z.object({}) as any,
     execute: () => {
       const data = {
-        projectCount: 6,
-        projects: projects.slice(0, 3),
+        projectCount: projects.length,
+        projects,
       };
       console.log("[chat:tool] show_projects called, returning:", {
         projectCount: data.projectCount,

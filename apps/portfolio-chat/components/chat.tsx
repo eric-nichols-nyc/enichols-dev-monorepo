@@ -27,7 +27,7 @@ import {
   Suggestions,
 } from "@repo/design-system/components/ai-elements/suggestion";
 import { cn } from "@repo/design-system/lib/utils";
-import { Bot, MessageSquare } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Projects } from "./projects";
 
@@ -72,10 +72,10 @@ export function Chat() {
   };
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-card">
-      <div className="flex flex-1 flex-col overflow-hidden">
+    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-transparent">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         <Conversation>
-          <ConversationContent className="mx-auto w-full max-w-2xl">
+          <ConversationContent className="mx-auto w-full max-w-[720px]">
             {messages.length === 0 ? (
               <ConversationEmptyState
                 description="Send a message to start the conversation."
@@ -88,18 +88,13 @@ export function Chat() {
               messages.map((msg) => (
                 <div
                   className={cn(
-                    "flex w-full max-w-[90%] gap-2",
+                    "max-w flex w-full gap-2",
                     msg.role === "user" && "ml-auto"
                   )}
                   key={msg.id}
                 >
-                  {msg.role === "assistant" && (
-                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted">
-                      <Bot className="size-4 text-muted-foreground" />
-                    </div>
-                  )}
                   <Message className="min-w-0 flex-1" from={msg.role}>
-                    <MessageContent>
+                    <MessageContent className="text-base">
                       {msg.parts.map((part, i) => {
                         console.log("part = ", part);
                         if (part.type === "text") {
@@ -125,7 +120,7 @@ export function Chat() {
                               );
                             case "output-available":
                               return (
-                                <div key={`${msg.id}-${i}`}>
+                                <div className="w-full" key={`${msg.id}-${i}`}>
                                   <Projects
                                     {...(part.output as {
                                       projectCount: number;
@@ -188,9 +183,9 @@ export function Chat() {
         </Conversation>
       </div>
 
-      <div className="flex shrink-0 flex-col items-center gap-3 border-border border-t p-3">
+      <div className="sticky bottom-0 z-10 flex shrink-0 flex-col items-center gap-3 border-border border-t bg-app p-3">
         {messages.length === 0 && (
-          <Suggestions className="mx-auto grid w-full max-w-2xl grid-cols-1 gap-2 lg:w-1/2 lg:grid-cols-2">
+          <Suggestions className="mx-auto grid w-full max-w-[720px] grid-cols-1 gap-2 lg:w-1/2 lg:grid-cols-2">
             {SUGGESTIONS.map((suggestion) => (
               <Suggestion
                 className="w-full justify-center"
@@ -201,7 +196,7 @@ export function Chat() {
             ))}
           </Suggestions>
         )}
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-[720px]">
           <PromptInput globalDrop multiple onSubmit={handleSubmit}>
             <PromptInputBody>
               <PromptInputTextarea

@@ -1,2 +1,18 @@
 @import "tailwindcss";
 @import "@repo/design-system/styles/globals.css";
+
+@layer base {
+  body {
+    font-size: 16px;
+  }
+
+  main {
+    background-color: oklch(0.2167 0.002 197.04);
+  }
+}
+
+@layer utilities {
+  .bg-app {
+    background-color: oklch(0.2167 0.002 197.04);
+  }
+}
