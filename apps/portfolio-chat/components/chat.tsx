@@ -28,7 +28,8 @@ import {
 } from "@repo/design-system/components/ai-elements/suggestion";
 import { cn } from "@repo/design-system/lib/utils";
 import { Bot, MessageSquare } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Projects } from "./projects";
 
 const SUGGESTIONS = ["Show projects", "Experience", "About Me", "Contact"];
 
@@ -38,15 +39,34 @@ export function Chat() {
     transport: new DefaultChatTransport({ api: "/api/chat" }),
   });
 
+  useEffect(() => {
+    console.log(
+      "[chat:ui] messages:",
+      messages.length,
+      "| status:",
+      status,
+      "| error:",
+      error
+    );
+    messages.forEach((m, i) => {
+      const partSummary = m.parts.map((p) => `${p.type}`).join(", ");
+      console.log(
+        `[chat:ui] message ${i} role=${m.role} parts=[${partSummary}]`
+      );
+    });
+  }, [messages, status, error]);
+
   const handleSubmit = (message: PromptInputMessage) => {
     if (!message.text?.trim()) {
       return;
     }
+    console.log("[chat:ui] sendMessage:", message.text?.slice(0, 80));
     sendMessage(message);
     setText("");
   };
 
   const handleSuggestionClick = (suggestion: string) => {
+    console.log("[chat:ui] suggestion click:", suggestion);
     sendMessage({ text: suggestion, files: [] });
     setText("");
   };
@@ -81,6 +101,7 @@ export function Chat() {
                   <Message className="min-w-0 flex-1" from={msg.role}>
                     <MessageContent>
                       {msg.parts.map((part, i) => {
+                        console.log("part = ", part);
                         if (part.type === "text") {
                           return (
                             <MessageResponse key={`${msg.id}-${i}`}>
@@ -88,6 +109,59 @@ export function Chat() {
                             </MessageResponse>
                           );
                         }
+
+                        // Handle tool-show_projects (with underscore) or tool-showProjects (camelCase)
+                        if (
+                          part.type === "tool-show_projects" ||
+                          part.type === "tool-showProjects"
+                        ) {
+                          switch (part.state) {
+                            case "input-available":
+                            case "input-streaming":
+                              return (
+                                <div key={`${msg.id}-${i}`}>
+                                  <Loader />
+                                </div>
+                              );
+                            case "output-available":
+                              return (
+                                <div key={`${msg.id}-${i}`}>
+                                  <Projects
+                                    {...(part.output as {
+                                      projectCount: number;
+                                      projects: Array<{
+                                        id: string;
+                                        title: string;
+                                        tags: string[];
+                                        categories: string[];
+                                        description: string;
+                                        shortDescription: string;
+                                        date: string;
+                                        url: string;
+                                        published: boolean;
+                                        image: string;
+                                        gallery: string[];
+                                      }>;
+                                    })}
+                                  />
+                                </div>
+                              );
+                            case "output-error":
+                              return (
+                                <div key={`${msg.id}-${i}`}>
+                                  Error: {part.errorText}
+                                </div>
+                              );
+                            default:
+                              return null;
+                          }
+                        }
+
+                        console.log(
+                          "[chat:ui] skipping non-text part:",
+                          part.type,
+                          part
+                        );
                         return null;
                       })}
                     </MessageContent>
