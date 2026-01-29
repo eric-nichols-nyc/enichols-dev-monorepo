@@ -44,14 +44,14 @@ const projects: Project[] = [
   },
   {
     id: "ai-taskmaster",
-    title: "Ai Taskmaster",
+    title: "Ai Taskwizard",
     tags: ["ai", "microfrontend", "postgres", "typescript"],
     categories: ["ai"],
     description:
-      "Ai Taskmaster is a platform that allows you to create and manage your tasks with AI. It uses AI to generate tasks and then allows you to manage them.",
+      "Ai Taskwizard is a platform that allows you to create and manage your tasks with AI. It uses AI to generate tasks and then allows you to manage them.",
     shortDescription: "Manage your tasks with AI.",
     date: "2023-07-22",
-    url: "https://ai-taskmaster-host.vercel.app/",
+    url: "https://ai-taskwizard-host.vercel.app//",
     published: true,
     image: "/images/taskwizard.png",
     gallery: [],

@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Maximize2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/data/projects";
@@ -18,12 +18,9 @@ export function Projects({ projectCount, projects }: ProjectsProps) {
       </div>
       <div className="grid grid-cols-3 gap-4">
         {projects.map((project) => (
-          <Link
+          <div
             className="group relative flex flex-col overflow-hidden rounded-lg border bg-card transition-all hover:shadow-lg"
-            href={project.url}
             key={project.id}
-            rel="noopener noreferrer"
-            target="_blank"
           >
             <div className="relative aspect-video w-full overflow-hidden bg-muted">
               <Image
@@ -36,6 +33,18 @@ export function Projects({ projectCount, projects }: ProjectsProps) {
                   `https://placehold.co/800x450/1a1a1a/ffffff?text=${encodeURIComponent(project.title)}`
                 }
               />
+              <button
+                className="absolute top-2 right-2 flex items-center justify-center rounded-md bg-background/90 p-2 shadow-lg backdrop-blur-sm transition-all hover:scale-110 hover:bg-background"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  // TODO: Open project details modal
+                  console.log("Open modal for project:", project.id);
+                }}
+                type="button"
+              >
+                <Maximize2 className="size-5 text-foreground" />
+              </button>
             </div>
             <div className="flex flex-1 flex-col p-4">
               <h3 className="mb-2 font-semibold text-lg group-hover:text-primary">
@@ -54,12 +63,20 @@ export function Projects({ projectCount, projects }: ProjectsProps) {
                   </span>
                 ))}
               </div>
-              <div className="mt-3 flex items-center gap-1 text-primary text-sm">
-                <span>View project</span>
-                <ExternalLink className="size-3" />
+              <div className="mt-3 flex items-center justify-end gap-2">
+                <Link
+                  className="flex items-center gap-1 text-primary text-sm transition-colors hover:text-primary/80"
+                  href={project.url}
+                  onClick={(e) => e.stopPropagation()}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <span>View project</span>
+                  <ExternalLink className="size-3" />
+                </Link>
               </div>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </div>
