@@ -53,7 +53,7 @@ const projects: Project[] = [
     date: "2023-07-22",
     url: "https://ai-taskmaster-host.vercel.app/",
     published: true,
-    image: "/images/taskmaster.png",
+    image: "/images/taskwizard.png",
     gallery: [],
   },
   {

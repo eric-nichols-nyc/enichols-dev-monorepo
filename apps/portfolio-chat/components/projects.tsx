@@ -1,6 +1,7 @@
 "use client";
 
 import { ExternalLink } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/data/projects";
 
@@ -15,7 +16,7 @@ export function Projects({ projectCount, projects }: ProjectsProps) {
       <div className="text-muted-foreground text-sm">
         Showing {projects.length} of {projectCount} projects
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-3 gap-4">
         {projects.map((project) => (
           <Link
             className="group relative flex flex-col overflow-hidden rounded-lg border bg-card transition-all hover:shadow-lg"
@@ -25,17 +26,16 @@ export function Projects({ projectCount, projects }: ProjectsProps) {
             target="_blank"
           >
             <div className="relative aspect-video w-full overflow-hidden bg-muted">
-              {project.image ? (
-                <img
-                  alt={project.title}
-                  className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                  src={project.image}
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-muted-foreground">
-                  No image
-                </div>
-              )}
+              <Image
+                alt={project.title}
+                className="object-cover transition-transform group-hover:scale-105"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
+                src={
+                  project.image ||
+                  `https://placehold.co/800x450/1a1a1a/ffffff?text=${encodeURIComponent(project.title)}`
+                }
+              />
             </div>
             <div className="flex flex-1 flex-col p-4">
               <h3 className="mb-2 font-semibold text-lg group-hover:text-primary">
