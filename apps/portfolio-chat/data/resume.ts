@@ -1,0 +1,70 @@
+export const resume = {
+  name: "Eric Nichols",
+  title: "Senior Front-end / UI Developer",
+  location: "New York, NY",
+  contact: "646-505-9007 | ebn646@gmail.com | LinkedIn | enichols.dev",
+  summary:
+    "Senior front-end developer specializing in React, TypeScript, and Next.js, with a focus on AI-driven user experiences and scalable front-end architecture. I build high-quality, performant web applications with strong design consistency, backed by a solid understanding of backend systems, cloud integration, and AI technologies.",
+  skills: [
+    "Front-end Development: HTML, CSS, JavaScript, TypeScript, React, Optimization, Next.js, Microfrontend architecture",
+    "AI Integration: AI-first architecture, LLM API integration (OpenAI), Prompt engineering",
+    "Cloud & DevOps: AWS, IBM Cloud, REST API integration, Node.js, CI/CD",
+    "Tools & Design: GitHub, Playwright, Jest, Monorepos, Design Systems",
+    "UI/UX Design: Figma, Storybook",
+  ],
+  experience: [
+    {
+      title: "Senior Front-end Developer",
+      company: "VoteMate",
+      location: "New York, NY",
+      dates: "Jun 2025 - Present",
+      highlights: [
+        "Led front-end development for an AI-powered civic engagement platform that matches users with local election candidates based on their values and policy preferences.",
+        "Architected and built the core chatbot experience, enabling conversational value-based candidate matches.",
+        "Implemented Playwright end-to-end tests to validate critical user journeys, including address input, candidate retrieval, and chatbot interactions.",
+        "Integrated GitHub Actions to run automated tests on every pull request, ensuring stability of AI-driven flows and preventing regressions.",
+      ],
+      tech: "React, TypeScript, Tailwind, Playwright",
+    },
+    {
+      title: "Senior Full Stack Developer",
+      company: "The Imagination",
+      location: "New York, NY",
+      dates: "Sep 2022 - Nov 2024",
+      highlights: [
+        "Led the front-end development for the successful restructuring of the Ford Auto Show registration website, resulting in a 12% increase in client registrations in 2023–2024.",
+        "Built a comprehensive UI/UX component library in Storybook with over 20 reusable components adapted by the US and international teams.",
+        "Implemented AWS cloud infrastructure using S3, Lambda, and CloudFormation for scalable deployment.",
+        "Set up CI/CD pipelines to both streamline and significantly reduce deployment time.",
+        "Developed high-performance single-page applications using React and Angular.",
+      ],
+      tech: "React, Angular, Tailwind, CSS, JavaScript, TypeScript, HTML5, Node.js, AWS Cloud, Figma",
+    },
+    {
+      title: "Senior Front-end / UI Developer",
+      company: "IBM",
+      location: "New York, NY",
+      dates: "Jun 2019 - Sep 2022",
+      highlights: [
+        "Lead architect on a back-office platform serving 5,000+ IBM content marketers—focused on scale and internal UX.",
+        "Built SPAs using React, TypeScript, and IBM Design System, maintaining design consistency across applications.",
+        "Architected IBM Cloud solutions, guiding a team of 4 developers in deploying secure infrastructure.",
+        "Collaborated cross-functionally with product and design to translate complex workflows into intuitive UIs.",
+      ],
+      tech: "React, Next.js, CSS3, JavaScript, TypeScript, HTML5, Node.js, IBM Cloud",
+    },
+    {
+      title: "Senior Front-end Developer",
+      company: "Havas Worldwide",
+      location: "New York, NY",
+      dates: "Jan 2014 - Jun 2019",
+      highlights: [
+        "Led front-end architecture for high-impact, high-visibility projects.",
+        "Transformed Figma designs into reusable, documented component libraries using Storybook.",
+        "Built ADA-compliant React SPAs with clean, maintainable state patterns and optimized rendering.",
+        "Mentored junior developers through code reviews, pair programming, and knowledge sharing.",
+      ],
+      tech: "React, Angular, Vue, .NET, jQuery, CSS3, JavaScript, HTML5, Node.js, IBM Cloud",
+    },
+  ],
+};

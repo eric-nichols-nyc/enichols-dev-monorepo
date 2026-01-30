@@ -4,6 +4,7 @@ import { models } from "@repo/ai/lib/models";
 import { z } from "zod";
 import { about } from "@/data/about";
 import projects from "@/data/projects";
+import { resume } from "@/data/resume";
 
 const tools = {
   show_about: tool({
@@ -29,6 +30,15 @@ const tools = {
         projectTitles: data.projects.map((p) => p.title),
       });
       return Promise.resolve(data);
+    },
+  }),
+  show_resume: tool({
+    description: "Display Eric Nichols resume and experience",
+    // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
+    inputSchema: z.object({}) as any,
+    execute: () => {
+      console.log("[chat:tool] show_resume called");
+      return Promise.resolve(resume);
     },
   }),
 };
@@ -73,6 +83,7 @@ export async function POST(request: Request) {
       system: `You are Eric Nichols portfolio assistant.
 When the user asks about Eric or asks to see his about section, use the show_about tool.
 When the user asks to see projects, use the show_projects tool.
+When the user asks about experience or resume details, use the show_resume tool.
 Answer other questions about his work conversationally.`,
       messages: modelMessages,
     });

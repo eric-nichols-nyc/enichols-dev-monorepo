@@ -31,6 +31,7 @@ import { MessageSquare } from "lucide-react";
 import { useEffect, useState } from "react";
 import { About } from "./about";
 import { Projects } from "./projects";
+import { Resume } from "./resume";
 
 const SUGGESTIONS = ["Show projects", "Experience", "About Me", "Contact"];
 
@@ -68,6 +69,11 @@ export function Chat() {
 
   const handleSuggestionClick = (suggestion: string) => {
     console.log("[chat:ui] suggestion click:", suggestion);
+    if (suggestion === "Experience") {
+      sendMessage({ text: "Show resume", files: [] });
+      setText("");
+      return;
+    }
     sendMessage({ text: suggestion, files: [] });
     setText("");
   };
@@ -172,6 +178,52 @@ export function Chat() {
                                     {...(part.output as {
                                       title: string;
                                       paragraphs: string[];
+                                    })}
+                                  />
+                                </div>
+                              );
+                            case "output-error":
+                              return (
+                                <div key={`${msg.id}-${i}`}>
+                                  Error: {part.errorText}
+                                </div>
+                              );
+                            default:
+                              return null;
+                          }
+                        }
+
+                        if (
+                          part.type === "tool-show_resume" ||
+                          part.type === "tool-showResume"
+                        ) {
+                          switch (part.state) {
+                            case "input-available":
+                            case "input-streaming":
+                              return (
+                                <div key={`${msg.id}-${i}`}>
+                                  <Loader />
+                                </div>
+                              );
+                            case "output-available":
+                              return (
+                                <div className="w-full" key={`${msg.id}-${i}`}>
+                                  <Resume
+                                    {...(part.output as {
+                                      name: string;
+                                      title: string;
+                                      location: string;
+                                      contact: string;
+                                      summary: string;
+                                      skills: string[];
+                                      experience: Array<{
+                                        title: string;
+                                        company: string;
+                                        location: string;
+                                        dates: string;
+                                        highlights: string[];
+                                        tech: string;
+                                      }>;
                                     })}
                                   />
                                 </div>
