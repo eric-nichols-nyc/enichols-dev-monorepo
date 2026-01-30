@@ -31,7 +31,7 @@ import { MessageSquare } from "lucide-react";
 import { useEffect, useState } from "react";
 import { About } from "./about";
 import { Projects } from "./projects";
-import { Resume } from "./resume";
+import { Resume, ResumeSkeleton } from "./resume";
 
 const SUGGESTIONS = ["Show projects", "Experience", "About Me", "Contact"];
 
@@ -201,13 +201,19 @@ export function Chat() {
                             case "input-available":
                             case "input-streaming":
                               return (
-                                <div key={`${msg.id}-${i}`}>
-                                  <Loader />
+                                <div
+                                  className="-translate-x-1/2 relative left-1/2 w-screen px-4 md:px-6"
+                                  key={`${msg.id}-${i}`}
+                                >
+                                  <ResumeSkeleton />
                                 </div>
                               );
                             case "output-available":
                               return (
-                                <div className="w-full" key={`${msg.id}-${i}`}>
+                                <div
+                                  className="-translate-x-1/2 relative left-1/2 w-screen min-w-0 max-w-full px-4 md:px-6"
+                                  key={`${msg.id}-${i}`}
+                                >
                                   <Resume
                                     {...(part.output as {
                                       name: string;
