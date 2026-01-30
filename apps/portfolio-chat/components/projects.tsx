@@ -8,6 +8,7 @@ import type { Project } from "@/data/projects";
 
 type ProjectsProps = {
   copy?: string;
+  onExpand?: (project: Project) => void;
   projectCount: number;
   projects: Project[];
 };
@@ -46,7 +47,7 @@ export function ProjectsSkeleton() {
   );
 }
 
-export function Projects({ copy, projectCount, projects }: ProjectsProps) {
+export function Projects({ copy, onExpand, projectCount, projects }: ProjectsProps) {
   return (
     <div className="space-y-4">
       <div className="text-muted-foreground text-sm">
@@ -74,8 +75,7 @@ export function Projects({ copy, projectCount, projects }: ProjectsProps) {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  // TODO: Open project details modal
-                  console.log("Open modal for project:", project.id);
+                  onExpand?.(project);
                 }}
                 type="button"
               >

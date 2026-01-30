@@ -14,6 +14,7 @@ import {
 } from "@repo/design-system/components/ai-elements/suggestion";
 import { useState } from "react";
 import { usePortfolioChat } from "@/contexts/chat-context";
+import { Artifact } from "./artifact";
 import { Messages } from "./messages";
 
 const SUGGESTIONS = [
@@ -25,6 +26,7 @@ const SUGGESTIONS = [
 
 export function Chat() {
   const [text, setText] = useState("");
+  const [artifactOpen, setArtifactOpen] = useState(false);
   const { error, messages, sendMessage, status } = usePortfolioChat();
 
   const handleSubmit = (message: PromptInputMessage) => {
@@ -46,10 +48,12 @@ export function Chat() {
 
   return (
     <div className="overscroll-behavior-contain flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-transparent">
+      <Artifact onClose={() => setArtifactOpen(false)} open={artifactOpen} />
       <div className="min-h-0 flex-1 overflow-hidden">
         <Messages
           error={error}
           messages={messages}
+          onProjectExpand={() => setArtifactOpen(true)}
           onSuggestionClick={handleSuggestionClick}
           status={status}
         />

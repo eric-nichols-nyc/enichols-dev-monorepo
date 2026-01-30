@@ -22,6 +22,7 @@ function MessagePartRenderer({
   part,
   msgId,
   i,
+  onProjectExpand,
   onSuggestionClick,
 }: {
   part: {
@@ -33,6 +34,7 @@ function MessagePartRenderer({
   };
   msgId: string;
   i: number;
+  onProjectExpand?: (project: import("@/data/projects").Project) => void;
   onSuggestionClick: (s: string) => void;
 }) {
   if (part.type === "text") {
@@ -55,7 +57,7 @@ function MessagePartRenderer({
       };
       return (
         <div className="w-full" key={`${msgId}-${i}`}>
-          <Projects {...output} />
+          <Projects onExpand={onProjectExpand} {...output} />
         </div>
       );
     }
@@ -219,6 +221,7 @@ const NEAR_BOTTOM_THRESHOLD = 70;
 type MessagesProps = {
   error: unknown;
   messages: UIMessage[];
+  onProjectExpand?: (project: import("@/data/projects").Project) => void;
   onSuggestionClick: (suggestion: string) => void;
   status: "streaming" | "submitted" | "ready" | "error";
 };
@@ -226,6 +229,7 @@ type MessagesProps = {
 export function Messages({
   error,
   messages,
+  onProjectExpand,
   onSuggestionClick,
   status,
 }: MessagesProps) {
@@ -306,6 +310,7 @@ export function Messages({
                         i={i}
                         key={`${msg.id}-${i}`}
                         msgId={msg.id}
+                        onProjectExpand={onProjectExpand}
                         onSuggestionClick={onSuggestionClick}
                         part={part}
                       />
