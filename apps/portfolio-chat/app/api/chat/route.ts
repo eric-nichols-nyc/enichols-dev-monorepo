@@ -20,16 +20,16 @@ const tools = {
     description: "Display portfolio projects",
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
     inputSchema: z.object({}) as any,
-    execute: () => {
+    execute: async () => {
+      console.log(
+        "[chat:tool] show_projects called, delaying 1.5s so skeleton is visible"
+      );
+      await new Promise((resolve) => setTimeout(resolve, 1500));
       const data = {
         projectCount: projects.length,
         projects,
       };
-      console.log("[chat:tool] show_projects called, returning:", {
-        projectCount: data.projectCount,
-        projectTitles: data.projects.map((p) => p.title),
-      });
-      return Promise.resolve(data);
+      return data;
     },
   }),
   show_resume: tool({

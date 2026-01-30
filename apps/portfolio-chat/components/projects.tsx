@@ -1,5 +1,6 @@
 "use client";
 
+import { Skeleton } from "@repo/design-system/components/ui/skeleton";
 import { ExternalLink, Maximize2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,13 +11,47 @@ type ProjectsProps = {
   projects: Project[];
 };
 
+const PROJECT_SKELETON_COUNT = 3;
+
+export function ProjectsSkeleton() {
+  return (
+    <div className="space-y-4">
+      <Skeleton className="h-4 w-24" />
+      <div className="-mx-4 flex gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0">
+        {Array.from(
+          { length: PROJECT_SKELETON_COUNT },
+          (_, i) => `skeleton-${i}`
+        ).map((id) => (
+          <div
+            className="flex w-[280px] shrink-0 flex-col overflow-hidden rounded-lg border border-border bg-card"
+            key={id}
+          >
+            <Skeleton className="aspect-video w-full rounded-none" />
+            <div className="flex flex-1 flex-col p-4">
+              <Skeleton className="mb-2 h-5 w-3/4" />
+              <Skeleton className="mb-1 h-4 max-w-full" />
+              <Skeleton className="mb-3 h-4 max-w-sm" />
+              <div className="flex gap-1.5">
+                <Skeleton className="h-5 w-14 rounded-full" />
+                <Skeleton className="h-5 w-16 rounded-full" />
+                <Skeleton className="h-5 w-12 rounded-full" />
+              </div>
+              <Skeleton className="mt-3 h-4 w-24" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function Projects({ projectCount, projects }: ProjectsProps) {
   return (
     <div className="space-y-4">
       <div className="text-muted-foreground text-sm">
         {projectCount} projects
       </div>
-      <div className="-mx-4 md:-mx-0 flex gap-4 overflow-x-auto px-4 pb-2 md:px-0">
+      <div className="-mx-4 flex gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0">
         {projects.map((project) => (
           <div
             className="group relative flex w-[280px] shrink-0 flex-col overflow-hidden rounded-lg border bg-card transition-all hover:shadow-lg"
