@@ -30,7 +30,9 @@ import { cn } from "@repo/design-system/lib/utils";
 import { MessageSquare } from "lucide-react";
 import { useEffect, useState } from "react";
 import { About } from "./about";
+import { Experience, ExperienceSkeleton } from "./experience";
 import { Projects, ProjectsSkeleton } from "./projects";
+import { Related } from "./related";
 import { Resume, ResumeSkeleton } from "./resume";
 
 const SUGGESTIONS = ["Show projects", "Experience", "About Me", "Tech stack"];
@@ -70,7 +72,7 @@ export function Chat() {
   const handleSuggestionClick = (suggestion: string) => {
     console.log("[chat:ui] suggestion click:", suggestion);
     if (suggestion === "Experience") {
-      sendMessage({ text: "Show resume", files: [] });
+      sendMessage({ text: "Show my work experience", files: [] });
       setText("");
       return;
     }
@@ -102,34 +104,56 @@ export function Chat() {
                 >
                   <Message className="min-w-0 flex-1" from={msg.role}>
                     <MessageContent className="text-base">
-                      {msg.parts.map((part, i) => {
-                        console.log("part = ", part);
-                        if (part.type === "text") {
-                          return (
-                            <MessageResponse key={`${msg.id}-${i}`}>
-                              {part.text}
-                            </MessageResponse>
-                          );
-                        }
+                      {(() => {
+                        const projectsPart = msg.parts.find(
+                          (p) =>
+                            (p.type === "tool-show_projects" ||
+                              p.type === "tool-showProjects") &&
+                            "state" in p &&
+                            (p as { state?: string }).state ===
+                              "output-available" &&
+                            "output" in p
+                        ) as { output?: { related?: string[] } } | undefined;
+                        const projectsRelated =
+                          projectsPart?.output !== undefined &&
+                          projectsPart.output !== null &&
+                          Array.isArray(projectsPart.output.related)
+                            ? projectsPart.output.related
+                            : null;
+                        const hasTextPart = msg.parts.some(
+                          (p) => p.type === "text"
+                        );
 
-                        // Handle tool-show_projects (with underscore) or tool-showProjects (camelCase)
-                        if (
-                          part.type === "tool-show_projects" ||
-                          part.type === "tool-showProjects"
-                        ) {
-                          switch (part.state) {
-                            case "input-available":
-                            case "input-streaming":
-                              return (
-                                <div className="w-full" key={`${msg.id}-${i}`}>
-                                  <ProjectsSkeleton />
-                                </div>
-                              );
-                            case "output-available":
-                              return (
-                                <div className="w-full" key={`${msg.id}-${i}`}>
-                                  <Projects
-                                    {...(part.output as {
+                        return (
+                          <>
+                            {/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: tool part switching requires many branches */}
+                            {msg.parts.map((part, i) => {
+                              if (part.type === "text") {
+                                return (
+                                  <MessageResponse key={`${msg.id}-${i}`}>
+                                    {part.text}
+                                  </MessageResponse>
+                                );
+                              }
+
+                              // Handle tool-show_projects (with underscore) or tool-showProjects (camelCase)
+                              if (
+                                part.type === "tool-show_projects" ||
+                                part.type === "tool-showProjects"
+                              ) {
+                                switch (part.state) {
+                                  case "input-available":
+                                  case "input-streaming":
+                                    return (
+                                      <div
+                                        className="w-full"
+                                        key={`${msg.id}-${i}`}
+                                      >
+                                        <ProjectsSkeleton />
+                                      </div>
+                                    );
+                                  case "output-available": {
+                                    const output = part.output as {
                                       copy?: string;
                                       projectCount: number;
                                       projects: Array<{
@@ -145,114 +169,225 @@ export function Chat() {
                                         image: string;
                                         gallery: string[];
                                       }>;
-                                    })}
-                                  />
-                                </div>
-                              );
-                            case "output-error":
-                              return (
-                                <div key={`${msg.id}-${i}`}>
-                                  Error: {part.errorText}
-                                </div>
-                              );
-                            default:
-                              return null;
-                          }
-                        }
+                                      related?: string[];
+                                    };
+                                    return (
+                                      <div
+                                        className="w-full"
+                                        key={`${msg.id}-${i}`}
+                                      >
+                                        <Projects {...output} />
+                                      </div>
+                                    );
+                                  }
+                                  case "output-error":
+                                    return (
+                                      <div key={`${msg.id}-${i}`}>
+                                        Error: {part.errorText}
+                                      </div>
+                                    );
+                                  default:
+                                    return null;
+                                }
+                              }
 
-                        if (
-                          part.type === "tool-show_about" ||
-                          part.type === "tool-showAbout"
-                        ) {
-                          switch (part.state) {
-                            case "input-available":
-                            case "input-streaming":
-                              return (
-                                <div key={`${msg.id}-${i}`}>
-                                  <Loader />
-                                </div>
-                              );
-                            case "output-available":
-                              return (
-                                <div className="w-full" key={`${msg.id}-${i}`}>
-                                  <About
-                                    {...(part.output as {
+                              if (
+                                part.type === "tool-show_experience" ||
+                                part.type === "tool-showExperience"
+                              ) {
+                                switch (part.state) {
+                                  case "input-available":
+                                  case "input-streaming":
+                                    return (
+                                      <div
+                                        className="w-full"
+                                        key={`${msg.id}-${i}`}
+                                      >
+                                        <ExperienceSkeleton />
+                                      </div>
+                                    );
+                                  case "output-available": {
+                                    const output = part.output as
+                                      | Array<{
+                                          duration: string;
+                                          company: string;
+                                          titles: string[];
+                                          description: string;
+                                          technologies: string[];
+                                          links?: Array<{
+                                            name: string;
+                                            url: string;
+                                          }>;
+                                        }>
+                                      | {
+                                          experience: Array<{
+                                            duration: string;
+                                            company: string;
+                                            titles: string[];
+                                            description: string;
+                                            technologies: string[];
+                                            links?: Array<{
+                                              name: string;
+                                              url: string;
+                                            }>;
+                                          }>;
+                                          related?: string[];
+                                        };
+                                    const experienceList = Array.isArray(output)
+                                      ? output
+                                      : output.experience;
+                                    return (
+                                      <div
+                                        className="w-full"
+                                        key={`${msg.id}-${i}`}
+                                      >
+                                        <Experience
+                                          experience={experienceList}
+                                        />
+                                        {!Array.isArray(output) &&
+                                        output.related?.length ? (
+                                          <Related
+                                            onSuggestionClick={
+                                              handleSuggestionClick
+                                            }
+                                            suggestions={output.related}
+                                          />
+                                        ) : null}
+                                      </div>
+                                    );
+                                  }
+                                  case "output-error":
+                                    return (
+                                      <div key={`${msg.id}-${i}`}>
+                                        Error: {part.errorText}
+                                      </div>
+                                    );
+                                  default:
+                                    return null;
+                                }
+                              }
+
+                              if (
+                                part.type === "tool-show_about" ||
+                                part.type === "tool-showAbout"
+                              ) {
+                                switch (part.state) {
+                                  case "input-available":
+                                  case "input-streaming":
+                                    return (
+                                      <div key={`${msg.id}-${i}`}>
+                                        <Loader />
+                                      </div>
+                                    );
+                                  case "output-available": {
+                                    const output = part.output as {
                                       title: string;
                                       paragraphs: string[];
-                                    })}
-                                  />
-                                </div>
-                              );
-                            case "output-error":
-                              return (
-                                <div key={`${msg.id}-${i}`}>
-                                  Error: {part.errorText}
-                                </div>
-                              );
-                            default:
-                              return null;
-                          }
-                        }
+                                      related?: string[];
+                                    };
+                                    return (
+                                      <div
+                                        className="w-full"
+                                        key={`${msg.id}-${i}`}
+                                      >
+                                        <About
+                                          paragraphs={output.paragraphs}
+                                          title={output.title}
+                                        />
+                                        {output.related?.length ? (
+                                          <Related
+                                            onSuggestionClick={
+                                              handleSuggestionClick
+                                            }
+                                            suggestions={output.related}
+                                          />
+                                        ) : null}
+                                      </div>
+                                    );
+                                  }
+                                  case "output-error":
+                                    return (
+                                      <div key={`${msg.id}-${i}`}>
+                                        Error: {part.errorText}
+                                      </div>
+                                    );
+                                  default:
+                                    return null;
+                                }
+                              }
 
-                        if (
-                          part.type === "tool-show_resume" ||
-                          part.type === "tool-showResume"
-                        ) {
-                          switch (part.state) {
-                            case "input-available":
-                            case "input-streaming":
-                              return (
-                                <div
-                                  className="-translate-x-1/2 relative left-1/2 w-screen px-4 md:px-6"
-                                  key={`${msg.id}-${i}`}
-                                >
-                                  <ResumeSkeleton />
-                                </div>
-                              );
-                            case "output-available":
-                              return (
-                                <div
-                                  className="-translate-x-1/2 relative left-1/2 w-screen min-w-0 max-w-full px-4 md:px-6"
-                                  key={`${msg.id}-${i}`}
-                                >
-                                  <Resume
-                                    {...(part.output as {
-                                      name: string;
-                                      title: string;
-                                      location: string;
-                                      contact: string;
-                                      summary: string;
-                                      skills: string[];
-                                      experience: Array<{
-                                        title: string;
-                                        company: string;
-                                        location: string;
-                                        dates: string;
-                                        highlights: string[];
-                                        tech: string;
-                                      }>;
-                                    })}
-                                  />
-                                </div>
-                              );
-                            case "output-error":
-                              return (
-                                <div key={`${msg.id}-${i}`}>
-                                  Error: {part.errorText}
-                                </div>
-                              );
-                            default:
-                              return null;
-                          }
-                        }
+                              if (
+                                part.type === "tool-show_resume" ||
+                                part.type === "tool-showResume"
+                              ) {
+                                switch (part.state) {
+                                  case "input-available":
+                                  case "input-streaming":
+                                    return (
+                                      <div
+                                        className="-translate-x-1/2 relative left-1/2 w-screen px-4 md:px-6"
+                                        key={`${msg.id}-${i}`}
+                                      >
+                                        <ResumeSkeleton />
+                                      </div>
+                                    );
+                                  case "output-available":
+                                    return (
+                                      <div
+                                        className="-translate-x-1/2 relative left-1/2 w-screen min-w-0 max-w-full px-4 md:px-6"
+                                        key={`${msg.id}-${i}`}
+                                      >
+                                        <Resume
+                                          {...(part.output as {
+                                            name: string;
+                                            title: string;
+                                            location: string;
+                                            contact: string;
+                                            summary: string;
+                                            skills: string[];
+                                            experience: Array<{
+                                              title: string;
+                                              company: string;
+                                              location: string;
+                                              dates: string;
+                                              highlights: string[];
+                                              tech: string;
+                                            }>;
+                                          })}
+                                        />
+                                      </div>
+                                    );
+                                  case "output-error":
+                                    return (
+                                      <div key={`${msg.id}-${i}`}>
+                                        Error: {part.errorText}
+                                      </div>
+                                    );
+                                  default:
+                                    return null;
+                                }
+                              }
 
-                        console.log(
-                          "[chat:ui] skipping non-text part:",
-                          part.type,
-                          part
+                              console.log(
+                                "[chat:ui] skipping non-text part:",
+                                part.type,
+                                part
+                              );
+                              return null;
+                            })}
+                            {projectsRelated !== null &&
+                            projectsRelated.length > 0 &&
+                            hasTextPart ? (
+                              <div className="mt-4 w-full">
+                                <Related
+                                  onSuggestionClick={handleSuggestionClick}
+                                  suggestions={projectsRelated}
+                                />
+                              </div>
+                            ) : null}
+                          </>
                         );
-                        return null;
-                      })}
+                      })()}
                     </MessageContent>
                   </Message>
                 </div>

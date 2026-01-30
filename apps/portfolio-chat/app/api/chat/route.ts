@@ -3,7 +3,7 @@
  *
  * Next.js Route Handler for the portfolio chat. Uses the Vercel AI SDK to:
  * - Stream model responses and tool results to the client
- * - Run tools (show_about, show_projects, show_resume) when the model calls them
+ * - Run tools (show_about, show_projects, experience, show_resume) when the model calls them
  * - Inject a custom follow-up copy after show_projects, streamed word-by-word
  *
  * Flow: client POSTs { messages } → we run streamText with tools → we pipe the
@@ -22,6 +22,7 @@ import {
 import { models } from "@repo/ai/lib/models";
 import { z } from "zod";
 import { about } from "@/data/about";
+import experience from "@/data/experience";
 import projects from "@/data/projects";
 import { resume } from "@/data/resume";
 
@@ -31,12 +32,19 @@ const SPLIT_WORDS_AND_SPACES = /(\s+)/;
 const tools = {
   /** Returns about section content for the UI */
   show_about: tool({
-    description: "Display the about section for Eric Nichols",
+    description: "Display the about section",
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
     inputSchema: z.object({}) as any,
     execute: () => {
       console.log("[chat:tool] show_about called");
-      return Promise.resolve(about);
+      return {
+        ...about,
+        related: [
+          "Show me your projects",
+          "What's your experience?",
+          "View your resume",
+        ],
+      };
     },
   }),
   /** Returns project count and project data for the UI to render cards */
@@ -53,6 +61,29 @@ const tools = {
       return {
         projectCount: projects.length,
         projects,
+        related: [
+          "Tell me about a specific project",
+          "What technologies do you use?",
+          "Show me your experience",
+        ],
+      };
+    },
+  }),
+  /** Returns work experience entries for the UI */
+  show_experience: tool({
+    description: "Display Eric Nichols work experience and career history",
+    // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
+    inputSchema: z.object({}) as any,
+    execute: () => {
+      console.log("[chat:tool] experience called");
+      return {
+        experience,
+        // Context-specific suggestions for experience
+        related: [
+          "Show me some projects",
+          "Tell me about Eric",
+          "What's your tech stack?",
+        ],
       };
     },
   }),
@@ -105,7 +136,10 @@ export async function POST(request: Request) {
       modelMessages.length
     );
 
-    const sampleTitles = projects.slice(0, 3).map((p) => p.title).join(", ");
+    const sampleTitles = projects
+      .slice(0, 3)
+      .map((p) => p.title)
+      .join(", ");
     const projectsFollowUp = `From ${sampleTitles}—here are some projects spanning AI, full-stack apps, and more. Pick one and I'll dive in! Each one has a live demo you can explore. Ask me about tech stack, challenges, or anything else you're curious about.`;
 
     /**
@@ -125,7 +159,8 @@ export async function POST(request: Request) {
           system: `You are Eric Nichols portfolio assistant.
 When the user asks about Eric or asks to see his about section, use the show_about tool.
 When the user asks to see projects, use the show_projects tool.
-When the user asks about experience or resume details, use the show_resume tool.
+When the user asks about work experience, jobs, or career history, use the show_experience tool.
+When the user asks about resume details, use the show_resume tool.
 Answer other questions about his work conversationally.`,
           messages: modelMessages,
         });
@@ -138,7 +173,11 @@ Answer other questions about his work conversationally.`,
 
           // When show_projects completes, inject our copy as streamed text.
           // We detect it by tool-output-available + output.projects.
-          const c = chunk as { type?: string; toolName?: string; output?: unknown };
+          const c = chunk as {
+            type?: string;
+            toolName?: string;
+            output?: unknown;
+          };
           if (
             c.type === "tool-output-available" &&
             c.output &&
