@@ -138,8 +138,10 @@ function MessagePartRenderer({
       return <div key={`${msgId}-${i}`}>Error: {part.errorText}</div>;
     }
   }
-
-  if (part.type === "tool-show_resume" || part.type === "tool-showResume") {
+  if (
+    part.type === "tool-show_resume" ||
+    part.type === "tool-showResume"
+  ) {
     if (part.state === "input-available" || part.state === "input-streaming") {
       return (
         <div
@@ -151,29 +153,38 @@ function MessagePartRenderer({
       );
     }
     if (part.state === "output-available") {
+      const output = part.output as {
+        name: string;
+        title: string;
+        location: string;
+        contact: string;
+        summary: string;
+        skills: string[];
+        experience: Array<{
+          title: string;
+          company: string;
+          location: string;
+          dates: string;
+          highlights: string[];
+          tech: string;
+        }>;
+        related?: string[];
+      };
+      const { related, ...resumeData } = output;
       return (
         <div
           className="-translate-x-1/2 relative left-1/2 w-screen min-w-0 max-w-full px-4 md:px-6"
           key={`${msgId}-${i}`}
         >
-          <Resume
-            {...(part.output as {
-              name: string;
-              title: string;
-              location: string;
-              contact: string;
-              summary: string;
-              skills: string[];
-              experience: Array<{
-                title: string;
-                company: string;
-                location: string;
-                dates: string;
-                highlights: string[];
-                tech: string;
-              }>;
-            })}
-          />
+          <Resume {...resumeData} />
+          {related?.length ? (
+            <div className="mt-4">
+              <Related
+                onSuggestionClick={onSuggestionClick}
+                suggestions={related}
+              />
+            </div>
+          ) : null}
         </div>
       );
     }

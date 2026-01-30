@@ -92,12 +92,16 @@ const tools = {
     description: "Display Eric Nichols resume and experience",
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
     inputSchema: z.object({}) as any,
-    execute: async () => {
-      console.log(
-        "[chat:tool] show_resume called, delaying 1.5s so skeleton is visible"
-      );
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      return resume;
+    execute: () => {
+      console.log("[chat:tool] show_resume called");
+      return {
+        ...resume,
+        related: [
+          "Show me some projects",
+          "Tell me about Eric",
+          "What's your experience?",
+        ],
+      };
     },
   }),
 };

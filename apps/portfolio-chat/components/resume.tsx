@@ -2,6 +2,35 @@
 
 import { Skeleton } from "@repo/design-system/components/ui/skeleton";
 
+export function ResumeSkeleton() {
+  return (
+    <section className="min-w-0 max-w-full space-y-6 rounded-xl border border-border bg-card p-6 shadow-sm">
+      <div className="space-y-2">
+        <Skeleton className="h-6 w-48" />
+        <Skeleton className="h-4 w-64" />
+        <Skeleton className="h-4 w-full max-w-md" />
+      </div>
+      <Skeleton className="h-16 w-full" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-16" />
+        <div className="flex flex-wrap gap-2">
+          <Skeleton className="h-5 w-24 rounded-full" />
+          <Skeleton className="h-5 w-32 rounded-full" />
+          <Skeleton className="h-5 w-20 rounded-full" />
+        </div>
+      </div>
+      <div className="space-y-4">
+        <Skeleton className="h-4 w-24" />
+        <div className="space-y-4">
+          <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-24 w-full" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 type ResumeProps = {
   name: string;
   title: string;
@@ -18,65 +47,6 @@ type ResumeProps = {
     tech: string;
   }>;
 };
-
-export function ResumeSkeleton() {
-  return (
-    <section className="mx-auto max-w-xl space-y-6 rounded-xl border border-border bg-card p-6 shadow-sm">
-      <header className="space-y-2">
-        <Skeleton className="h-7 w-48" />
-        <Skeleton className="h-5 w-64" />
-        <Skeleton className="h-4 w-56" />
-      </header>
-
-      <div className="space-y-2">
-        <Skeleton className="h-4 max-w-md" />
-        <Skeleton className="h-4 max-w-sm" />
-        <Skeleton className="h-4 max-w-xs" />
-      </div>
-
-      <div className="space-y-2">
-        <Skeleton className="h-5 w-16" />
-        <ul className="space-y-2">
-          <li>
-            <Skeleton className="h-4 w-32" />
-          </li>
-          <li>
-            <Skeleton className="h-4 w-40" />
-          </li>
-          <li>
-            <Skeleton className="h-4 w-28" />
-          </li>
-        </ul>
-      </div>
-
-      <div className="space-y-4">
-        <Skeleton className="h-5 w-24" />
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
-            <article className="space-y-2" key={i}>
-              <div>
-                <Skeleton className="mb-1 h-4 w-44" />
-                <Skeleton className="h-3 w-36" />
-              </div>
-              <ul className="space-y-1 pl-5">
-                <li>
-                  <Skeleton className="h-3 max-w-sm" />
-                </li>
-                <li>
-                  <Skeleton className="h-3 max-w-xs" />
-                </li>
-                <li>
-                  <Skeleton className="h-3 max-w-[12rem]" />
-                </li>
-              </ul>
-              <Skeleton className="h-3 w-24" />
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 export function Resume({
   name,
@@ -111,10 +81,10 @@ export function Resume({
       <div className="space-y-4">
         <h3 className="font-semibold text-base">Experience</h3>
         <div className="space-y-4">
-          {experience.map((role) => (
+          {experience.map((role, idx) => (
             <article
-              className="space-y-2"
-              key={`${role.company}-${role.dates}`}
+              className="fade-in animate-in space-y-2 duration-300"
+              key={`${role.company}-${idx}`}
             >
               <div>
                 <h4 className="break-words font-semibold text-sm">
