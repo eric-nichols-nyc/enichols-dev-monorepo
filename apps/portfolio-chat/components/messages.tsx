@@ -240,9 +240,9 @@ export function Messages({
       <ConversationContent className="mx-auto w-full max-w-[720px]">
         {messages.length === 0 ? (
           <ConversationEmptyState
-            description="Send a message to start the conversation."
+            description="I'm Eric — a senior frontend engineer focused on accessibility, React, and building AI-driven experiences. Ask about my projects, experience, or anything else you'd like to know."
             icon={<MessageSquare className="size-10 text-muted-foreground" />}
-            title="No messages yet"
+            title="Hi, I'm Eric Nichols"
           />
         ) : (
           messages.map((msg) => (

@@ -16,7 +16,12 @@ import { useState } from "react";
 import { usePortfolioChat } from "@/contexts/chat-context";
 import { Messages } from "./messages";
 
-const SUGGESTIONS = ["Show projects", "Experience", "About Me", "Tech stack"];
+const SUGGESTIONS = [
+  "Show me some projects",
+  "Tell me about Eric",
+  "What's your tech stack?",
+  "View complete resume",
+];
 
 export function Chat() {
   const [text, setText] = useState("");

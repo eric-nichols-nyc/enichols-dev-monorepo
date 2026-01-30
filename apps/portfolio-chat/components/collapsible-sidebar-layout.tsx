@@ -70,7 +70,13 @@ export function CollapsibleSidebarLayout() {
         style={{ width: sidebarWidth }}
       >
         <div className="flex h-full flex-col overflow-hidden">
-          <div className="flex shrink-0 items-center justify-between gap-2 border-border border-b p-3">
+          <div
+            className={`flex shrink-0 items-center border-border border-b p-3 ${
+              collapsed
+                ? "flex-col gap-2"
+                : "justify-between gap-2"
+            }`}
+          >
             <div className="flex min-w-0 flex-1 items-center gap-2">
               <div
                 aria-hidden
