@@ -222,7 +222,11 @@ export function Messages({
   const [isAtBottom, setIsAtBottom] = useState(true);
 
   const scrollToBottom = useCallback(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
+    const el = scrollRef.current;
+    if (!el) {
+      return;
+    }
+    el.scrollTo({ top: el.scrollHeight });
   }, []);
 
   const checkIsAtBottom = useCallback(() => {
@@ -250,7 +254,7 @@ export function Messages({
   }, [checkIsAtBottom]);
 
   useEffect(() => {
-    if (status === "submitted") {
+    if (status === "submitted" || status === "streaming") {
       scrollToBottom();
       setIsAtBottom(true);
     }
@@ -259,8 +263,8 @@ export function Messages({
   return (
     <div className="relative flex h-full min-h-0 flex-1 flex-col">
       <div
-        ref={scrollRef}
         className="flex-1 overflow-y-auto overscroll-contain"
+        ref={scrollRef}
         role="log"
       >
         <div className="mx-auto flex w-full max-w-[720px] flex-col gap-8 p-4">
@@ -279,8 +283,13 @@ export function Messages({
                 )}
                 key={msg.id}
               >
-                <Message className="min-w-0 flex-1" from={msg.role}>
-                  <MessageContent className="text-base">
+                <Message className={cn("min-w-0 flex-1")} from={msg.role}>
+                  <MessageContent
+                    className={cn(
+                      "text-base",
+                      msg.role === "assistant" && "min-h-24"
+                    )}
+                  >
                     {msg.parts.map((part, i) => (
                       <MessagePartRenderer
                         i={i}
