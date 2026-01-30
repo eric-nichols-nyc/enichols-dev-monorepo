@@ -29,6 +29,7 @@ import {
 import { cn } from "@repo/design-system/lib/utils";
 import { MessageSquare } from "lucide-react";
 import { useEffect, useState } from "react";
+import { About } from "./about";
 import { Projects } from "./projects";
 
 const SUGGESTIONS = ["Show projects", "Experience", "About Me", "Contact"];
@@ -137,6 +138,40 @@ export function Chat() {
                                         image: string;
                                         gallery: string[];
                                       }>;
+                                    })}
+                                  />
+                                </div>
+                              );
+                            case "output-error":
+                              return (
+                                <div key={`${msg.id}-${i}`}>
+                                  Error: {part.errorText}
+                                </div>
+                              );
+                            default:
+                              return null;
+                          }
+                        }
+
+                        if (
+                          part.type === "tool-show_about" ||
+                          part.type === "tool-showAbout"
+                        ) {
+                          switch (part.state) {
+                            case "input-available":
+                            case "input-streaming":
+                              return (
+                                <div key={`${msg.id}-${i}`}>
+                                  <Loader />
+                                </div>
+                              );
+                            case "output-available":
+                              return (
+                                <div className="w-full" key={`${msg.id}-${i}`}>
+                                  <About
+                                    {...(part.output as {
+                                      title: string;
+                                      paragraphs: string[];
                                     })}
                                   />
                                 </div>

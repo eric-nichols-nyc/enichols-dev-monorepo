@@ -2,9 +2,19 @@ import type { UIMessage } from "@repo/ai";
 import { convertToModelMessages, streamText, tool } from "@repo/ai";
 import { models } from "@repo/ai/lib/models";
 import { z } from "zod";
+import { about } from "@/data/about";
 import projects from "@/data/projects";
 
 const tools = {
+  show_about: tool({
+    description: "Display the about section for Eric Nichols",
+    // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
+    inputSchema: z.object({}) as any,
+    execute: () => {
+      console.log("[chat:tool] show_about called");
+      return Promise.resolve(about);
+    },
+  }),
   show_projects: tool({
     description: "Display portfolio projects",
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
@@ -61,6 +71,7 @@ export async function POST(request: Request) {
       tools: tools as any,
       model: models.chat,
       system: `You are Eric Nichols portfolio assistant.
+When the user asks about Eric or asks to see his about section, use the show_about tool.
 When the user asks to see projects, use the show_projects tool.
 Answer other questions about his work conversationally.`,
       messages: modelMessages,
