@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
 
 type RelatedProps = {
   suggestions: string[];
@@ -8,6 +9,15 @@ type RelatedProps = {
 };
 
 export function Related({ suggestions, onSuggestionClick }: RelatedProps) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const id = setTimeout(() => setVisible(true), 1000);
+    return () => clearTimeout(id);
+  }, []);
+
+  if (!visible) return null;
+
   return (
     <div className="mt-6 w-full">
       <h4 className="mb-3 font-semibold text-foreground text-lg">Related</h4>

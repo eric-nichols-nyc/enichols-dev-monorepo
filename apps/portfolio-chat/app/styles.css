@@ -4,16 +4,17 @@
 @layer base {
   body {
     font-size: 16px;
+    background-color: rgb(16, 14, 18);
   }
 
-  main {
-    background-color: oklch(0.2167 0.002 197.04);
+  .dark {
+    --background: rgb(16, 14, 18);
   }
 }
 
 @layer utilities {
   .bg-app {
-    background-color: oklch(0.2167 0.002 197.04);
+    background-color: rgb(16, 14, 18);
   }
 
   .animate-logo-glow {
