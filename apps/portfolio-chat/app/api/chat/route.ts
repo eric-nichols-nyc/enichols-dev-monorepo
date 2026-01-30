@@ -1,12 +1,35 @@
+/**
+ * POST /api/chat
+ *
+ * Next.js Route Handler for the portfolio chat. Uses the Vercel AI SDK to:
+ * - Stream model responses and tool results to the client
+ * - Run tools (show_about, show_projects, show_resume) when the model calls them
+ * - Inject a custom follow-up copy after show_projects, streamed word-by-word
+ *
+ * Flow: client POSTs { messages } → we run streamText with tools → we pipe the
+ * stream, injecting the projects copy after the tool result → client receives
+ * a UI message stream (useChat-compatible).
+ */
 import type { UIMessage } from "@repo/ai";
-import { convertToModelMessages, streamText, tool } from "@repo/ai";
+import {
+  convertToModelMessages,
+  createUIMessageStream,
+  createUIMessageStreamResponse,
+  stepCountIs,
+  streamText,
+  tool,
+} from "@repo/ai";
 import { models } from "@repo/ai/lib/models";
 import { z } from "zod";
 import { about } from "@/data/about";
 import projects from "@/data/projects";
 import { resume } from "@/data/resume";
 
+/** Split text into words and spaces so we can stream with preserved formatting */
+const SPLIT_WORDS_AND_SPACES = /(\s+)/;
+
 const tools = {
+  /** Returns about section content for the UI */
   show_about: tool({
     description: "Display the about section for Eric Nichols",
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
@@ -16,6 +39,7 @@ const tools = {
       return Promise.resolve(about);
     },
   }),
+  /** Returns project count and project data for the UI to render cards */
   show_projects: tool({
     description: "Display portfolio projects",
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
@@ -25,15 +49,14 @@ const tools = {
         "[chat:tool] show_projects called, delaying 1.5s so skeleton is visible"
       );
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      const data = {
-        copy:
-          "Here are a few of Eric's projects. Let me know if you'd like more details on any of them.",
+      // Copy/follow-up is injected in the stream after this tool—see execute below
+      return {
         projectCount: projects.length,
         projects,
       };
-      return data;
     },
   }),
+  /** Returns resume/experience data for the UI */
   show_resume: tool({
     description: "Display Eric Nichols resume and experience",
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
@@ -52,6 +75,7 @@ export async function POST(request: Request) {
   try {
     console.log("[chat:api] POST /api/chat received");
     const body = (await request.json()) as { messages?: UIMessage[] };
+    /** UIMessage[] from useChat: [{ role, parts: [{ type, text } | { type, ... }] }] */
     const { messages } = body;
 
     if (!messages?.length) {
@@ -81,20 +105,65 @@ export async function POST(request: Request) {
       modelMessages.length
     );
 
-    const result = streamText({
-      // biome-ignore lint/suspicious/noExplicitAny: ToolSet/Zod mismatch between app deps and @repo/ai
-      tools: tools as any,
-      model: models.chat,
-      system: `You are Eric Nichols portfolio assistant.
+    const sampleTitles = projects.slice(0, 3).map((p) => p.title).join(", ");
+    const projectsFollowUp = `From ${sampleTitles}—here are some projects spanning AI, full-stack apps, and more. Pick one and I'll dive in! Each one has a live demo you can explore. Ask me about tech stack, challenges, or anything else you're curious about.`;
+
+    /**
+     * createUIMessageStream gives us control over the stream so we can:
+     * 1. Run streamText (model + tools)
+     * 2. Forward each chunk to the client
+     * 3. When we see show_projects tool output, inject our copy as streamed text
+     */
+    const stream = createUIMessageStream({
+      originalMessages: messages,
+      execute: async ({ writer }) => {
+        const result = streamText({
+          // biome-ignore lint/suspicious/noExplicitAny: ToolSet/Zod mismatch between app deps and @repo/ai
+          tools: tools as any,
+          model: models.chat,
+          stopWhen: stepCountIs(1), // stop after 1 step (tool call + result); we inject copy ourselves
+          system: `You are Eric Nichols portfolio assistant.
 When the user asks about Eric or asks to see his about section, use the show_about tool.
 When the user asks to see projects, use the show_projects tool.
 When the user asks about experience or resume details, use the show_resume tool.
 Answer other questions about his work conversationally.`,
-      messages: modelMessages,
+          messages: modelMessages,
+        });
+
+        const uiStream = result.toUIMessageStream();
+        const textId = "projects-follow-up";
+
+        for await (const chunk of uiStream) {
+          writer.write(chunk);
+
+          // When show_projects completes, inject our copy as streamed text.
+          // We detect it by tool-output-available + output.projects.
+          const c = chunk as { type?: string; toolName?: string; output?: unknown };
+          if (
+            c.type === "tool-output-available" &&
+            c.output &&
+            typeof c.output === "object" &&
+            "projects" in c.output
+          ) {
+            writer.write({ type: "text-start", id: textId });
+            const words = projectsFollowUp.split(SPLIT_WORDS_AND_SPACES);
+            for (const word of words) {
+              // 20ms delay per word simulates streaming/typing effect
+              writer.write({
+                type: "text-delta",
+                id: textId,
+                delta: word,
+              });
+              await new Promise((r) => setTimeout(r, 20));
+            }
+            writer.write({ type: "text-end", id: textId });
+          }
+        }
+      },
     });
 
-    console.log("[chat:api] streamText started, returning UI stream response");
-    return result.toUIMessageStreamResponse({ originalMessages: messages });
+    console.log("[chat:api] returning UI stream response");
+    return createUIMessageStreamResponse({ stream });
   } catch (error) {
     console.error("[chat:api] error:", error);
     return new Response(

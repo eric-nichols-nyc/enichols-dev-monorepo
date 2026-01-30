@@ -72,20 +72,6 @@ const projects: Project[] = [
     gallery: [],
   },
   {
-    id: "ai-recipe-generator",
-    title: "AI Recipe Generator",
-    tags: ["react", "ai", "mcp", "typescript"],
-    categories: ["travel"],
-    description:
-      "AI Recipe Generator is a platform that allows you to generate recipes based on your preferences.",
-    shortDescription: "Generate recipes based on your preferences.",
-    date: "2023-08-05",
-    url: "https://ai-recipe-generator-nine.vercel.app/",
-    published: true,
-    image: "/images/ai-recipe-generator.png",
-    gallery: [],
-  },
-  {
     id: "ai-mockmaster",
     title: "AI Mockmaster",
     tags: ["ai", "nextjs", "fullstack"],
