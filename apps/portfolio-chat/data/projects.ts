@@ -15,20 +15,6 @@ export type Project = {
 
 const projects: Project[] = [
   {
-    id: "x2j9v7lm",
-    title: "MoodFlix",
-    tags: ["ai", "nextjs", "typescript"],
-    categories: ["web"],
-    description:
-      "MoodFlix is your personal movie recommendation engine that suggests films based on your current mood. Whether you're feeling energetic, relaxed, or somewhere in between, we've got the perfect movie for you.",
-    shortDescription: "Personal movie recommendation engine.",
-    date: "2023-05-15",
-    url: "https://moodflix-phi.vercel.app/",
-    published: true,
-    image: "/images/moodflix.png",
-    gallery: [],
-  },
-  {
     id: "q4w8e1rt",
     title: "Audiograph",
     tags: ["nextjs", "analytics", "PostgreSQL", "typescript"],
@@ -72,20 +58,6 @@ const projects: Project[] = [
     gallery: [],
   },
   {
-    id: "ai-recipe-generator",
-    title: "AI Recipe Generator",
-    tags: ["react", "ai", "mcp", "typescript"],
-    categories: ["travel"],
-    description:
-      "AI Recipe Generator is a platform that allows you to generate recipes based on your preferences.",
-    shortDescription: "Generate recipes based on your preferences.",
-    date: "2023-08-05",
-    url: "https://ai-recipe-generator-nine.vercel.app/",
-    published: true,
-    image: "/images/ai-recipe-generator.png",
-    gallery: [],
-  },
-  {
     id: "ai-mockmaster",
     title: "AI Mockmaster",
     tags: ["ai", "nextjs", "fullstack"],
@@ -97,6 +69,20 @@ const projects: Project[] = [
     url: "https://ai-mockmaster.vercel.app/",
     published: true,
     image: "/images/mockmaster.png",
+    gallery: [],
+  },
+  {
+    id: "x2j9v7lm",
+    title: "MoodFlix",
+    tags: ["ai", "nextjs", "typescript"],
+    categories: ["web"],
+    description:
+      "MoodFlix is your personal movie recommendation engine that suggests films based on your current mood. Whether you're feeling energetic, relaxed, or somewhere in between, we've got the perfect movie for you.",
+    shortDescription: "Personal movie recommendation engine.",
+    date: "2023-05-15",
+    url: "https://moodflix-phi.vercel.app/",
+    published: true,
+    image: "/images/moodflix.png",
     gallery: [],
   },
 ];
