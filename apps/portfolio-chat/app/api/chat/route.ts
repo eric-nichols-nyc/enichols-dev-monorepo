@@ -26,6 +26,8 @@ const tools = {
       );
       await new Promise((resolve) => setTimeout(resolve, 1500));
       const data = {
+        copy:
+          "Here are a few of Eric's projects. Let me know if you'd like more details on any of them.",
         projectCount: projects.length,
         projects,
       };
