@@ -1,15 +1,25 @@
+import { Inter } from "next/font/google";
 import "./styles.css";
 import { TooltipProvider } from "@repo/design-system/components/ui/tooltip";
-import { fonts } from "@repo/design-system/lib/fonts";
 import { ThemeProvider } from "@repo/design-system/providers/theme";
 import type { ReactNode } from "react";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 type RootLayoutProperties = {
   readonly children: ReactNode;
 };
 
 const RootLayout = ({ children }: RootLayoutProperties) => (
-  <html className={fonts} lang="en" suppressHydrationWarning>
+  <html
+    className={`${inter.variable} font-sans antialiased`}
+    lang="en"
+    suppressHydrationWarning
+  >
     <body>
       <ThemeProvider>
         <TooltipProvider>{children}</TooltipProvider>

@@ -1,9 +1,27 @@
 @import "tailwindcss";
 @import "@repo/design-system/styles/globals.css";
+@utility text-balance {
+  text-wrap: balance;
+}
 
+@utility -webkit-overflow-scrolling-touch {
+  -webkit-overflow-scrolling: touch;
+}
+
+@utility touch-pan-y {
+  touch-action: pan-y;
+}
+
+@utility overscroll-behavior-contain {
+  overscroll-behavior: contain;
+}
 @layer base {
+  html {
+    /* Bridge Inter (--font-sans) to design-system's expected variable */
+    --font-geist-sans: var(--font-sans);
+  }
   body {
-    font-size: 16px;
+    font-size: 20px;
     background-color: rgb(16, 14, 18);
   }
 

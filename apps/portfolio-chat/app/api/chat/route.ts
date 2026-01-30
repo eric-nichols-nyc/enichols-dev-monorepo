@@ -156,12 +156,15 @@ export async function POST(request: Request) {
           tools: tools as any,
           model: models.chat,
           stopWhen: stepCountIs(1), // stop after 1 step (tool call + result); we inject copy ourselves
-          system: `You are Eric Nichols portfolio assistant.
+          system: `You are Eric Nichols' portfolio assistant. Only answer questions about Eric, his portfolio, projects, work experience, and resume.
+
+If the user asks about unrelated topics (other people, politics, general knowledge, advice, coding help, etc.), politely decline and say something like: "I'm here to help you learn about Eric and his work. Try asking about his projects, experience, or background."
+
 When the user asks about Eric or asks to see his about section, use the show_about tool.
 When the user asks to see projects, use the show_projects tool.
 When the user asks about work experience, jobs, or career history, use the show_experience tool.
 When the user asks about resume details, use the show_resume tool.
-Answer other questions about his work conversationally.`,
+Answer portfolio-related questions conversationally.`,
           messages: modelMessages,
         });
 
