@@ -33,7 +33,7 @@ import { About } from "./about";
 import { Projects } from "./projects";
 import { Resume, ResumeSkeleton } from "./resume";
 
-const SUGGESTIONS = ["Show projects", "Experience", "About Me", "Contact"];
+const SUGGESTIONS = ["Show projects", "Experience", "About Me", "Tech stack"];
 
 export function Chat() {
   const [text, setText] = useState("");

@@ -1,5 +1,5 @@
 import { ModeToggle } from "@repo/design-system/components/mode-toggle";
-import { Github, Instagram, Linkedin } from "lucide-react";
+import { Github, Instagram, Linkedin, Zap } from "lucide-react";
 import Link from "next/link";
 import { Chat } from "@/components/chat";
 
@@ -13,7 +13,15 @@ const HomePage = () => (
   <main className="flex h-dvh flex-col">
     <header className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-border border-b bg-app px-4 py-3">
       <div className="flex items-center gap-3">
-        <h1 className="font-semibold text-lg">Eric Nichols</h1>
+        <div className="flex items-center gap-2">
+          <div
+            aria-hidden
+            className="flex size-9 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-primary/10"
+          >
+            <Zap className="size-5 animate-logo-glow text-primary" />
+          </div>
+          <h1 className="font-semibold text-lg">Eric Nichols</h1>
+        </div>
         <nav aria-label="Social links" className="flex items-center gap-2">
           {socialLinks.map(({ href, icon: Icon, label }) => (
             <Link

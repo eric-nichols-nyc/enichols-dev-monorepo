@@ -15,4 +15,20 @@
   .bg-app {
     background-color: oklch(0.2167 0.002 197.04);
   }
+
+  .animate-logo-glow {
+    animation: logo-glow 2s ease-in-out infinite;
+  }
+}
+
+@keyframes logo-glow {
+  0%,
+  100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 4px currentColor);
+  }
+  50% {
+    opacity: 0.85;
+    filter: drop-shadow(0 0 8px currentColor);
+  }
 }
