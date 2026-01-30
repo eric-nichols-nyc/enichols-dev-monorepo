@@ -130,6 +130,7 @@ export function Chat() {
                                 <div className="w-full" key={`${msg.id}-${i}`}>
                                   <Projects
                                     {...(part.output as {
+                                      copy?: string;
                                       projectCount: number;
                                       projects: Array<{
                                         id: string;

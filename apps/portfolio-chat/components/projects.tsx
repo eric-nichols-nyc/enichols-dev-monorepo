@@ -7,6 +7,7 @@ import Link from "next/link";
 import type { Project } from "@/data/projects";
 
 type ProjectsProps = {
+  copy?: string;
   projectCount: number;
   projects: Project[];
 };
@@ -45,7 +46,7 @@ export function ProjectsSkeleton() {
   );
 }
 
-export function Projects({ projectCount, projects }: ProjectsProps) {
+export function Projects({ copy, projectCount, projects }: ProjectsProps) {
   return (
     <div className="space-y-4">
       <div className="text-muted-foreground text-sm">
@@ -114,6 +115,7 @@ export function Projects({ projectCount, projects }: ProjectsProps) {
           </div>
         ))}
       </div>
+      {copy ? <p className="text-foreground text-sm">{copy}</p> : null}
     </div>
   );
 }
