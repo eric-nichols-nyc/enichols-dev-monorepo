@@ -99,7 +99,7 @@ const tools = {
         related: [
           "Show me some projects",
           "Tell me about Eric",
-          "What's your tech stack?",
+          "What's Eric's tech stack?",
         ],
       };
     },
