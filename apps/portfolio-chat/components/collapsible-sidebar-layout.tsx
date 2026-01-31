@@ -40,9 +40,21 @@ const NAV_ITEMS = [
 ] as const;
 
 const socialLinks = [
-  { href: "https://github.com", icon: Github, label: "GitHub" },
-  { href: "https://instagram.com", icon: Instagram, label: "Instagram" },
-  { href: "https://linkedin.com", icon: Linkedin, label: "LinkedIn" },
+  {
+    href: "https://github.com/eric-nichols-nyc",
+    icon: Github,
+    label: "GitHub",
+  },
+  {
+    href: "https://instagram.com/ebn646/",
+    icon: Instagram,
+    label: "Instagram",
+  },
+  {
+    href: "https://www.linkedin.com/in/eric-nichols-ab509118/",
+    icon: Linkedin,
+    label: "LinkedIn",
+  },
 ];
 
 export function CollapsibleSidebarLayout() {
@@ -72,9 +84,7 @@ export function CollapsibleSidebarLayout() {
         <div className="flex h-full flex-col overflow-hidden">
           <div
             className={`flex shrink-0 items-center border-border border-b p-3 ${
-              collapsed
-                ? "flex-col gap-2"
-                : "justify-between gap-2"
+              collapsed ? "flex-col gap-2" : "justify-between gap-2"
             }`}
           >
             <div className="flex min-w-0 flex-1 items-center gap-2">
