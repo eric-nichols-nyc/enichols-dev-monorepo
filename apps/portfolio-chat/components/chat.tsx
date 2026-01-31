@@ -8,21 +8,11 @@ import {
   PromptInputSubmit,
   PromptInputTextarea,
 } from "@repo/design-system/components/ai-elements/prompt-input";
-import {
-  Suggestion,
-  Suggestions,
-} from "@repo/design-system/components/ai-elements/suggestion";
 import { useState } from "react";
 import { usePortfolioChat } from "@/contexts/chat-context";
 import { Artifact } from "./artifact";
 import { Messages } from "./messages";
-
-const SUGGESTIONS = [
-  "Show me some projects",
-  "Tell me about Eric",
-  "What's your tech stack?",
-  "View complete resume",
-];
+import { Suggestions } from "./suggestions";
 
 type ChatProps = {
   embedded?: boolean;
@@ -85,16 +75,7 @@ export function Chat({ embedded, onProjectExpand }: ChatProps) {
 
       <div className="sticky bottom-0 z-10 flex shrink-0 flex-col items-center gap-3 border-border border-t bg-app p-3">
         {messages.length === 0 && (
-          <Suggestions className="mx-auto grid w-full max-w-[720px] grid-cols-1 gap-2 lg:w-1/2 lg:grid-cols-2">
-            {SUGGESTIONS.map((suggestion) => (
-              <Suggestion
-                className="w-full justify-center"
-                key={suggestion}
-                onClick={handleSuggestionClick}
-                suggestion={suggestion}
-              />
-            ))}
-          </Suggestions>
+          <Suggestions onSuggestionClick={handleSuggestionClick} />
         )}
         <div className="w-full max-w-[720px]">
           <PromptInput globalDrop multiple onSubmit={handleSubmit}>

@@ -29,6 +29,23 @@ import { resume } from "@/data/resume";
 /** Split text into words and spaces so we can stream with preserved formatting */
 const SPLIT_WORDS_AND_SPACES = /(\s+)/;
 
+async function streamCopy(
+  // UIMessageStreamWriter has a specific write signature; we pass valid chunks
+  writer: {
+    write: (part: { type: string; id: string; delta?: string }) => void;
+  },
+  textId: string,
+  copy: string
+) {
+  writer.write({ type: "text-start", id: textId });
+  const words = copy.split(SPLIT_WORDS_AND_SPACES);
+  for (const word of words) {
+    writer.write({ type: "text-delta", id: textId, delta: word });
+    await new Promise((r) => setTimeout(r, 20));
+  }
+  writer.write({ type: "text-end", id: textId });
+}
+
 const tools = {
   /** Returns about section content for the UI */
   show_about: tool({
@@ -83,6 +100,31 @@ const tools = {
           "Show me some projects",
           "Tell me about Eric",
           "What's your tech stack?",
+        ],
+      };
+    },
+  }),
+  /** Returns tech stack as a list—streamed as text, no resume UI */
+  show_tech_stack: tool({
+    description:
+      "List Eric's technologies and tech stack (React, Next.js, TypeScript, etc.)",
+    // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
+    inputSchema: z.object({}) as any,
+    execute: () => {
+      console.log("[chat:tool] show_tech_stack called");
+      const fromExperience = experience.flatMap((e) => e.technologies);
+      const fromProjects = projects.flatMap((p) =>
+        p.tags.map((t) => t.charAt(0).toUpperCase() + t.slice(1))
+      );
+      const technologies = [
+        ...new Set([...fromExperience, ...fromProjects]),
+      ].sort();
+      return {
+        technologies,
+        related: [
+          "Show me some projects",
+          "What's his experience?",
+          "Tell me about Eric",
         ],
       };
     },
@@ -146,6 +188,9 @@ export async function POST(request: Request) {
       .join(", ");
     const projectsFollowUp = `From ${sampleTitles}—here are some projects spanning AI, full-stack apps, and more. Pick one and I'll dive in! Each one has a live demo you can explore. Ask me about tech stack, challenges, or anything else you're curious about.`;
 
+    const techStackFollowUp = (technologies: string[]) =>
+      `Here's the tech stack: ${technologies.join(", ")}. Want to hear about a specific technology or project?`;
+
     /**
      * createUIMessageStream gives us control over the stream so we can:
      * 1. Run streamText (model + tools)
@@ -160,20 +205,22 @@ export async function POST(request: Request) {
           tools: tools as any,
           model: models.chat,
           stopWhen: stepCountIs(1), // stop after 1 step (tool call + result); we inject copy ourselves
-          system: `You are Eric Nichols' portfolio assistant. Only answer questions about Eric, his portfolio, projects, work experience, and resume.
+          system: `You are Eric Nichols' portfolio assistant. Only answer questions about Eric, his portfolio, projects, work experience, tech stack, and resume.
 
 If the user asks about unrelated topics (other people, politics, general knowledge, advice, coding help, etc.), politely decline and say something like: "I'm here to help you learn about Eric and his work. Try asking about his projects, experience, or background."
 
 When the user asks about Eric or asks to see his about section, use the show_about tool.
 When the user asks to see projects, use the show_projects tool.
 When the user asks about work experience, jobs, or career history, use the show_experience tool.
+When the user asks about tech stack, technologies, or skills, use the show_tech_stack tool. Do NOT use show_resume or show_about for tech stack questions.
 When the user asks about resume details, use the show_resume tool.
 Answer portfolio-related questions conversationally.`,
           messages: modelMessages,
         });
 
         const uiStream = result.toUIMessageStream();
-        const textId = "projects-follow-up";
+        const textIdProjects = "projects-follow-up";
+        const textIdTechStack = "tech-stack-follow-up";
 
         for await (const chunk of uiStream) {
           writer.write(chunk);
@@ -188,21 +235,35 @@ Answer portfolio-related questions conversationally.`,
           if (
             c.type === "tool-output-available" &&
             c.output &&
-            typeof c.output === "object" &&
-            "projects" in c.output
+            typeof c.output === "object"
           ) {
-            writer.write({ type: "text-start", id: textId });
-            const words = projectsFollowUp.split(SPLIT_WORDS_AND_SPACES);
-            for (const word of words) {
-              // 20ms delay per word simulates streaming/typing effect
-              writer.write({
-                type: "text-delta",
-                id: textId,
-                delta: word,
-              });
-              await new Promise((r) => setTimeout(r, 20));
+            if ("projects" in c.output) {
+              await streamCopy(
+                writer as {
+                  write: (p: {
+                    type: string;
+                    id: string;
+                    delta?: string;
+                  }) => void;
+                },
+                textIdProjects,
+                projectsFollowUp
+              );
+            } else if ("technologies" in c.output) {
+              const tech = (c.output as { technologies: string[] })
+                .technologies;
+              await streamCopy(
+                writer as {
+                  write: (p: {
+                    type: string;
+                    id: string;
+                    delta?: string;
+                  }) => void;
+                },
+                textIdTechStack,
+                techStackFollowUp(tech)
+              );
             }
-            writer.write({ type: "text-end", id: textId });
           }
         }
       },

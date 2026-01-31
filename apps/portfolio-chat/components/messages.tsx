@@ -10,13 +10,23 @@ import {
 import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
 import type { UIMessage } from "ai";
-import { ArrowDownIcon, MessageSquare } from "lucide-react";
+import { ArrowDownIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { About } from "./about";
 import { Experience, ExperienceSkeleton } from "./experience";
+import { Greeting } from "./greeting";
 import { Projects, ProjectsSkeleton } from "./projects";
 import { Related } from "./related";
 import { Resume, ResumeSkeleton } from "./resume";
+
+type ExpEntry = {
+  duration: string;
+  company: string;
+  titles: string[];
+  description: string;
+  technologies: string[];
+  links?: Array<{ name: string; url: string }>;
+};
 
 function MessagePartRenderer({
   part,
@@ -78,14 +88,6 @@ function MessagePartRenderer({
       );
     }
     if (part.state === "output-available") {
-      type ExpEntry = {
-        duration: string;
-        company: string;
-        titles: string[];
-        description: string;
-        technologies: string[];
-        links?: Array<{ name: string; url: string }>;
-      };
       const output = part.output as
         | ExpEntry[]
         | { experience: ExpEntry[]; related?: string[] };
@@ -140,10 +142,7 @@ function MessagePartRenderer({
       return <div key={`${msgId}-${i}`}>Error: {part.errorText}</div>;
     }
   }
-  if (
-    part.type === "tool-show_resume" ||
-    part.type === "tool-showResume"
-  ) {
+  if (part.type === "tool-show_resume" || part.type === "tool-showResume") {
     if (part.state === "input-available" || part.state === "input-streaming") {
       return (
         <div
@@ -198,9 +197,14 @@ function MessagePartRenderer({
   return null;
 }
 
-function getProjectsRelatedForMessage(msg: {
+function getRelatedForMessage(msg: {
   parts: { type: string; state?: string; output?: unknown }[];
 }) {
+  const hasText = msg.parts.some((p) => p.type === "text");
+  if (!hasText) {
+    return null;
+  }
+
   const projectsPart = msg.parts.find(
     (p) =>
       (p.type === "tool-show_projects" || p.type === "tool-showProjects") &&
@@ -209,11 +213,19 @@ function getProjectsRelatedForMessage(msg: {
       typeof p.output === "object" &&
       "related" in p.output
   ) as { output?: { related?: string[] } } | undefined;
-  const hasText = msg.parts.some((p) => p.type === "text");
-  if (!(hasText && projectsPart?.output?.related?.length)) {
-    return null;
-  }
-  return projectsPart.output.related;
+
+  const techStackPart = msg.parts.find(
+    (p) =>
+      (p.type === "tool-show_tech_stack" || p.type === "tool-showTechStack") &&
+      p.state === "output-available" &&
+      p.output &&
+      typeof p.output === "object" &&
+      "related" in p.output
+  ) as { output?: { related?: string[] } } | undefined;
+
+  return (
+    projectsPart?.output?.related ?? techStackPart?.output?.related ?? null
+  );
 }
 
 const NEAR_BOTTOM_THRESHOLD = 70;
@@ -284,11 +296,9 @@ export function Messages({
       >
         <div className="mx-auto flex w-full max-w-[720px] flex-col gap-8 p-4">
           {messages.length === 0 ? (
-            <ConversationEmptyState
-              description="I'm Eric — a senior frontend engineer focused on accessibility, React, and building AI-driven experiences. Ask about my projects, experience, or anything else you'd like to know."
-              icon={<MessageSquare className="size-10 text-muted-foreground" />}
-              title="Hi, I'm Eric Nichols"
-            />
+            <ConversationEmptyState>
+              <Greeting />
+            </ConversationEmptyState>
           ) : (
             messages.map((msg) => (
               <div
@@ -316,7 +326,7 @@ export function Messages({
                       />
                     ))}
                     {(() => {
-                      const related = getProjectsRelatedForMessage(msg);
+                      const related = getRelatedForMessage(msg);
                       return related ? (
                         <div className="mt-4 w-full">
                           <Related

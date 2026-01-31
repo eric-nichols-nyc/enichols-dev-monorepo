@@ -9,55 +9,67 @@ export type ExperienceEntry = {
 
 export const experience: ExperienceEntry[] = [
   {
-    duration: "2024 - Present",
-    company: "Klaviyo",
-    titles: ["Software Engineer"],
+    duration: "Jun 2025 - Present",
+    company: "VoteMate",
+    titles: ["Senior Front-end Developer"],
     description:
-      "Build and maintain critical components used to construct Klaviyo's frontend, across the whole product. Work closely with cross-functional teams, including developers, designers, and product managers, to implement and advocate for best practices in web accessibility.",
-    technologies: ["JavaScript", "TypeScript", "React", "Storybook"],
+      "Led front-end development for an AI-powered civic engagement platform that matches users with local election candidates based on their values and policy preferences. Architected and built the core chatbot experience, enabling conversational value-based candidate matches. Implemented Playwright end-to-end tests to validate critical user journeys, including address input, candidate retrieval, and chatbot interactions. Integrated GitHub Actions to run automated tests on every pull request, ensuring stability of AI-driven flows and preventing regressions.",
+    technologies: ["React", "TypeScript", "Tailwind", "Playwright"],
   },
   {
-    duration: "2018 - 2024",
-    company: "Upstatement",
-    titles: ["Lead Engineer", "Senior Engineer", "Engineer"],
+    duration: "Sep 2022 - Nov 2024",
+    company: "The Imagination",
+    titles: ["Senior Full Stack Developer"],
     description:
-      "Build, style, and ship high-quality websites, design systems, mobile apps, and digital experiences for a diverse array of projects for clients including Harvard Business School, Everytown for Gun Safety, Pratt Institute, Koala Health, Vanderbilt University, The 19th News, and more. Provide leadership within engineering department through close collaboration, knowledge shares, and spearheading the development of internal tools.",
+      "Led the front-end development for the successful restructuring of the Ford Auto Show registration website, resulting in a 12% increase in client registrations in 2023–2024. Built a comprehensive UI/UX component library in Storybook with over 20 reusable components adapted by the US and international teams. Implemented AWS cloud infrastructure using S3, Lambda, and CloudFormation for scalable deployment. Set up CI/CD pipelines to both streamline and significantly reduce deployment time. Developed high-performance single-page applications using React and Angular.",
     technologies: [
+      "React",
+      "Angular",
+      "Tailwind",
+      "CSS",
       "JavaScript",
       "TypeScript",
-      "HTML & SCSS",
+      "HTML5",
+      "Node.js",
+      "AWS Cloud",
+      "Figma",
+    ],
+  },
+  {
+    duration: "Jun 2019 - Sep 2022",
+    company: "IBM",
+    titles: ["Senior Front-end / UI Developer"],
+    description:
+      "Lead architect on a back-office platform serving 5,000+ IBM content marketers—focused on scale and internal UX. Built SPAs using React, TypeScript, and IBM Design System, maintaining design consistency across applications. Architected IBM Cloud solutions, guiding a team of 4 developers in deploying secure infrastructure. Collaborated cross-functionally with product and design to translate complex workflows into intuitive UIs.",
+    technologies: [
       "React",
       "Next.js",
-      "React Native",
-      "WordPress",
-      "Contentful",
+      "CSS3",
+      "JavaScript",
+      "TypeScript",
+      "HTML5",
       "Node.js",
-      "PHP",
+      "IBM Cloud",
     ],
   },
   {
-    duration: "July - Dec 2017",
-    company: "Apple",
-    titles: ["UI Engineer Co-op"],
+    duration: "Jan 2014 - Jun 2019",
+    company: "Havas Worldwide",
+    titles: ["Senior Front-end Developer"],
     description:
-      "Developed and styled interactive web apps for Apple Music, including the user interface of Apple Music's embeddable web player widget for in-browser user authorization and full song playback.",
-    technologies: ["Ember", "SCSS", "JavaScript", "MusicKit.js"],
-    links: [
-      {
-        name: "MusicKit.js",
-        url: "https://developer.apple.com/documentation/applemusicjs",
-      },
-      { name: "9to5Mac", url: "https://9to5mac.com" },
-      { name: "The Verge", url: "https://theverge.com" },
+      "Led front-end architecture for high-impact, high-visibility projects. Transformed Figma designs into reusable, documented component libraries using Storybook. Built ADA-compliant React SPAs with clean, maintainable state patterns and optimized rendering. Mentored junior developers through code reviews, pair programming, and knowledge sharing.",
+    technologies: [
+      "React",
+      "Angular",
+      "Vue",
+      ".NET",
+      "jQuery",
+      "CSS3",
+      "JavaScript",
+      "HTML5",
+      "Node.js",
+      "IBM Cloud",
     ],
-  },
-  {
-    duration: "2016 - 2017",
-    company: "Scout Studio",
-    titles: ["Developer"],
-    description:
-      "Collaborated with other student designers and engineers on pro-bono projects to create new brands, design systems, and websites for organizations in the community.",
-    technologies: ["Jekyll", "SCSS", "JavaScript", "WordPress"],
   },
 ];
 

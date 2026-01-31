@@ -1,5 +1,6 @@
 "use client";
 
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { Skeleton } from "@repo/design-system/components/ui/skeleton";
 import { ExternalLink, Maximize2 } from "lucide-react";
 import Image from "next/image";
@@ -16,16 +17,23 @@ type ProjectsProps = {
 const PROJECT_SKELETON_COUNT = 3;
 
 export function ProjectsSkeleton() {
+  const isGallery = useMediaQuery("(min-width: 500px)");
   return (
-    <div className="@container space-y-4">
+    <div className="space-y-4">
       <Skeleton className="h-4 w-24" />
-      <div className="-mx-4 flex flex-col gap-4 px-4 pb-2 @[500px]:mx-0 @[500px]:flex-row @[500px]:overflow-x-auto @[500px]:px-0">
+      <div
+        className={
+          isGallery
+            ? "flex flex-row gap-4 overflow-x-auto pb-2"
+            : "-mx-4 flex flex-col gap-4 px-4 pb-2"
+        }
+      >
         {Array.from(
           { length: PROJECT_SKELETON_COUNT },
           (_, i) => `skeleton-${i}`
         ).map((id) => (
           <div
-            className="flex w-full shrink-0 flex-col overflow-hidden rounded-lg border border-border bg-card @[500px]:w-[280px]"
+            className={`flex shrink-0 flex-col overflow-hidden rounded-lg border border-border bg-card ${isGallery ? "w-[280px]" : "w-full"}`}
             key={id}
           >
             <Skeleton className="aspect-video w-full rounded-none" />
@@ -48,15 +56,22 @@ export function ProjectsSkeleton() {
 }
 
 export function Projects({ copy, onExpand, projectCount, projects }: ProjectsProps) {
+  const isGallery = useMediaQuery("(min-width: 500px)");
   return (
-    <div className="@container space-y-4">
+    <div className="space-y-4">
       <div className="text-muted-foreground text-sm">
         {projectCount} projects
       </div>
-      <div className="-mx-4 flex flex-col gap-4 px-4 pb-2 @[500px]:mx-0 @[500px]:flex-row @[500px]:overflow-x-auto @[500px]:px-0">
+      <div
+        className={
+          isGallery
+            ? "flex flex-row gap-4 overflow-x-auto pb-2"
+            : "-mx-4 flex flex-col gap-4 px-4 pb-2"
+        }
+      >
         {projects.map((project) => (
           <div
-            className="group relative flex w-full shrink-0 flex-col overflow-hidden rounded-lg border bg-card transition-all hover:shadow-lg @[500px]:w-[280px]"
+            className={`group relative flex shrink-0 flex-col overflow-hidden rounded-lg border bg-card transition-all hover:shadow-lg ${isGallery ? "w-[280px]" : "w-full"}`}
             key={project.id}
           >
             <div className="relative aspect-video w-full overflow-hidden bg-muted">
