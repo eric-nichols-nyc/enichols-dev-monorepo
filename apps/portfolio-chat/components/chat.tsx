@@ -24,9 +24,15 @@ const SUGGESTIONS = [
   "View complete resume",
 ];
 
-export function Chat() {
+type ChatProps = {
+  embedded?: boolean;
+  onProjectExpand?: (project: import("@/data/projects").Project) => void;
+};
+
+export function Chat({ embedded, onProjectExpand }: ChatProps) {
   const [text, setText] = useState("");
   const [artifactOpen, setArtifactOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<import("@/data/projects").Project | null>(null);
   const { error, messages, sendMessage, status } = usePortfolioChat();
 
   const handleSubmit = (message: PromptInputMessage) => {
@@ -47,13 +53,31 @@ export function Chat() {
   };
 
   return (
-    <div className="overscroll-behavior-contain flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-transparent">
-      <Artifact onClose={() => setArtifactOpen(false)} open={artifactOpen} />
+    <div
+      className={`overscroll-behavior-contain flex h-full min-h-0 flex-1 flex-col overflow-hidden ${embedded ? "bg-transparent" : "bg-muted/20"}`}
+    >
+      {!embedded && (
+        <Artifact
+          onClose={() => {
+            setArtifactOpen(false);
+            setSelectedProject(null);
+          }}
+          onProjectSelect={setSelectedProject}
+          open={artifactOpen}
+          project={selectedProject}
+        />
+      )}
       <div className="min-h-0 flex-1 overflow-hidden">
         <Messages
           error={error}
           messages={messages}
-          onProjectExpand={() => setArtifactOpen(true)}
+          onProjectExpand={
+            onProjectExpand ??
+            ((project) => {
+              setSelectedProject(project);
+              setArtifactOpen(true);
+            })
+          }
           onSuggestionClick={handleSuggestionClick}
           status={status}
         />

@@ -17,15 +17,15 @@ const PROJECT_SKELETON_COUNT = 3;
 
 export function ProjectsSkeleton() {
   return (
-    <div className="space-y-4">
+    <div className="@container space-y-4">
       <Skeleton className="h-4 w-24" />
-      <div className="-mx-4 flex gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0">
+      <div className="-mx-4 flex flex-col gap-4 px-4 pb-2 @[500px]:mx-0 @[500px]:flex-row @[500px]:overflow-x-auto @[500px]:px-0">
         {Array.from(
           { length: PROJECT_SKELETON_COUNT },
           (_, i) => `skeleton-${i}`
         ).map((id) => (
           <div
-            className="flex w-[280px] shrink-0 flex-col overflow-hidden rounded-lg border border-border bg-card"
+            className="flex w-full shrink-0 flex-col overflow-hidden rounded-lg border border-border bg-card @[500px]:w-[280px]"
             key={id}
           >
             <Skeleton className="aspect-video w-full rounded-none" />
@@ -49,14 +49,14 @@ export function ProjectsSkeleton() {
 
 export function Projects({ copy, onExpand, projectCount, projects }: ProjectsProps) {
   return (
-    <div className="space-y-4">
+    <div className="@container space-y-4">
       <div className="text-muted-foreground text-sm">
         {projectCount} projects
       </div>
-      <div className="-mx-4 flex gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0">
+      <div className="-mx-4 flex flex-col gap-4 px-4 pb-2 @[500px]:mx-0 @[500px]:flex-row @[500px]:overflow-x-auto @[500px]:px-0">
         {projects.map((project) => (
           <div
-            className="group relative flex w-[280px] shrink-0 flex-col overflow-hidden rounded-lg border bg-card transition-all hover:shadow-lg"
+            className="group relative flex w-full shrink-0 flex-col overflow-hidden rounded-lg border bg-card transition-all hover:shadow-lg @[500px]:w-[280px]"
             key={project.id}
           >
             <div className="relative aspect-video w-full overflow-hidden bg-muted">
