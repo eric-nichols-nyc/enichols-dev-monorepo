@@ -9,6 +9,7 @@
     ],
     "paths": {
       "@repo/*": ["../*"],
+      "@repo/components/*": ["./components/*"],
       "@repo/design-system/*": ["./*"]
     }
   },

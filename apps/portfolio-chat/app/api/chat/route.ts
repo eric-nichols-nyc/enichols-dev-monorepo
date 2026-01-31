@@ -25,6 +25,7 @@ import { about } from "@/data/about";
 import experience from "@/data/experience";
 import projects from "@/data/projects";
 import { resume } from "@/data/resume";
+import tech from "@/data/tech.json";
 
 /** Split text into words and spaces so we can stream with preserved formatting */
 const SPLIT_WORDS_AND_SPACES = /(\s+)/;
@@ -104,7 +105,7 @@ const tools = {
       };
     },
   }),
-  /** Returns tech stack as a list—streamed as text, no resume UI */
+  /** Returns tech stack from tech.json—streamed as text */
   show_tech_stack: tool({
     description:
       "List Eric's technologies and tech stack (React, Next.js, TypeScript, etc.)",
@@ -112,15 +113,17 @@ const tools = {
     inputSchema: z.object({}) as any,
     execute: () => {
       console.log("[chat:tool] show_tech_stack called");
-      const fromExperience = experience.flatMap((e) => e.technologies);
-      const fromProjects = projects.flatMap((p) =>
-        p.tags.map((t) => t.charAt(0).toUpperCase() + t.slice(1))
-      );
-      const technologies = [
-        ...new Set([...fromExperience, ...fromProjects]),
-      ].sort();
+      const techData = tech as Record<
+        string,
+        Array<{ name: string; icon?: string; level?: string; years?: string }>
+      >;
+      const technologies = Object.values(techData)
+        .flat()
+        .map((t) => t.name)
+        .sort();
       return {
         technologies,
+        tech: techData,
         related: [
           "Show me some projects",
           "What's his experience?",
@@ -188,8 +191,8 @@ export async function POST(request: Request) {
       .join(", ");
     const projectsFollowUp = `From ${sampleTitles}—here are some projects spanning AI, full-stack apps, and more. Pick one and I'll dive in! Each one has a live demo you can explore. Ask me about tech stack, challenges, or anything else you're curious about.`;
 
-    const techStackFollowUp = (technologies: string[]) =>
-      `Here's the tech stack: ${technologies.join(", ")}. Want to hear about a specific technology or project?`;
+    const techStackFollowUp =
+      "Here's the tech stack. Want to hear about a specific technology or project?";
 
     /**
      * createUIMessageStream gives us control over the stream so we can:
@@ -250,8 +253,6 @@ Answer portfolio-related questions conversationally.`,
                 projectsFollowUp
               );
             } else if ("technologies" in c.output) {
-              const tech = (c.output as { technologies: string[] })
-                .technologies;
               await streamCopy(
                 writer as {
                   write: (p: {
@@ -261,7 +262,7 @@ Answer portfolio-related questions conversationally.`,
                   }) => void;
                 },
                 textIdTechStack,
-                techStackFollowUp(tech)
+                techStackFollowUp
               );
             }
           }

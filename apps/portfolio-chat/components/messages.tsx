@@ -18,6 +18,7 @@ import { Greeting } from "./greeting";
 import { Projects, ProjectsSkeleton } from "./projects";
 import { Related } from "./related";
 import { Resume, ResumeSkeleton } from "./resume";
+import { TechStack, TechStackSkeleton } from "./tech-stack";
 
 type ExpEntry = {
   duration: string;
@@ -142,6 +143,33 @@ function MessagePartRenderer({
       return <div key={`${msgId}-${i}`}>Error: {part.errorText}</div>;
     }
   }
+  if (
+    part.type === "tool-show_tech_stack" ||
+    part.type === "tool-showTechStack"
+  ) {
+    if (part.state === "input-available" || part.state === "input-streaming") {
+      return (
+        <div className="w-full" key={`${msgId}-${i}`}>
+          <TechStackSkeleton />
+        </div>
+      );
+    }
+    if (part.state === "output-available") {
+      const output = part.output as {
+        tech: Record<string, Array<{ name: string; icon?: string; level?: string; years?: string }>>;
+        related?: string[];
+      };
+      return (
+        <div className="w-full" key={`${msgId}-${i}`}>
+          <TechStack tech={output.tech} />
+        </div>
+      );
+    }
+    if (part.state === "output-error") {
+      return <div key={`${msgId}-${i}`}>Error: {part.errorText}</div>;
+    }
+  }
+
   if (part.type === "tool-show_resume" || part.type === "tool-showResume") {
     if (part.state === "input-available" || part.state === "input-streaming") {
       return (

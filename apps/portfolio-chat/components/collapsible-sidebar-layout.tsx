@@ -17,7 +17,7 @@ import Link from "next/link";
 import { useCallback, useState } from "react";
 import { usePortfolioChat } from "@/contexts/chat-context";
 import { Chat } from "./chat";
-import { GreetingButton } from "./greeting-button";
+import { SidebarBrand } from "./sidebar-brand";
 import { SidebarLogo } from "./sidebar-logo";
 
 const SIDEBAR_WIDTH_EXPANDED = "16rem";
@@ -61,7 +61,7 @@ const socialLinks = [
 export function CollapsibleSidebarLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { sendMessage } = usePortfolioChat();
+  const { clearMessages, sendMessage } = usePortfolioChat();
 
   const toggle = useCallback(() => setCollapsed((c) => !c), []);
   const sidebarWidth = collapsed
@@ -88,14 +88,11 @@ export function CollapsibleSidebarLayout() {
               collapsed ? "flex-col gap-2" : "justify-between gap-2"
             }`}
           >
-            <div className="flex min-w-0 flex-1 items-center gap-2">
-              <GreetingButton className="h-8 w-8" />
-              {!collapsed && (
-                <span className="truncate font-semibold text-lg">
-                  Eric Nichols
-                </span>
-              )}
-            </div>
+            <SidebarBrand
+              collapsed={collapsed}
+              name="Eric Nichols"
+              onClear={clearMessages}
+            />
             <button
               aria-expanded={!collapsed}
               aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
