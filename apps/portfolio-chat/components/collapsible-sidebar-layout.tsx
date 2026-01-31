@@ -12,12 +12,13 @@ import {
   Linkedin,
   Menu,
   User,
-  Zap,
 } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useState } from "react";
 import { usePortfolioChat } from "@/contexts/chat-context";
 import { Chat } from "./chat";
+import { GreetingButton } from "./greeting-button";
+import { SidebarLogo } from "./sidebar-logo";
 
 const SIDEBAR_WIDTH_EXPANDED = "16rem";
 const SIDEBAR_WIDTH_COLLAPSED = "4rem";
@@ -88,12 +89,7 @@ export function CollapsibleSidebarLayout() {
             }`}
           >
             <div className="flex min-w-0 flex-1 items-center gap-2">
-              <div
-                aria-hidden
-                className="flex size-9 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-primary/10"
-              >
-                <Zap className="size-5 animate-logo-glow text-primary" />
-              </div>
+              <GreetingButton className="h-8 w-8" />
               {!collapsed && (
                 <span className="truncate font-semibold text-lg">
                   Eric Nichols
@@ -154,12 +150,7 @@ export function CollapsibleSidebarLayout() {
         <div className="flex h-full flex-col">
           <div className="flex shrink-0 items-center justify-between border-border border-b p-3">
             <div className="flex items-center gap-2">
-              <div
-                aria-hidden
-                className="flex size-9 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-primary/10"
-              >
-                <Zap className="size-5 animate-logo-glow text-primary" />
-              </div>
+              <SidebarLogo />
               <span className="font-semibold text-lg">Eric Nichols</span>
             </div>
             <button

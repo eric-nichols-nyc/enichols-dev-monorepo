@@ -25,16 +25,19 @@ export function Greeting() {
         initial={fadeUpIn.initial}
         transition={{ ...fadeUpIn.transition, delay: 0.1 }}
       >
-        <strong>Hello there!</strong>
         <motion.div
           animate={fadeUpIn.animate}
           className="max-w-xl"
           initial={fadeUpIn.initial}
           transition={{ ...fadeUpIn.transition, delay: 0.2 }}
         >
-          I'm Eric — a senior frontend engineer in New York City. <br />I focus
-          on accessibility, React, and building AI-driven experiences. Ask about
-          my projects, experience, or anything else you'd like to know.
+          <strong>Hello there!</strong>
+          <p className="text-muted-foreground">
+            I'm Eric — a senior frontend engineer in New York City. <br />I
+            focus on accessibility, React, and building AI-driven experiences.
+            Ask about my projects, experience, or anything else you'd like to
+            know.
+          </p>
         </motion.div>
       </motion.div>
     </motion.div>

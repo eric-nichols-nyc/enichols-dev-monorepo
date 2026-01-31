@@ -21,7 +21,7 @@
     --font-geist-sans: var(--font-sans);
   }
   body {
-    font-size: 20px;
+    font-size: 1em;
     background-color: rgb(16, 14, 18);
   }
 
