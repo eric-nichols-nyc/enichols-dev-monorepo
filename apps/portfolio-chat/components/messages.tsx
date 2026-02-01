@@ -19,7 +19,6 @@ import { Greeting } from "./greeting";
 import type { BoundingBox } from "./projects";
 import { Projects, ProjectsSkeleton } from "./projects";
 import { Related } from "./related";
-import { Resume, ResumeSkeleton } from "./resume";
 import { TechStack, TechStackSkeleton } from "./tech-stack";
 
 type ExpEntry = {
@@ -101,17 +100,21 @@ function MessagePartRenderer({
     if (part.state === "output-available") {
       const output = part.output as
         | ExpEntry[]
-        | { experience: ExpEntry[]; related?: string[] };
+        | { experience: ExpEntry[]; copy?: string; related?: string[] };
       const experienceList = Array.isArray(output) ? output : output.experience;
+      const copy = Array.isArray(output) ? null : output.copy;
       const related = Array.isArray(output)
         ? null
         : (output as { related?: string[] }).related;
       return (
-        <div className="w-full" key={`${msgId}-${i}`}>
+        <div className="w-full space-y-4" key={`${msgId}-${i}`}>
           <Experience
             experience={experienceList}
             onExpand={onExperienceExpand}
           />
+          {copy ? (
+            <p className="text-muted-foreground text-sm">{copy}</p>
+          ) : null}
           {related?.length ? (
             <Related
               onSuggestionClick={onSuggestionClick}
@@ -175,58 +178,6 @@ function MessagePartRenderer({
       return (
         <div className="w-full" key={`${msgId}-${i}`}>
           <TechStack tech={output.tech} />
-        </div>
-      );
-    }
-    if (part.state === "output-error") {
-      return <div key={`${msgId}-${i}`}>Error: {part.errorText}</div>;
-    }
-  }
-
-  if (part.type === "tool-show_resume" || part.type === "tool-showResume") {
-    if (part.state === "input-available" || part.state === "input-streaming") {
-      return (
-        <div
-          className="-translate-x-1/2 relative left-1/2 w-screen px-4 md:px-6"
-          key={`${msgId}-${i}`}
-        >
-          <ResumeSkeleton />
-        </div>
-      );
-    }
-    if (part.state === "output-available") {
-      const output = part.output as {
-        name: string;
-        title: string;
-        location: string;
-        contact: string;
-        summary: string;
-        skills: string[];
-        experience: Array<{
-          title: string;
-          company: string;
-          location: string;
-          dates: string;
-          highlights: string[];
-          tech: string;
-        }>;
-        related?: string[];
-      };
-      const { related, ...resumeData } = output;
-      return (
-        <div
-          className="-translate-x-1/2 relative left-1/2 w-screen min-w-0 max-w-full px-4 md:px-6"
-          key={`${msgId}-${i}`}
-        >
-          <Resume {...resumeData} />
-          {related?.length ? (
-            <div className="mt-4">
-              <Related
-                onSuggestionClick={onSuggestionClick}
-                suggestions={related}
-              />
-            </div>
-          ) : null}
         </div>
       );
     }

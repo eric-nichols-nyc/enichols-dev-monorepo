@@ -3,12 +3,11 @@
  *
  * Next.js Route Handler for the portfolio chat. Uses the Vercel AI SDK to:
  * - Stream model responses and tool results to the client
- * - Run tools (show_about, show_projects, experience, show_resume) when the model calls them
- * - Inject a custom follow-up copy after show_projects, streamed word-by-word
+ * - Run tools (show_about, show_projects, show_experience, show_tech_stack) when the model calls them
+ * - Inject custom follow-up copy after show_projects, show_experience, and show_tech_stack
  *
  * Flow: client POSTs { messages } → we run streamText with tools → we pipe the
- * stream, injecting the projects copy after the tool result → client receives
- * a UI message stream (useChat-compatible).
+ * stream, injecting copy after tool results → client receives a UI message stream (useChat-compatible).
  */
 import type { UIMessage } from "@repo/ai";
 import {
@@ -24,7 +23,6 @@ import { z } from "zod";
 import { about } from "@/data/about";
 import experience from "@/data/experience";
 import projects from "@/data/projects";
-import { resume } from "@/data/resume";
 import tech from "@/data/tech.json";
 
 /** Split text into words and spaces so we can stream with preserved formatting */
@@ -60,7 +58,7 @@ const tools = {
         related: [
           "Show me your projects",
           "What's your experience?",
-          "View your resume",
+          "What's your tech stack?",
         ],
       };
     },
@@ -92,11 +90,12 @@ const tools = {
     description: "Display Eric Nichols work experience and career history",
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
     inputSchema: z.object({}) as any,
-    execute: () => {
-      console.log("[chat:tool] experience called");
+    execute: async () => {
+      console.log("[chat:tool] show_experience called, delaying 1.5s so skeleton is visible");
+      await new Promise((resolve) => setTimeout(resolve, 1500));
       return {
+        copy: "Here's my work experience. Click the expand button on the card to see the full timeline, or ask about a specific role or company.",
         experience,
-        // Context-specific suggestions for experience
         related: [
           "Show me some projects",
           "Tell me about Eric",
@@ -128,23 +127,6 @@ const tools = {
           "Show me some projects",
           "What's his experience?",
           "Tell me about Eric",
-        ],
-      };
-    },
-  }),
-  /** Returns resume/experience data for the UI */
-  show_resume: tool({
-    description: "Display Eric Nichols resume and experience",
-    // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
-    inputSchema: z.object({}) as any,
-    execute: () => {
-      console.log("[chat:tool] show_resume called");
-      return {
-        ...resume,
-        related: [
-          "Show me some projects",
-          "Tell me about Eric",
-          "What's your experience?",
         ],
       };
     },
@@ -208,15 +190,14 @@ export async function POST(request: Request) {
           tools: tools as any,
           model: models.chat,
           stopWhen: stepCountIs(1), // stop after 1 step (tool call + result); we inject copy ourselves
-          system: `You are Eric Nichols' portfolio assistant. Only answer questions about Eric, his portfolio, projects, work experience, tech stack, and resume.
+          system: `You are Eric Nichols' portfolio assistant. Only answer questions about Eric, his portfolio, projects, work experience, and tech stack.
 
 If the user asks about unrelated topics (other people, politics, general knowledge, advice, coding help, etc.), politely decline and say something like: "I'm here to help you learn about Eric and his work. Try asking about his projects, experience, or background."
 
 When the user asks about Eric or asks to see his about section, use the show_about tool.
 When the user asks to see projects, use the show_projects tool.
-When the user asks about work experience, jobs, or career history, use the show_experience tool.
-When the user asks about tech stack, technologies, or skills, use the show_tech_stack tool. Do NOT use show_resume or show_about for tech stack questions.
-When the user asks about resume details, use the show_resume tool.
+When the user asks about work experience, jobs, career history, or roles, use the show_experience tool.
+When the user asks about tech stack, technologies, or skills, use the show_tech_stack tool.
 Answer portfolio-related questions conversationally.`,
           messages: modelMessages,
         });
@@ -228,8 +209,8 @@ Answer portfolio-related questions conversationally.`,
         for await (const chunk of uiStream) {
           writer.write(chunk);
 
-          // When show_projects completes, inject our copy as streamed text.
-          // We detect it by tool-output-available + output.projects.
+          // When a tool completes, inject our copy as streamed text.
+          // Experience copy is returned in the tool output; only projects and tech stream extra copy.
           const c = chunk as {
             type?: string;
             toolName?: string;
@@ -240,30 +221,17 @@ Answer portfolio-related questions conversationally.`,
             c.output &&
             typeof c.output === "object"
           ) {
+            const writeChunk = writer as {
+              write: (p: {
+                type: string;
+                id: string;
+                delta?: string;
+              }) => void;
+            };
             if ("projects" in c.output) {
-              await streamCopy(
-                writer as {
-                  write: (p: {
-                    type: string;
-                    id: string;
-                    delta?: string;
-                  }) => void;
-                },
-                textIdProjects,
-                projectsFollowUp
-              );
+              await streamCopy(writeChunk, textIdProjects, projectsFollowUp);
             } else if ("technologies" in c.output) {
-              await streamCopy(
-                writer as {
-                  write: (p: {
-                    type: string;
-                    id: string;
-                    delta?: string;
-                  }) => void;
-                },
-                textIdTechStack,
-                techStackFollowUp
-              );
+              await streamCopy(writeChunk, textIdTechStack, techStackFollowUp);
             }
           }
         }
