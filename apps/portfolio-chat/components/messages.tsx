@@ -92,7 +92,7 @@ export function Messages({
               <Greeting />
             </ConversationEmptyState>
           ) : (
-            messages.map((msg) => (
+            messages.map((msg, i) => (
               <div
                 className={cn(
                   "flex w-full gap-2",
@@ -102,6 +102,7 @@ export function Messages({
               >
                 <ChatMessage
                   msg={msg}
+                  isLastMessage={i === messages.length - 1}
                   onExperienceExpand={onExperienceExpand}
                   onProjectExpand={onProjectExpand}
                   onSuggestionClick={onSuggestionClick}

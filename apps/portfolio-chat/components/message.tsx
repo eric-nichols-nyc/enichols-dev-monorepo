@@ -221,6 +221,8 @@ function getRelatedForMessage(msg: {
 
 export type ChatMessageProps = {
   msg: UIMessage;
+  /** When true and role is assistant, applies min-h-[400px] so streaming starts above the input */
+  isLastMessage?: boolean;
   onExperienceExpand?: (
     experience: import("@/data/experience").ExperienceEntry[],
     boundingBox?: ExperienceBoundingBox
@@ -234,11 +236,13 @@ export type ChatMessageProps = {
 
 export function ChatMessage({
   msg,
+  isLastMessage = false,
   onExperienceExpand,
   onProjectExpand,
   onSuggestionClick,
 }: ChatMessageProps) {
   const related = getRelatedForMessage(msg);
+  const isActiveAssistant = msg.role === "assistant" && isLastMessage;
 
   return (
     <Message
@@ -250,7 +254,7 @@ export function ChatMessage({
       from={msg.role}
     >
       <MessageContent
-        className={cn("text-base", msg.role === "assistant" && "min-h-[400px]")}
+        className={cn("text-base", isActiveAssistant ? "min-h-[400px]" : "")}
       >
         {msg.parts.map((part, i) => (
           <MessagePartRenderer
