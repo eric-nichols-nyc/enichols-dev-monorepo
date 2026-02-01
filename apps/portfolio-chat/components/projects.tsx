@@ -4,20 +4,23 @@ import { Skeleton } from "@repo/design-system/components/ui/skeleton";
 import { ExternalLink, Maximize2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRef } from "react";
 import type { Project } from "@/data/projects";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { ShineButton } from "./shine-button";
 
+export type BoundingBox = { top: number; left: number; width: number; height: number };
+
 type ProjectsProps = {
   copy?: string;
-  onExpand?: (project: Project) => void;
+  onExpand?: (project: Project, boundingBox?: BoundingBox) => void;
   projectCount: number;
   projects: Project[];
 };
 
 type ProjectCardProps = {
   isGallery: boolean;
-  onExpand?: (project: Project) => void;
+  onExpand?: (project: Project, boundingBox?: BoundingBox) => void;
   project: Project;
 };
 
@@ -100,8 +103,19 @@ export function ProjectCard({
   onExpand,
   project,
 }: ProjectCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleExpand = () => {
+    const rect = cardRef.current?.getBoundingClientRect();
+    onExpand?.(
+      project,
+      rect ? { top: rect.top, left: rect.left, width: rect.width, height: rect.height } : undefined
+    );
+  };
+
   return (
     <div
+      ref={cardRef}
       className={`group relative flex shrink-0 flex-col overflow-hidden rounded-lg border bg-card transition-all hover:shadow-lg ${isGallery ? "w-[280px]" : "w-full"}`}
     >
       <div className="relative aspect-video w-full overflow-hidden bg-muted">
@@ -117,11 +131,10 @@ export function ProjectCard({
         />
         <ShineButton
           className="absolute top-2 right-2 flex items-center justify-center rounded-md bg-background/90 p-2 shadow-lg backdrop-blur-sm transition-all hover:scale-110 hover:bg-background"
-          onClick={() => onExpand?.(project)}
+          onClick={handleExpand}
         >
           <Maximize2 className="size-5 text-foreground" />
         </ShineButton>
-        2{" "}
       </div>
       <div className="flex flex-1 flex-col p-4">
         <h3 className="mb-2 font-semibold text-lg group-hover:text-primary">

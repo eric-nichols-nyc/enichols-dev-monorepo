@@ -15,7 +15,7 @@ export type Project = {
 
 const projects: Project[] = [
   {
-    id: "q4w8e1rt",
+    id: "audiograph",
     title: "Audiograph",
     tags: ["nextjs", "analytics", "PostgreSQL", "typescript"],
     categories: ["health"],
@@ -29,7 +29,7 @@ const projects: Project[] = [
     gallery: [],
   },
   {
-    id: "ai-taskmaster",
+    id: "ai-taskwizard",
     title: "Ai Taskwizard",
     tags: ["ai", "microfrontend", "postgres", "typescript"],
     categories: ["ai"],

@@ -10,19 +10,24 @@ import {
 } from "@repo/design-system/components/ai-elements/prompt-input";
 import { useState } from "react";
 import { usePortfolioChat } from "@/contexts/chat-context";
+import type { BoundingBox } from "./projects";
 import { Artifact } from "./artifact";
 import { Messages } from "./messages";
 import { Suggestions } from "./suggestions";
 
 type ChatProps = {
   embedded?: boolean;
-  onProjectExpand?: (project: import("@/data/projects").Project) => void;
+  onProjectExpand?: (
+    project: import("@/data/projects").Project,
+    boundingBox?: BoundingBox
+  ) => void;
 };
 
 export function Chat({ embedded, onProjectExpand }: ChatProps) {
   const [text, setText] = useState("");
   const [artifactOpen, setArtifactOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<import("@/data/projects").Project | null>(null);
+  const [boundingBox, setBoundingBox] = useState<BoundingBox | null>(null);
   const { error, messages, sendMessage, status } = usePortfolioChat();
 
   const handleSubmit = (message: PromptInputMessage) => {
@@ -48,9 +53,11 @@ export function Chat({ embedded, onProjectExpand }: ChatProps) {
     >
       {!embedded && (
         <Artifact
+          boundingBox={boundingBox}
           onClose={() => {
             setArtifactOpen(false);
             setSelectedProject(null);
+            setBoundingBox(null);
           }}
           onProjectSelect={setSelectedProject}
           open={artifactOpen}
@@ -63,8 +70,9 @@ export function Chat({ embedded, onProjectExpand }: ChatProps) {
           messages={messages}
           onProjectExpand={
             onProjectExpand ??
-            ((project) => {
+            ((project, box) => {
               setSelectedProject(project);
+              setBoundingBox(box ?? null);
               setArtifactOpen(true);
             })
           }

@@ -15,6 +15,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { About } from "./about";
 import { Experience, ExperienceSkeleton } from "./experience";
 import { Greeting } from "./greeting";
+import type { BoundingBox } from "./projects";
 import { Projects, ProjectsSkeleton } from "./projects";
 import { Related } from "./related";
 import { Resume, ResumeSkeleton } from "./resume";
@@ -45,7 +46,10 @@ function MessagePartRenderer({
   };
   msgId: string;
   i: number;
-  onProjectExpand?: (project: import("@/data/projects").Project) => void;
+  onProjectExpand?: (
+    project: import("@/data/projects").Project,
+    boundingBox?: BoundingBox
+  ) => void;
   onSuggestionClick: (s: string) => void;
 }) {
   if (part.type === "text") {
@@ -261,7 +265,10 @@ const NEAR_BOTTOM_THRESHOLD = 70;
 type MessagesProps = {
   error: unknown;
   messages: UIMessage[];
-  onProjectExpand?: (project: import("@/data/projects").Project) => void;
+  onProjectExpand?: (
+    project: import("@/data/projects").Project,
+    boundingBox?: BoundingBox
+  ) => void;
   onSuggestionClick: (suggestion: string) => void;
   status: "streaming" | "submitted" | "ready" | "error";
 };
