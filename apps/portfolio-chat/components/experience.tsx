@@ -1,7 +1,7 @@
 "use client";
 
-import { Loader } from "@repo/design-system/components/ai-elements/loader";
 import { Badge } from "@repo/design-system/components/ui/badge";
+import { Skeleton } from "@repo/design-system/components/ui/skeleton";
 import { ExternalLink, Maximize2 } from "lucide-react";
 import Link from "next/link";
 import { useRef } from "react";
@@ -25,8 +25,25 @@ type ExperienceProps = {
 
 export function ExperienceSkeleton() {
   return (
-    <div className="flex h-[400px] w-full items-center justify-center overflow-hidden rounded-lg border border-border bg-muted/50 p-4 dark:bg-muted">
-      <Loader size={24} />
+    <div className="h-[400px] w-full min-w-[800px] space-y-6 overflow-hidden rounded-lg border border-border bg-card p-4">
+      <Skeleton className="h-5 w-28" />
+      <div className="space-y-8">
+        {[1, 2, 3].map((i) => (
+          <div className="flex gap-6" key={i}>
+            <Skeleton className="h-4 w-24 shrink-0" />
+            <div className="min-w-0 flex-1 space-y-2">
+              <Skeleton className="h-5 w-48" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                <Skeleton className="h-6 w-16 rounded-full" />
+                <Skeleton className="h-6 w-20 rounded-full" />
+                <Skeleton className="h-6 w-14 rounded-full" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

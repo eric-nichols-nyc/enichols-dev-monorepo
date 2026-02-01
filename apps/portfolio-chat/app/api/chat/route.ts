@@ -51,8 +51,9 @@ const tools = {
     description: "Display the about section",
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
     inputSchema: z.object({}) as any,
-    execute: () => {
-      console.log("[chat:tool] show_about called");
+    execute: async () => {
+      console.log("[chat:tool] show_about called, delaying 1s so loader is visible");
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       return {
         ...about,
         related: [
@@ -194,10 +195,10 @@ export async function POST(request: Request) {
 
 If the user asks about unrelated topics (other people, politics, general knowledge, advice, coding help, etc.), politely decline and say something like: "I'm here to help you learn about Eric and his work. Try asking about his projects, experience, or background."
 
-When the user asks about Eric or asks to see his about section, use the show_about tool.
-When the user asks to see projects, use the show_projects tool.
-When the user asks about work experience, jobs, career history, or roles, use the show_experience tool.
-When the user asks about tech stack, technologies, or skills, use the show_tech_stack tool.
+When the user asks about Eric or asks to see his about section: First write 1-2 brief conversational sentences (e.g. "Sure, here's a bit about me!"), then call the show_about tool.
+When the user asks to see projects: use the show_projects tool.
+When the user asks about work experience, jobs, career history, or roles: First write 1-2 brief conversational sentences (e.g. "Here's my work experience!"), then call the show_experience tool.
+When the user asks about tech stack, technologies, or skills: use the show_tech_stack tool.
 Answer portfolio-related questions conversationally.`,
           messages: modelMessages,
         });
@@ -206,28 +207,25 @@ Answer portfolio-related questions conversationally.`,
         const textIdProjects = "projects-follow-up";
         const textIdTechStack = "tech-stack-follow-up";
 
-        for await (const chunk of uiStream) {
-          writer.write(chunk);
+        const writeChunk = writer as {
+          write: (p: { type: string; id?: string; delta?: string }) => void;
+        };
 
-          // When a tool completes, inject our copy as streamed text.
-          // Experience copy is returned in the tool output; only projects and tech stream extra copy.
+        for await (const chunk of uiStream) {
           const c = chunk as {
             type?: string;
             toolName?: string;
             output?: unknown;
           };
+
+          writer.write(chunk);
+
+          // When a tool completes, inject follow-up copy for projects and tech.
           if (
             c.type === "tool-output-available" &&
             c.output &&
             typeof c.output === "object"
           ) {
-            const writeChunk = writer as {
-              write: (p: {
-                type: string;
-                id: string;
-                delta?: string;
-              }) => void;
-            };
             if ("projects" in c.output) {
               await streamCopy(writeChunk, textIdProjects, projectsFollowUp);
             } else if ("technologies" in c.output) {
