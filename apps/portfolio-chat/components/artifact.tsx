@@ -1,20 +1,22 @@
 "use client";
 
+import { Loader } from "@repo/design-system/components/ai-elements/loader";
 import type { Project } from "@/data/projects";
 import { X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { useWindowSize } from "@/hooks/use-window-size";
 import type { BoundingBox } from "./projects";
 import { Chat } from "./chat";
-import { FeaturedProject } from "./featured-project";
 
 type ArtifactProps = {
   boundingBox?: BoundingBox | null;
+  content: ReactNode;
+  isLoading?: boolean;
   onClose: () => void;
   onProjectSelect?: (project: Project) => void;
   open: boolean;
-  project: Project | null;
 };
 
 const backdropVariants = {
@@ -44,10 +46,11 @@ const exitTransition = {
 
 export function Artifact({
   boundingBox,
+  content,
+  isLoading = false,
   onClose,
   onProjectSelect,
   open,
-  project,
 }: ArtifactProps) {
   const { width: windowWidth, height: windowHeight } = useWindowSize();
 
@@ -165,15 +168,18 @@ export function Artifact({
             />
           </motion.div>
 
-          {/* Column 2: Project content - fills rest, max-w 800px */}
+          {/* Column 2: Content slot - parent injects project, experience, etc. */}
           <div className="min-w-0 flex-1 overflow-auto bg-background">
-            <div className="mx-auto max-w-[800px] p-6" id="artifact-title">
-              {project ? (
-                <FeaturedProject project={project} />
-              ) : (
-                <div className="flex h-full min-h-[200px] items-center justify-center text-muted-foreground text-sm">
-                  Select a project to view details
+            <div
+              className="mx-auto flex max-w-[800px] flex-col p-6"
+              id="artifact-title"
+            >
+              {isLoading ? (
+                <div className="flex min-h-[200px] flex-1 items-center justify-center">
+                  <Loader size={24} />
                 </div>
+              ) : (
+                content
               )}
             </div>
           </div>

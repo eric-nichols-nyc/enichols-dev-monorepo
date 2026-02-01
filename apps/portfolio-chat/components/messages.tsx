@@ -13,6 +13,7 @@ import type { UIMessage } from "ai";
 import { ArrowDownIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { About } from "./about";
+import type { ExperienceBoundingBox } from "./experience";
 import { Experience, ExperienceSkeleton } from "./experience";
 import { Greeting } from "./greeting";
 import type { BoundingBox } from "./projects";
@@ -34,6 +35,7 @@ function MessagePartRenderer({
   part,
   msgId,
   i,
+  onExperienceExpand,
   onProjectExpand,
   onSuggestionClick,
 }: {
@@ -49,6 +51,10 @@ function MessagePartRenderer({
   onProjectExpand?: (
     project: import("@/data/projects").Project,
     boundingBox?: BoundingBox
+  ) => void;
+  onExperienceExpand?: (
+    experience: import("@/data/experience").ExperienceEntry[],
+    boundingBox?: ExperienceBoundingBox
   ) => void;
   onSuggestionClick: (s: string) => void;
 }) {
@@ -102,7 +108,10 @@ function MessagePartRenderer({
         : (output as { related?: string[] }).related;
       return (
         <div className="w-full" key={`${msgId}-${i}`}>
-          <Experience experience={experienceList} />
+          <Experience
+            experience={experienceList}
+            onExpand={onExperienceExpand}
+          />
           {related?.length ? (
             <Related
               onSuggestionClick={onSuggestionClick}
@@ -265,6 +274,10 @@ const NEAR_BOTTOM_THRESHOLD = 70;
 type MessagesProps = {
   error: unknown;
   messages: UIMessage[];
+  onExperienceExpand?: (
+    experience: import("@/data/experience").ExperienceEntry[],
+    boundingBox?: ExperienceBoundingBox
+  ) => void;
   onProjectExpand?: (
     project: import("@/data/projects").Project,
     boundingBox?: BoundingBox
@@ -276,6 +289,7 @@ type MessagesProps = {
 export function Messages({
   error,
   messages,
+  onExperienceExpand,
   onProjectExpand,
   onSuggestionClick,
   status,
@@ -355,6 +369,7 @@ export function Messages({
                         i={i}
                         key={`${msg.id}-${i}`}
                         msgId={msg.id}
+                        onExperienceExpand={onExperienceExpand}
                         onProjectExpand={onProjectExpand}
                         onSuggestionClick={onSuggestionClick}
                         part={part}
