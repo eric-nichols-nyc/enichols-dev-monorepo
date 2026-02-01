@@ -241,9 +241,16 @@ export function ChatMessage({
   const related = getRelatedForMessage(msg);
 
   return (
-    <Message className={cn("min-w-0 flex-1")} from={msg.role}>
+    <Message
+      className={cn(
+        "min-w-0 flex-1",
+        msg.role === "user" && "border-2 border-red-500",
+        msg.role === "assistant" && "border-2 border-green-500"
+      )}
+      from={msg.role}
+    >
       <MessageContent
-        className={cn("text-base", msg.role === "assistant" && "min-h-24")}
+        className={cn("text-base", msg.role === "assistant" && "min-h-[400px]")}
       >
         {msg.parts.map((part, i) => (
           <MessagePartRenderer
