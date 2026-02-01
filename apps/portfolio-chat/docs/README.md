@@ -6,6 +6,7 @@ This folder contains documentation for the portfolio chat application.
 
 - **[Chat Rendering: Tools vs Text](./chat-rendering.md)** - Explains how the chat interface renders different types of message parts, including regular text messages and tool call outputs.
 - **[Chat Context and State Management](./chat-context.md)** - Describes how chat state is shared via context and how to clear the chat.
+- **[Message Layout and Streaming UX](./message-layout.md)** - Documents the active assistant min-height pattern, layout animation with Motion, and component structure (ChatMessage, MessagePartRenderer).
 
 ## Overview
 

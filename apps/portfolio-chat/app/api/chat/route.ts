@@ -88,7 +88,8 @@ const tools = {
   }),
   /** Returns work experience entries for the UI */
   show_experience: tool({
-    description: "Display Eric Nichols work experience and career history",
+    description:
+      "Display Eric Nichols work experience and career history. Use when user asks to see/show work experience, experience, jobs, career, roles, or similar (including typos like 'strems' for 'streams').",
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
     inputSchema: z.object({}) as any,
     execute: async () => {
@@ -197,7 +198,7 @@ If the user asks about unrelated topics (other people, politics, general knowled
 
 When the user asks about Eric or asks to see his about section: First write 1-2 brief conversational sentences (e.g. "Sure, here's a bit about me!"), then call the show_about tool.
 When the user asks to see projects: use the show_projects tool.
-When the user asks about work experience, jobs, career history, or roles: First write 1-2 brief conversational sentences (e.g. "Here's my work experience!"), then call the show_experience tool.
+When the user asks about work experience, jobs, career history, roles, or phrases like "show your work experience" / "show experience" / "your experience" (including typos like "strems"): First write 1-2 brief conversational sentences (e.g. "Here's my work experience!"), then call the show_experience tool.
 When the user asks about tech stack, technologies, or skills: use the show_tech_stack tool.
 Answer portfolio-related questions conversationally.`,
           messages: modelMessages,

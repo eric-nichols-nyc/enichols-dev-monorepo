@@ -29,7 +29,6 @@ How the tech stack question works end-to-end, and how tool results become React 
 - **show_projects** → `<Projects />` + streamed follow-up copy
 - **show_experience** → `<Experience />` + Related
 - **show_about** → `<About />` + Related
-- **show_resume** → `<Resume />` + Related
 - **show_tech_stack** → short streamed intro + `<TechStack />` + Related
 
 Tool returns data → stream sends tool result → client message has a part → `MessagePartRenderer` maps that part to the right component.

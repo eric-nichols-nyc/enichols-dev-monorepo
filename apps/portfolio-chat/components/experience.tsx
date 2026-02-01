@@ -68,7 +68,7 @@ export function Experience({ experience, onExpand }: ExperienceProps) {
 
   return (
     <div
-      className="relative h-[400px] w-full overflow-y-auto rounded-lg border border-border bg-muted/50 p-4 dark:bg-muted"
+      className="relative h-[400px] w-full overflow-y-hidden rounded-lg border border-border bg-muted/50 p-4 dark:bg-muted"
       ref={containerRef}
     >
       <ShineButton

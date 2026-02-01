@@ -40,15 +40,7 @@ export function Messages({
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
 
-  const scrollToBottom = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) {
-      return;
-    }
-    el.scrollTo({ top: el.scrollHeight });
-  }, []);
-
-  const checkIsAtBottom = useCallback(() => {
+  const updateScrollState = useCallback(() => {
     const el = scrollRef.current;
     if (!el) {
       return;
@@ -58,19 +50,28 @@ export function Messages({
     setIsAtBottom(distanceFromBottom <= NEAR_BOTTOM_THRESHOLD);
   }, []);
 
+  const scrollToBottom = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) {
+      return;
+    }
+    el.scrollTo({ top: el.scrollHeight });
+  }, []);
+
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) {
       return;
     }
-    el.addEventListener("scroll", checkIsAtBottom, { passive: true });
-    const ro = new ResizeObserver(checkIsAtBottom);
+    updateScrollState();
+    el.addEventListener("scroll", updateScrollState, { passive: true });
+    const ro = new ResizeObserver(updateScrollState);
     ro.observe(el);
     return () => {
-      el.removeEventListener("scroll", checkIsAtBottom);
+      el.removeEventListener("scroll", updateScrollState);
       ro.disconnect();
     };
-  }, [checkIsAtBottom]);
+  }, [updateScrollState]);
 
   useEffect(() => {
     if (status === "submitted" || status === "streaming") {

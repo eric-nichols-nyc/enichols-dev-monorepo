@@ -10,7 +10,7 @@ const SUGGESTIONS = [
   "Show me some projects",
   "Tell me about Eric",
   "What's Eric's tech stack?",
-  "What's his experience",
+  "What's Eric's experience",
 ];
 
 const fadeUpIn = {

@@ -8,6 +8,7 @@ import {
 } from "@repo/design-system/components/ai-elements/message";
 import { cn } from "@repo/design-system/lib/utils";
 import type { UIMessage } from "ai";
+import { motion } from "motion/react";
 import { About } from "./about";
 import type { ExperienceBoundingBox } from "./experience";
 import { Experience, ExperienceSkeleton } from "./experience";
@@ -219,9 +220,11 @@ function getRelatedForMessage(msg: {
   );
 }
 
+const ACTIVE_ASSISTANT_MIN_HEIGHT_PX = 400;
+
 export type ChatMessageProps = {
   msg: UIMessage;
-  /** When true and role is assistant, applies min-h-[400px] so streaming starts above the input */
+  /** When true and role is assistant, applies dynamic min-height so streaming starts above the input */
   isLastMessage?: boolean;
   onExperienceExpand?: (
     experience: import("@/data/experience").ExperienceEntry[],
@@ -245,37 +248,48 @@ export function ChatMessage({
   const isActiveAssistant = msg.role === "assistant" && isLastMessage;
 
   return (
-    <Message
-      className={cn(
-        "min-w-0 flex-1",
-        msg.role === "user" && "border-2 border-red-500",
-        msg.role === "assistant" && "border-2 border-green-500"
-      )}
-      from={msg.role}
+    <motion.div
+      className="min-w-0 flex-1"
+      layout
+      transition={{
+        layout: { duration: 0.25, ease: [0.32, 0.72, 0, 1] },
+      }}
     >
-      <MessageContent
-        className={cn("text-base", isActiveAssistant ? "min-h-[400px]" : "")}
+      <Message
+        className={cn(
+          "min-w-0 flex-1",
+          msg.role === "user",
+          msg.role === "assistant"
+        )}
+        from={msg.role}
       >
-        {msg.parts.map((part, i) => (
-          <MessagePartRenderer
-            i={i}
-            key={`${msg.id}-${i}`}
-            msgId={msg.id}
-            onExperienceExpand={onExperienceExpand}
-            onProjectExpand={onProjectExpand}
-            onSuggestionClick={onSuggestionClick}
-            part={part}
-          />
-        ))}
-        {related ? (
-          <div className="mt-4 w-full">
-            <Related
+        <MessageContent
+          className="text-base"
+          {...(isActiveAssistant
+            ? { style: { minHeight: ACTIVE_ASSISTANT_MIN_HEIGHT_PX } }
+            : {})}
+        >
+          {msg.parts.map((part, i) => (
+            <MessagePartRenderer
+              i={i}
+              key={`${msg.id}-${i}`}
+              msgId={msg.id}
+              onExperienceExpand={onExperienceExpand}
+              onProjectExpand={onProjectExpand}
               onSuggestionClick={onSuggestionClick}
-              suggestions={related}
+              part={part}
             />
-          </div>
-        ) : null}
-      </MessageContent>
-    </Message>
+          ))}
+          {related ? (
+            <div className="mt-4 w-full">
+              <Related
+                onSuggestionClick={onSuggestionClick}
+                suggestions={related}
+              />
+            </div>
+          ) : null}
+        </MessageContent>
+      </Message>
+    </motion.div>
   );
 }
