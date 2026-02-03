@@ -36,7 +36,7 @@ const projects: Project[] = [
     tags: ["nextjs", "analytics", "PostgreSQL", "typescript"],
     categories: ["health"],
     description:
-      "Comprehensive dual-app system tracking music artists across platforms with automated data collection and comparative analytics.",
+      "Dual-app system tracking music artists across Spotify and YouTube with automated data collection. Built admin and client dashboards for comparative analytics. Cron jobs collect daily metrics and store them in Supabase. Real-time artist comparison and historical trend visualization.",
     shortDescription:
       "Artist analytics platform with automated data collection.",
     date: "2023-06-10",
@@ -87,7 +87,7 @@ const projects: Project[] = [
     tags: ["ai", "microfrontend", "postgres", "typescript"],
     categories: ["ai"],
     description:
-      "Enterprise-scale microfrontend architecture with 6 integrated applications sharing UI, auth, and design system packages.",
+      "Enterprise microfrontend architecture with six integrated applications sharing UI, auth, and design system packages. Includes dashboard, calendar, and Kanban board. Webpack Module Federation enables independent deployment. Shared component library and unified authentication across apps.",
     shortDescription:
       "Microfrontend productivity suite with shared design system.",
     date: "2023-07-22",
@@ -137,8 +137,8 @@ const projects: Project[] = [
     tags: ["api", "fullstack", "NoSQL", "typescript"],
     categories: ["ai"],
     description:
-      "Full-stack Kanban board application for task and project management with drag-and-drop boards, real-time updates, and a flexible NoSQL backend.",
-    shortDescription: "Kanban board application with drag-and-drop UX.",
+      "Full-stack Kanban board for task and project management. Drag-and-drop boards with real-time updates. Node.js API with MongoDB for flexible NoSQL storage. RESTful API architecture with responsive React frontend.",
+    shortDescription: "Kanban board with drag-and-drop UX.",
     date: "2023-04-01",
     url: "https://trellnode.vercel.app/",
     published: true,

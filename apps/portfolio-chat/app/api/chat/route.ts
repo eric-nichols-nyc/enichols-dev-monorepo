@@ -112,7 +112,7 @@ const tools = {
   /** Returns work experience entries for the UI */
   show_experience: tool({
     description:
-      "Display Eric Nichols work experience and career history. Use when user asks to see/show work experience, experience, jobs, career, roles, or similar (including typos like 'strems' for 'streams').",
+      "Display work experience. Use when user asks about experience, jobs, career, or roles.",
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
     inputSchema: z.object({}) as any,
     execute: async () => {
@@ -121,20 +121,19 @@ const tools = {
       );
       await new Promise((resolve) => setTimeout(resolve, 1500));
       return {
-        copy: "Here's my work experience. Click the expand button on the card to see the full timeline, or ask about a specific role or company.",
+        copy: "Here's my work experience. Click the expand button on any card to see the full timeline. Feel free to ask about a specific role or company.",
         experience,
         related: [
           "Show me some projects",
-          "Tell me about Eric",
-          "What's yor tech stack?",
+          "Tell me about yourself",
+          "What's your tech stack?",
         ],
       };
     },
   }),
   /** Returns tech stack from tech.json—streamed as text */
   show_tech_stack: tool({
-    description:
-      "List yor technologies and tech stack (React, Next.js, TypeScript, etc.)",
+    description: "List technologies and tech stack",
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
     inputSchema: z.object({}) as any,
     execute: () => {
@@ -153,7 +152,7 @@ const tools = {
         related: [
           "Show me some projects",
           "What's his experience?",
-          "Tell me about Eric",
+          "yourself",
         ],
       };
     },
@@ -198,10 +197,10 @@ export async function POST(request: Request) {
       .slice(0, 3)
       .map((p) => p.title)
       .join(", ");
-    const projectsFollowUp = `From ${sampleTitles}—here are some projects spanning AI, full-stack apps, and more. Pick one and I'll dive in! Each one has a live demo you can explore. Ask me about tech stack, challenges, or anything else you're curious about.`;
+    const projectsFollowUp = `From ${sampleTitles}—here are projects spanning AI and full-stack apps. Each has a live demo you can explore. Pick one and I'll dive in. Ask about tech stack, challenges, or anything else.`;
 
     const techStackFollowUp =
-      "Here's the tech stack. Want to hear about a specific technology or project?";
+      "Here's the tech stack. Want to hear about a specific technology? Or how I've used it in a project?";
 
     /**
      * createUIMessageStream gives us control over the stream so we can:

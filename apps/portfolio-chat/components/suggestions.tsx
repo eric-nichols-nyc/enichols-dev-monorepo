@@ -8,7 +8,7 @@ import { motion } from "motion/react";
 
 const SUGGESTIONS = [
   "Show me some projects",
-  "Tell me about Eric",
+  "Tell me about yourself",
   "What's your tech stack?",
   "What's your experience",
 ];
