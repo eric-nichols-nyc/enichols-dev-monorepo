@@ -52,7 +52,9 @@ const tools = {
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
     inputSchema: z.object({}) as any,
     execute: async () => {
-      console.log("[chat:tool] show_about called, delaying 1s so loader is visible");
+      console.log(
+        "[chat:tool] show_about called, delaying 1s so loader is visible"
+      );
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const primaryRole = resume.experience[0];
       const secondaryRole = resume.experience[1];
@@ -114,7 +116,9 @@ const tools = {
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
     inputSchema: z.object({}) as any,
     execute: async () => {
-      console.log("[chat:tool] show_experience called, delaying 1.5s so skeleton is visible");
+      console.log(
+        "[chat:tool] show_experience called, delaying 1.5s so skeleton is visible"
+      );
       await new Promise((resolve) => setTimeout(resolve, 1500));
       return {
         copy: "Here's my work experience. Click the expand button on the card to see the full timeline, or ask about a specific role or company.",
@@ -122,7 +126,7 @@ const tools = {
         related: [
           "Show me some projects",
           "Tell me about Eric",
-          "What's Eric's tech stack?",
+          "What's yor tech stack?",
         ],
       };
     },
@@ -130,7 +134,7 @@ const tools = {
   /** Returns tech stack from tech.json—streamed as text */
   show_tech_stack: tool({
     description:
-      "List Eric's technologies and tech stack (React, Next.js, TypeScript, etc.)",
+      "List yor technologies and tech stack (React, Next.js, TypeScript, etc.)",
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
     inputSchema: z.object({}) as any,
     execute: () => {

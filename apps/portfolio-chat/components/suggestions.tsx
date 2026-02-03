@@ -9,8 +9,8 @@ import { motion } from "motion/react";
 const SUGGESTIONS = [
   "Show me some projects",
   "Tell me about Eric",
-  "What's Eric's tech stack?",
-  "What's Eric's experience",
+  "What's your tech stack?",
+  "What's your experience",
 ];
 
 const fadeUpIn = {

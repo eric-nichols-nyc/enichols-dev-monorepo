@@ -16,11 +16,15 @@ export function Related({ suggestions, onSuggestionClick }: RelatedProps) {
     return () => clearTimeout(id);
   }, []);
 
-  if (!visible) return null;
+  if (!visible) {
+    return null;
+  }
 
   return (
     <div className="mt-6 w-full">
-      <h4 className="mb-3 font-semibold text-foreground text-lg">Related</h4>
+      <h4 className="mb-3 font-semibold text-foreground text-lg">
+        Related Questions
+      </h4>
       <div className="divide-y divide-border overflow-hidden rounded-lg border border-border">
         {suggestions.map((suggestion) => (
           <button

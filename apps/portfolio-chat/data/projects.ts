@@ -37,7 +37,8 @@ const projects: Project[] = [
     categories: ["health"],
     description:
       "Comprehensive dual-app system tracking music artists across platforms with automated data collection and comparative analytics.",
-    shortDescription: "Artist analytics platform with automated data collection.",
+    shortDescription:
+      "Artist analytics platform with automated data collection.",
     date: "2023-06-10",
     url: "https://audiograph.vercel.app/",
     published: true,
@@ -87,7 +88,8 @@ const projects: Project[] = [
     categories: ["ai"],
     description:
       "Enterprise-scale microfrontend architecture with 6 integrated applications sharing UI, auth, and design system packages.",
-    shortDescription: "Microfrontend productivity suite with shared design system.",
+    shortDescription:
+      "Microfrontend productivity suite with shared design system.",
     date: "2023-07-22",
     url: "https://ai-taskwizard-host.vercel.app/",
     published: true,
@@ -177,34 +179,6 @@ const projects: Project[] = [
       "Implemented drag-and-drop board UX",
       "Built responsive task management interface",
     ],
-  },
-  {
-    id: "ai-mockmaster",
-    title: "AI Mockmaster",
-    tags: ["ai", "nextjs", "fullstack"],
-    categories: ["marketplace"],
-    description:
-      "Platform to practice mock interviews with AI-driven feedback.",
-    shortDescription: "Practice mock interviews with AI-driven feedback.",
-    date: "2023-09-12",
-    url: "https://ai-mockmaster.vercel.app/",
-    published: true,
-    image: "/images/mockmaster.png",
-    gallery: [],
-  },
-  {
-    id: "x2j9v7lm",
-    title: "MoodFlix",
-    tags: ["ai", "nextjs", "typescript"],
-    categories: ["web"],
-    description:
-      "MoodFlix is your personal movie recommendation engine that suggests films based on your current mood. Whether you're feeling energetic, relaxed, or somewhere in between, we've got the perfect movie for you.",
-    shortDescription: "Personal movie recommendation engine.",
-    date: "2023-05-15",
-    url: "https://moodflix-phi.vercel.app/",
-    published: true,
-    image: "/images/moodflix.png",
-    gallery: [],
   },
 ];
 
