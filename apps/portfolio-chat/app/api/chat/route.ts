@@ -20,9 +20,9 @@ import {
 } from "@repo/ai";
 import { models } from "@repo/ai/lib/models";
 import { z } from "zod";
-import { about } from "@/data/about";
 import experience from "@/data/experience";
 import projects from "@/data/projects";
+import { resume } from "@/data/resume";
 import tech from "@/data/tech.json";
 
 /** Split text into words and spaces so we can stream with preserved formatting */
@@ -54,8 +54,29 @@ const tools = {
     execute: async () => {
       console.log("[chat:tool] show_about called, delaying 1s so loader is visible");
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      const primaryRole = resume.experience[0];
+      const secondaryRole = resume.experience[1];
+      const skillHighlights = resume.skills.slice(0, 3).join(" · ");
+      const roleHighlights = [
+        primaryRole
+          ? `${primaryRole.title} at ${primaryRole.company} (${primaryRole.dates})`
+          : null,
+        secondaryRole
+          ? `${secondaryRole.title} at ${secondaryRole.company} (${secondaryRole.dates})`
+          : null,
+      ].filter(Boolean);
+
       return {
-        ...about,
+        title: "About",
+        paragraphs: [
+          `I’m ${resume.name}, a ${resume.title} based in ${resume.location}.`,
+          resume.summary,
+          `Core strengths include ${skillHighlights}.`,
+          roleHighlights.length
+            ? `Recent roles include ${roleHighlights.join(" and ")}.`
+            : "Recent experience spans senior front-end and full-stack roles.",
+          `Contact: ${resume.contact}.`,
+        ],
         related: [
           "Show me your projects",
           "What's your experience?",
