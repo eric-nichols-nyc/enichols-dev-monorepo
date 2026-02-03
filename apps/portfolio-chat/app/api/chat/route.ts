@@ -152,7 +152,7 @@ const tools = {
         related: [
           "Show me some projects",
           "What's his experience?",
-          "yourself",
+          "Tell me about yourself",
         ],
       };
     },

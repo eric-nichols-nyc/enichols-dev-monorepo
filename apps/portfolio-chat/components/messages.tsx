@@ -73,21 +73,11 @@ export function Messages({
     };
   }, [updateScrollState]);
 
-  // Scroll to bottom when status changes to submitted/streaming
   useEffect(() => {
-    if (status === "submitted" || status === "streaming") {
+    if (status === "submitted") {
       scrollToBottom();
-      setIsAtBottom(true);
     }
   }, [status, scrollToBottom]);
-
-  // Scroll to bottom as content streams in (messages update frequently during streaming)
-  // biome-ignore lint/correctness/useExhaustiveDependencies: messages must trigger scroll during streaming
-  useEffect(() => {
-    if (status === "streaming" || status === "submitted") {
-      scrollToBottom();
-    }
-  }, [messages, status, scrollToBottom]);
 
   return (
     <div className="relative flex h-full min-h-0 flex-1 flex-col">
@@ -102,27 +92,41 @@ export function Messages({
               <Greeting />
             </ConversationEmptyState>
           ) : (
-            messages.map((msg) => (
-              <div
-                className={cn(
-                  "flex w-full gap-2",
-                  msg.role === "user" && "ml-auto"
-                )}
-                key={msg.id}
-              >
-                <ChatMessage
-                  msg={msg}
-                  onExperienceExpand={onExperienceExpand}
-                  onProjectExpand={onProjectExpand}
-                  onSuggestionClick={onSuggestionClick}
-                />
-              </div>
-            ))
+            messages.map((msg, i) => {
+              const isLastAssistant =
+                i === messages.length - 1 && msg.role === "assistant";
+              const isStreaming =
+                status === "submitted" || status === "streaming";
+              const isStreamingContainer = isLastAssistant
+                ? isStreaming
+                : false;
+
+              return (
+                <div
+                  className={cn(
+                    "flex w-full gap-2",
+                    msg.role === "user" ? "ml-auto" : ""
+                  )}
+                  key={msg.id}
+                >
+                  <ChatMessage
+                    isStreamingContainer={isStreamingContainer}
+                    msg={msg}
+                    onExperienceExpand={onExperienceExpand}
+                    onProjectExpand={onProjectExpand}
+                    onSuggestionClick={onSuggestionClick}
+                  />
+                </div>
+              );
+            })
           )}
           {status === "submitted" && (
-            <div className="flex items-center gap-2 py-2 text-muted-foreground text-sm">
-              <Loader size={14} />
-              <span>Thinking…</span>
+            <div className="flex flex-col">
+              <hr className="mb-0 w-full border-border" />
+              <div className="flex min-h-[250px] items-start gap-2 py-2 text-muted-foreground text-sm">
+                <Loader size={14} />
+                <span>Thinking…</span>
+              </div>
             </div>
           )}
           {typeof error === "object" &&

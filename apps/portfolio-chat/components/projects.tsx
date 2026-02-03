@@ -9,7 +9,12 @@ import type { Project } from "@/data/projects";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { ShineButton } from "./shine-button";
 
-export type BoundingBox = { top: number; left: number; width: number; height: number };
+export type BoundingBox = {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+};
 
 type ProjectsProps = {
   copy?: string;
@@ -65,18 +70,10 @@ export function ProjectsSkeleton() {
   );
 }
 
-export function Projects({
-  copy,
-  onExpand,
-  projectCount,
-  projects,
-}: ProjectsProps) {
+export function Projects({ copy, onExpand, projects }: ProjectsProps) {
   const isGallery = useMediaQuery("(min-width: 500px)");
   return (
     <div className="space-y-4">
-      <div className="text-muted-foreground text-sm">
-        {projectCount} projects
-      </div>
       <div
         className={
           isGallery
@@ -109,14 +106,21 @@ export function ProjectCard({
     const rect = cardRef.current?.getBoundingClientRect();
     onExpand?.(
       project,
-      rect ? { top: rect.top, left: rect.left, width: rect.width, height: rect.height } : undefined
+      rect
+        ? {
+            top: rect.top,
+            left: rect.left,
+            width: rect.width,
+            height: rect.height,
+          }
+        : undefined
     );
   };
 
   return (
     <div
-      ref={cardRef}
       className={`group relative flex shrink-0 flex-col overflow-hidden rounded-lg border bg-card transition-all hover:shadow-lg ${isGallery ? "w-[280px]" : "w-full"}`}
+      ref={cardRef}
     >
       <div className="relative aspect-video w-full overflow-hidden bg-muted">
         <Image
