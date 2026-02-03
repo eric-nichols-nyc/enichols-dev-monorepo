@@ -8,7 +8,6 @@ import {
 } from "@repo/design-system/components/ai-elements/message";
 import { cn } from "@repo/design-system/lib/utils";
 import type { UIMessage } from "ai";
-import { motion } from "motion/react";
 import { About } from "./about";
 import type { ExperienceBoundingBox } from "./experience";
 import { Experience, ExperienceSkeleton } from "./experience";
@@ -220,12 +219,8 @@ function getRelatedForMessage(msg: {
   );
 }
 
-const ACTIVE_ASSISTANT_MIN_HEIGHT_PX = 400;
-
 export type ChatMessageProps = {
   msg: UIMessage;
-  /** When true and role is assistant, applies dynamic min-height so streaming starts above the input */
-  isLastMessage?: boolean;
   onExperienceExpand?: (
     experience: import("@/data/experience").ExperienceEntry[],
     boundingBox?: ExperienceBoundingBox
@@ -239,22 +234,14 @@ export type ChatMessageProps = {
 
 export function ChatMessage({
   msg,
-  isLastMessage = false,
   onExperienceExpand,
   onProjectExpand,
   onSuggestionClick,
 }: ChatMessageProps) {
   const related = getRelatedForMessage(msg);
-  const isActiveAssistant = msg.role === "assistant" && isLastMessage;
 
   return (
-    <motion.div
-      className="min-w-0 flex-1"
-      layout
-      transition={{
-        layout: { duration: 0.25, ease: [0.32, 0.72, 0, 1] },
-      }}
-    >
+    <div className="min-w-0 flex-1">
       <Message
         className={cn(
           "min-w-0 flex-1",
@@ -263,12 +250,7 @@ export function ChatMessage({
         )}
         from={msg.role}
       >
-        <MessageContent
-          className="text-base"
-          {...(isActiveAssistant
-            ? { style: { minHeight: ACTIVE_ASSISTANT_MIN_HEIGHT_PX } }
-            : {})}
-        >
+        <MessageContent className="text-base">
           {msg.parts.map((part, i) => (
             <MessagePartRenderer
               i={i}
@@ -290,6 +272,6 @@ export function ChatMessage({
           ) : null}
         </MessageContent>
       </Message>
-    </motion.div>
+    </div>
   );
 }

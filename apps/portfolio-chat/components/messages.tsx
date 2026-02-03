@@ -73,12 +73,21 @@ export function Messages({
     };
   }, [updateScrollState]);
 
+  // Scroll to bottom when status changes to submitted/streaming
   useEffect(() => {
     if (status === "submitted" || status === "streaming") {
       scrollToBottom();
       setIsAtBottom(true);
     }
   }, [status, scrollToBottom]);
+
+  // Scroll to bottom as content streams in (messages update frequently during streaming)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: messages must trigger scroll during streaming
+  useEffect(() => {
+    if (status === "streaming" || status === "submitted") {
+      scrollToBottom();
+    }
+  }, [messages, status, scrollToBottom]);
 
   return (
     <div className="relative flex h-full min-h-0 flex-1 flex-col">
@@ -93,7 +102,7 @@ export function Messages({
               <Greeting />
             </ConversationEmptyState>
           ) : (
-            messages.map((msg, i) => (
+            messages.map((msg) => (
               <div
                 className={cn(
                   "flex w-full gap-2",
@@ -103,7 +112,6 @@ export function Messages({
               >
                 <ChatMessage
                   msg={msg}
-                  isLastMessage={i === messages.length - 1}
                   onExperienceExpand={onExperienceExpand}
                   onProjectExpand={onProjectExpand}
                   onSuggestionClick={onSuggestionClick}
