@@ -158,7 +158,7 @@ const tools = {
         tech: techData,
         related: [
           "Show me some projects",
-          "What's his experience?",
+          "What's your experience?",
           "Tell me about yourself",
         ],
       };
