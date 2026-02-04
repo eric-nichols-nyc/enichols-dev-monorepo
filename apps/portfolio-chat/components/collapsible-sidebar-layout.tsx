@@ -1,6 +1,5 @@
 "use client";
 
-import { ModeToggle } from "@repo/design-system/components/mode-toggle";
 import {
   Briefcase,
   ChevronLeft,
@@ -206,7 +205,6 @@ export function CollapsibleSidebarLayout() {
               ))}
             </nav>
           </div>
-          <ModeToggle />
         </header>
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
           <Chat />
