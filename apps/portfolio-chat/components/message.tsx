@@ -137,11 +137,16 @@ function MessagePartRenderer({
       const output = part.output as {
         title: string;
         paragraphs: string[];
+        socialLinks?: Array<{ href: string; label: string }>;
         related?: string[];
       };
       return (
         <div className="w-full" key={`${msgId}-${i}`}>
-          <About paragraphs={output.paragraphs} title={output.title} />
+          <About
+            paragraphs={output.paragraphs}
+            socialLinks={output.socialLinks}
+            title={output.title}
+          />
           {(output.related?.length ?? 0) > 0 ? (
             <Related
               onSuggestionClick={onSuggestionClick}

@@ -77,7 +77,14 @@ const tools = {
           roleHighlights.length
             ? `Recent roles include ${roleHighlights.join(" and ")}.`
             : "Recent experience spans senior front-end and full-stack roles.",
-          `Contact: ${resume.contact}.`,
+        ],
+        socialLinks: [
+          { href: "https://github.com/eric-nichols-nyc", label: "GitHub" },
+          { href: "https://instagram.com/ebn646/", label: "Instagram" },
+          {
+            href: "https://www.linkedin.com/in/eric-nichols-ab509118/",
+            label: "LinkedIn",
+          },
         ],
         related: [
           "Show me your projects",
