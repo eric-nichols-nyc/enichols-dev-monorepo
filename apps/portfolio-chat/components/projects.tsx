@@ -134,7 +134,7 @@ export function ProjectCard({
           }
         />
         <ShineButton
-          className="absolute top-2 right-2 flex items-center justify-center rounded-md bg-background/90 p-2 shadow-lg backdrop-blur-sm transition-all hover:scale-110 hover:bg-background"
+          className="absolute top-2 right-2 hidden items-center justify-center rounded-md bg-background/90 p-2 shadow-lg backdrop-blur-sm transition-all hover:scale-110 hover:bg-background md:flex"
           onClick={handleExpand}
         >
           <Maximize2 className="size-5 text-foreground" />

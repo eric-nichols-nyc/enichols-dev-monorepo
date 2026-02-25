@@ -26,10 +26,7 @@ export function SidebarBrand({
       tabIndex={0}
       type="button"
     >
-      <GreetingButton
-        aria-label="Clear chat and start fresh"
-        className="h-8 w-8"
-      />
+      <GreetingButton as="div" className="h-8 w-8" />
       {!collapsed && (
         <span className="truncate font-semibold text-lg">{name}</span>
       )}

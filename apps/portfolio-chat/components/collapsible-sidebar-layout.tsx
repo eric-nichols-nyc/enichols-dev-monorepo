@@ -1,61 +1,18 @@
 "use client";
 
-import {
-  Briefcase,
-  ChevronLeft,
-  ChevronRight,
-  Code2,
-  FolderOpen,
-  Github,
-  Instagram,
-  Linkedin,
-  Menu,
-  User,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Menu } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useState } from "react";
 import { usePortfolioChat } from "@/contexts/chat-context";
+import {
+  NAV_ITEMS,
+  SIDEBAR_WIDTH_COLLAPSED,
+  SIDEBAR_WIDTH_EXPANDED,
+  socialLinks,
+} from "./constants";
 import { Chat } from "./chat";
 import { SidebarBrand } from "./sidebar-brand";
 import { SidebarLogo } from "./sidebar-logo";
-
-const SIDEBAR_WIDTH_EXPANDED = "16rem";
-const SIDEBAR_WIDTH_COLLAPSED = "4rem";
-
-const NAV_ITEMS = [
-  {
-    id: "projects",
-    label: "Projects",
-    icon: FolderOpen,
-    message: "Show projects",
-  },
-  { id: "about", label: "About", icon: User, message: "About Me" },
-  {
-    id: "experience",
-    label: "Experience",
-    icon: Briefcase,
-    message: "Show my work experience",
-  },
-  { id: "tech", label: "Tech", icon: Code2, message: "Tech stack" },
-] as const;
-
-const socialLinks = [
-  {
-    href: "https://github.com/eric-nichols-nyc",
-    icon: Github,
-    label: "GitHub",
-  },
-  {
-    href: "https://instagram.com/ebn646/",
-    icon: Instagram,
-    label: "Instagram",
-  },
-  {
-    href: "https://www.linkedin.com/in/eric-nichols-ab509118/",
-    icon: Linkedin,
-    label: "LinkedIn",
-  },
-];
 
 export function CollapsibleSidebarLayout() {
   const [collapsed, setCollapsed] = useState(false);

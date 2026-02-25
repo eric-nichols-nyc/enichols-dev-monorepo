@@ -68,16 +68,16 @@ export function Experience({ experience, onExpand }: ExperienceProps) {
 
   return (
     <div
-      className="relative h-[400px] w-full overflow-y-hidden rounded-lg border border-border bg-muted/50 p-4 dark:bg-muted"
+      className="relative flex h-[400px] w-full flex-col overflow-hidden rounded-lg border border-border bg-muted/50 p-4 dark:bg-muted"
       ref={containerRef}
     >
       <ShineButton
-        className="absolute top-2 right-2 z-10 flex items-center justify-center rounded-md bg-background/90 p-2 shadow-lg backdrop-blur-sm transition-all hover:scale-110 hover:bg-background"
+        className="absolute top-2 right-2 z-10 hidden items-center justify-center rounded-md bg-background/90 p-2 shadow-lg backdrop-blur-sm transition-all hover:scale-110 hover:bg-background md:flex"
         onClick={handleExpand}
       >
         <Maximize2 className="size-5 text-foreground" />
       </ShineButton>
-      <div className="space-y-6">
+      <div className="min-h-0 flex-1 space-y-6 overflow-y-auto">
         <h2 className="font-semibold text-foreground text-lg tracking-wide">
           EXPERIENCE
         </h2>

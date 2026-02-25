@@ -122,6 +122,7 @@ export function Messages({
           )}
           {status === "submitted" && (
             <div className="flex flex-col">
+              <p>loading...</p>
               <hr className="mb-0 w-full border-border" />
               <div className="flex min-h-[250px] items-start gap-2 py-2 text-muted-foreground text-sm">
                 <Loader size={14} />
