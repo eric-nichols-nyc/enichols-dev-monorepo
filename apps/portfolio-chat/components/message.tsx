@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader } from "@repo/design-system/components/ai-elements/loader";
+import { useEffect, useRef } from "react";
 import {
   Message,
   MessageContent,
@@ -241,6 +242,12 @@ export type ChatMessageProps = {
   onSuggestionClick: (suggestion: string) => void;
 };
 
+/** Set to true or use ?debug=chat in URL to log message part updates (helps debug stream ordering). */
+const DEBUG_PARTS =
+  typeof window !== "undefined" &&
+  (process.env.NODE_ENV === "development" ||
+    /[?&]debug=chat/.test(window.location.search));
+
 export function ChatMessage({
   msg,
   isStreamingContainer = false,
@@ -249,6 +256,29 @@ export function ChatMessage({
   onSuggestionClick,
 }: ChatMessageProps) {
   const related = getRelatedForMessage(msg);
+  const prevPartsKey = useRef<string>("");
+
+  useEffect(() => {
+    if (!DEBUG_PARTS || msg.role !== "assistant") {
+      return;
+    }
+    const partsKey = msg.parts
+      .map((p) => `${(p as { type?: string }).type}:${(p as { state?: string }).state ?? ""}`)
+      .join(",");
+    if (partsKey === prevPartsKey.current) {
+      return;
+    }
+    prevPartsKey.current = partsKey;
+    const summary = msg.parts.map((p) => {
+      const part = p as { type?: string; state?: string; text?: string };
+      return {
+        type: part.type,
+        state: part.state,
+        textLen: typeof part.text === "string" ? part.text.length : 0,
+      };
+    });
+    console.log("[ChatMessage] parts changed", { id: msg.id, parts: summary });
+  }, [msg.id, msg.role, msg.parts]);
 
   return (
     <div

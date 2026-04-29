@@ -14,6 +14,24 @@ import type { BoundingBox } from "./projects";
 
 const NEAR_BOTTOM_THRESHOLD = 70;
 
+/** True when the last message is an assistant message with no visible content yet (avoids empty bubble flash). */
+function lastAssistantMessageIsEmpty(messages: UIMessage[]): boolean {
+  const last = messages.at(-1);
+  if (!last || last.role !== "assistant" || !Array.isArray(last.parts)) {
+    return false;
+  }
+  const hasVisibleContent = last.parts.some((p: { type?: string; state?: string; text?: string }) => {
+    if (p.type === "text" && typeof p.text === "string" && p.text.length > 0) {
+      return true;
+    }
+    if (p.type?.startsWith("tool-") && (p.state === "output-available" || p.state === "output-error")) {
+      return true;
+    }
+    return false;
+  });
+  return !hasVisibleContent;
+}
+
 type MessagesProps = {
   error: unknown;
   messages: UIMessage[];
@@ -120,13 +138,13 @@ export function Messages({
               );
             })
           )}
-          {status === "submitted" && (
+          {(status === "submitted" ||
+            (status === "streaming" && lastAssistantMessageIsEmpty(messages))) && (
             <div className="flex flex-col">
               <p>loading...</p>
               <hr className="mb-0 w-full border-border" />
               <div className="flex min-h-[250px] items-start gap-2 py-2 text-muted-foreground text-sm">
                 <Loader size={14} />
-                <span>Thinking…</span>
               </div>
             </div>
           )}

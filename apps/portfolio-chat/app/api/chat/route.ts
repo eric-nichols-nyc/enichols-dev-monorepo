@@ -11,7 +11,6 @@
  */
 import type { UIMessage } from "@repo/ai";
 import {
-  convertToModelMessages,
   createUIMessageStream,
   createUIMessageStreamResponse,
   stepCountIs,
@@ -27,6 +26,34 @@ import tech from "@/data/tech.json";
 
 /** Split text into words and spaces so we can stream with preserved formatting */
 const SPLIT_WORDS_AND_SPACES = /(\s+)/;
+
+type SimpleModelMessage = { role: "system" | "user" | "assistant"; content: string };
+
+function toSimpleModelMessages(messages: UIMessage[]): SimpleModelMessage[] {
+  return messages
+    .map((message) => {
+      const content =
+        message.parts
+          ?.filter((part): part is { type: "text"; text: string } => part.type === "text")
+          .map((part) => part.text)
+          .join("\n")
+          .trim() ?? "";
+
+      if (!content) {
+        return null;
+      }
+
+      if (message.role === "user" || message.role === "assistant" || message.role === "system") {
+        return {
+          role: message.role,
+          content,
+        } satisfies SimpleModelMessage;
+      }
+
+      return null;
+    })
+    .filter((message): message is SimpleModelMessage => message !== null);
+}
 
 async function streamCopy(
   // UIMessageStreamWriter has a specific write signature; we pass valid chunks
@@ -51,11 +78,7 @@ const tools = {
     description: "Display the about section",
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
     inputSchema: z.object({}) as any,
-    execute: async () => {
-      console.log(
-        "[chat:tool] show_about called, delaying 1s so loader is visible"
-      );
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    execute: () => {
       const primaryRole = resume.experience[0];
       const secondaryRole = resume.experience[1];
       const skillHighlights = resume.skills.slice(0, 3).join(" · ");
@@ -194,7 +217,7 @@ export async function POST(request: Request) {
       lastText
     );
 
-    const modelMessages = convertToModelMessages(messages);
+    const modelMessages = toSimpleModelMessages(messages);
     console.log(
       "[chat:api] converted to model messages, count:",
       modelMessages.length
@@ -221,7 +244,8 @@ export async function POST(request: Request) {
         const result = streamText({
           // biome-ignore lint/suspicious/noExplicitAny: ToolSet/Zod mismatch between app deps and @repo/ai
           tools: tools as any,
-          model: models.chat,
+          // biome-ignore lint/suspicious/noExplicitAny: Provider model versions differ across SDK packages in this monorepo
+          model: models.chat as any,
           stopWhen: stepCountIs(1), // stop after 1 step (tool call + result); we inject copy ourselves
           system: `You are Eric Nichols' portfolio assistant. Only answer questions about Eric, his portfolio, projects, work experience, and tech stack.
 
