@@ -6,31 +6,41 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
 import type { UIMessage } from "ai";
 import { ArrowDownIcon } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import type { ExperienceBoundingBox } from "./experience";
 import { Greeting } from "./greeting";
 import { ChatMessage } from "./message";
 import type { BoundingBox } from "./projects";
 
 const NEAR_BOTTOM_THRESHOLD = 70;
+const MIN_LOADER_VISIBLE_MS = 5000;
 
 /** True when the last message is an assistant message with no visible content yet (avoids empty bubble flash). */
-function lastAssistantMessageIsEmpty(messages: UIMessage[]): boolean {
-  const last = messages.at(-1);
-  if (!last || last.role !== "assistant" || !Array.isArray(last.parts)) {
-    return false;
-  }
-  const hasVisibleContent = last.parts.some((p: { type?: string; state?: string; text?: string }) => {
-    if (p.type === "text" && typeof p.text === "string" && p.text.length > 0) {
-      return true;
-    }
-    if (p.type?.startsWith("tool-") && (p.state === "output-available" || p.state === "output-error")) {
-      return true;
-    }
-    return false;
-  });
-  return !hasVisibleContent;
-}
+// function lastAssistantMessageIsEmpty(messages: UIMessage[]): boolean {
+//   const last = messages.at(-1);
+//   if (!last || last.role !== "assistant" || !Array.isArray(last.parts)) {
+//     return false;
+//   }
+//   const hasVisibleContent = last.parts.some(
+//     (p: { type?: string; state?: string; text?: string }) => {
+//       if (
+//         p.type === "text" &&
+//         typeof p.text === "string" &&
+//         p.text.length > 0
+//       ) {
+//         return true;
+//       }
+//       if (
+//         p.type?.startsWith("tool-") &&
+//         (p.state === "output-available" || p.state === "output-error")
+//       ) {
+//         return true;
+//       }
+//       return false;
+//     }
+//   );
+//   return !hasVisibleContent;
+// }
 
 type MessagesProps = {
   error: unknown;
@@ -57,6 +67,10 @@ export function Messages({
 }: MessagesProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
+  const [showMinLoader, setShowMinLoader] = useState(false);
+  const loadingStartedAtRef = useRef<number | null>(null);
+  const hideLoaderTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isLoading = status === "submitted" || status === "streaming";
 
   const updateScrollState = useCallback(() => {
     const el = scrollRef.current;
@@ -97,6 +111,48 @@ export function Messages({
     }
   }, [status, scrollToBottom]);
 
+  useEffect(() => {
+    if (isLoading) {
+      if (hideLoaderTimeoutRef.current) {
+        clearTimeout(hideLoaderTimeoutRef.current);
+        hideLoaderTimeoutRef.current = null;
+      }
+
+      if (loadingStartedAtRef.current === null) {
+        loadingStartedAtRef.current = Date.now();
+      }
+      setShowMinLoader(true);
+      return;
+    }
+
+    if (loadingStartedAtRef.current === null) {
+      setShowMinLoader(false);
+      return;
+    }
+
+    const elapsed = Date.now() - loadingStartedAtRef.current;
+    const remaining = Math.max(0, MIN_LOADER_VISIBLE_MS - elapsed);
+
+    if (remaining === 0) {
+      loadingStartedAtRef.current = null;
+      setShowMinLoader(false);
+      return;
+    }
+
+    hideLoaderTimeoutRef.current = setTimeout(() => {
+      loadingStartedAtRef.current = null;
+      setShowMinLoader(false);
+      hideLoaderTimeoutRef.current = null;
+    }, remaining);
+
+    return () => {
+      if (hideLoaderTimeoutRef.current) {
+        clearTimeout(hideLoaderTimeoutRef.current);
+        hideLoaderTimeoutRef.current = null;
+      }
+    };
+  }, [isLoading]);
+
   return (
     <div className="relative flex h-full min-h-0 flex-1 flex-col">
       <div
@@ -105,6 +161,15 @@ export function Messages({
         role="log"
       >
         <div className="mx-auto flex w-full max-w-[720px] flex-col gap-8 p-4">
+          {isLoading || showMinLoader ? (
+            <div className="flex flex-col">
+              <p>loading...</p>
+              <hr className="mb-0 w-full border-border" />
+              <div className="flex min-h-[250px] items-start gap-2 py-2 text-muted-foreground text-sm">
+                <Loader size={14} />
+              </div>
+            </div>
+          ) : null}
           {messages.length === 0 ? (
             <ConversationEmptyState>
               <Greeting />
@@ -118,35 +183,38 @@ export function Messages({
               const isStreamingContainer = isLastAssistant
                 ? isStreaming
                 : false;
+              const showLoaderAboveMessage = isLastAssistant
+                ? isLoading || showMinLoader
+                : false;
 
               return (
-                <div
-                  className={cn(
-                    "flex w-full gap-2",
-                    msg.role === "user" ? "ml-auto" : ""
-                  )}
-                  key={msg.id}
-                >
-                  <ChatMessage
-                    isStreamingContainer={isStreamingContainer}
-                    msg={msg}
-                    onExperienceExpand={onExperienceExpand}
-                    onProjectExpand={onProjectExpand}
-                    onSuggestionClick={onSuggestionClick}
-                  />
-                </div>
+                <Fragment key={msg.id}>
+                  {showLoaderAboveMessage ? (
+                    <div className="flex flex-col">
+                      <p>loading...</p>
+                      <hr className="mb-0 w-full border-border" />
+                      <div className="flex min-h-[250px] items-start gap-2 py-2 text-muted-foreground text-sm">
+                        <Loader size={14} />
+                      </div>
+                    </div>
+                  ) : null}
+                  <div
+                    className={cn(
+                      "flex w-full gap-2",
+                      msg.role === "user" ? "ml-auto" : ""
+                    )}
+                  >
+                    <ChatMessage
+                      isStreamingContainer={isStreamingContainer}
+                      msg={msg}
+                      onExperienceExpand={onExperienceExpand}
+                      onProjectExpand={onProjectExpand}
+                      onSuggestionClick={onSuggestionClick}
+                    />
+                  </div>
+                </Fragment>
               );
             })
-          )}
-          {(status === "submitted" ||
-            (status === "streaming" && lastAssistantMessageIsEmpty(messages))) && (
-            <div className="flex flex-col">
-              <p>loading...</p>
-              <hr className="mb-0 w-full border-border" />
-              <div className="flex min-h-[250px] items-start gap-2 py-2 text-muted-foreground text-sm">
-                <Loader size={14} />
-              </div>
-            </div>
           )}
           {typeof error === "object" &&
             error !== null &&
