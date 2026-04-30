@@ -165,13 +165,23 @@ export function Messages({
     setIsAtBottom(distanceFromBottom <= NEAR_BOTTOM_THRESHOLD);
   }, []);
 
-  const scrollToBottom = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) {
+  const scrollLatestTurnIntoView = useCallback(() => {
+    const activeTurnEl = (activeTurnRefProp ?? internalActiveTurnRef).current;
+    if (activeTurnEl) {
+      requestAnimationFrame(() => {
+        activeTurnEl.scrollIntoView({
+          behavior: "smooth",
+          block: "end",
+          inline: "nearest",
+        });
+      });
       return;
     }
-    el.scrollTo({ top: el.scrollHeight });
-  }, []);
+    const el = scrollRef.current;
+    if (el) {
+      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    }
+  }, [activeTurnRefProp]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -190,9 +200,9 @@ export function Messages({
 
   useEffect(() => {
     if (status === "submitted") {
-      scrollToBottom();
+      scrollLatestTurnIntoView();
     }
-  }, [status, scrollToBottom]);
+  }, [status, scrollLatestTurnIntoView]);
 
   return (
     <div className="relative flex h-full min-h-0 flex-1 flex-col">
@@ -287,7 +297,7 @@ export function Messages({
         <Button
           aria-label="Scroll to bottom"
           className="-translate-x-1/2 absolute bottom-10 left-[50%] z-20 rounded-full"
-          onClick={scrollToBottom}
+          onClick={scrollLatestTurnIntoView}
           size="icon"
           type="button"
           variant="outline"
