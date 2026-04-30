@@ -52,10 +52,10 @@ function getTurnKey(turn: MessageWithIndex[], turnIndex: number): string {
 }
 
 function getActiveTurnMinHeightStyle(
-  applyMinHeight: boolean,
+  isActiveTurn: boolean,
   containerHeightPx: number | null
 ): CSSProperties | undefined {
-  if (!applyMinHeight) {
+  if (!isActiveTurn) {
     return;
   }
   if (containerHeightPx === null) {
@@ -127,7 +127,6 @@ export function Messages({
     number | null
   >(null);
   const internalActiveTurnRef = useRef<HTMLDivElement | null>(null);
-  const prevStatusRef = useRef(status);
 
   useLayoutEffect(() => {
     const scrollEl = scrollRef.current;
@@ -200,10 +199,7 @@ export function Messages({
   }, [updateScrollState]);
 
   useEffect(() => {
-    const streamingJustStarted =
-      prevStatusRef.current !== "streaming" && status === "streaming";
-    prevStatusRef.current = status;
-    if (streamingJustStarted) {
+    if (status === "submitted") {
       scrollLatestTurnIntoView();
     }
   }, [status, scrollLatestTurnIntoView]);
@@ -228,11 +224,6 @@ export function Messages({
               const activeRefTarget =
                 activeTurnRefProp ?? internalActiveTurnRef;
 
-              let applyActiveTurnMinHeight = false;
-              if (isActiveTurn && status === "streaming") {
-                applyActiveTurnMinHeight = true;
-              }
-
               return (
                 <div
                   className={cn(
@@ -248,7 +239,7 @@ export function Messages({
                     }
                   }}
                   style={getActiveTurnMinHeightStyle(
-                    applyActiveTurnMinHeight,
+                    isActiveTurn,
                     activeTurnMinHeightPx
                   )}
                 >
