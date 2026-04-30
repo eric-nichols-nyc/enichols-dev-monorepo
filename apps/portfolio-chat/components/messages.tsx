@@ -5,14 +5,35 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
 import type { UIMessage } from "ai";
 import { ArrowDownIcon } from "lucide-react";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ExperienceBoundingBox } from "./experience";
 import { Greeting } from "./greeting";
 import { ChatMessage } from "./message";
 import type { BoundingBox } from "./projects";
-import { ThinkingMessage } from "./thinking-message";
 
 const NEAR_BOTTOM_THRESHOLD = 70;
+
+type MessageWithIndex = { globalIndex: number; msg: UIMessage };
+
+/** One "turn" = a user message plus every following message until the next user. */
+function groupMessagesByUserTurn(messages: UIMessage[]): MessageWithIndex[][] {
+  const groups: MessageWithIndex[][] = [];
+  let current: MessageWithIndex[] = [];
+
+  messages.forEach((msg, globalIndex) => {
+    const entry = { globalIndex, msg };
+    if (msg.role === "user" && current.length > 0) {
+      groups.push(current);
+      current = [entry];
+    } else {
+      current.push(entry);
+    }
+  });
+  if (current.length > 0) {
+    groups.push(current);
+  }
+  return groups;
+}
 
 /** True when the last message is an assistant message with no visible content yet (avoids empty bubble flash). */
 // function lastAssistantMessageIsEmpty(messages: UIMessage[]): boolean {
@@ -66,6 +87,11 @@ export function Messages({
 }: MessagesProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
+
+  const messageTurns = useMemo(
+    () => groupMessagesByUserTurn(messages),
+    [messages]
+  );
 
   const updateScrollState = useCallback(() => {
     const el = scrollRef.current;
@@ -128,38 +154,40 @@ export function Messages({
               <Greeting />
             </ConversationEmptyState>
           ) : (
-            messages.map((msg, i) => {
-              const isLastAssistant =
-                i === messages.length - 1 && msg.role === "assistant";
-              const isStreaming =
-                status === "submitted" || status === "streaming";
-              const isStreamingContainer = isLastAssistant
-                ? isStreaming
-                : false;
-              const showLoaderAboveMessage = isLastAssistant;
+            messageTurns.map((turn) => (
+              <div
+                className="flex flex-col gap-8 border border-red-500"
+                key={turn[0]?.msg.id ?? "turn"}
+              >
+                {turn.map(({ globalIndex: i, msg }) => {
+                  const isLastAssistant =
+                    i === messages.length - 1 && msg.role === "assistant";
+                  const isStreaming =
+                    status === "submitted" || status === "streaming";
+                  const isStreamingContainer = isLastAssistant
+                    ? isStreaming
+                    : false;
 
-              return (
-                <Fragment key={msg.id}>
-                  {showLoaderAboveMessage ? (
-                    <ThinkingMessage />
-                  ) : null}
-                  <div
-                    className={cn(
-                      "flex w-full gap-2",
-                      msg.role === "user" ? "ml-auto" : ""
-                    )}
-                  >
-                    <ChatMessage
-                      isStreamingContainer={isStreamingContainer}
-                      msg={msg}
-                      onExperienceExpand={onExperienceExpand}
-                      onProjectExpand={onProjectExpand}
-                      onSuggestionClick={onSuggestionClick}
-                    />
-                  </div>
-                </Fragment>
-              );
-            })
+                  return (
+                    <div
+                      className={cn(
+                        "flex w-full gap-2",
+                        msg.role === "user" ? "ml-auto" : ""
+                      )}
+                      key={msg.id}
+                    >
+                      <ChatMessage
+                        isStreamingContainer={isStreamingContainer}
+                        msg={msg}
+                        onExperienceExpand={onExperienceExpand}
+                        onProjectExpand={onProjectExpand}
+                        onSuggestionClick={onSuggestionClick}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            ))
           )}
           {typeof error === "object" &&
             error !== null &&
