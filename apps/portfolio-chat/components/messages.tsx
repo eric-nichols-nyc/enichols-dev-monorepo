@@ -1,7 +1,6 @@
 "use client";
 
 import { ConversationEmptyState } from "@repo/design-system/components/ai-elements/conversation";
-import { Loader } from "@repo/design-system/components/ai-elements/loader";
 import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
 import type { UIMessage } from "ai";
@@ -11,6 +10,7 @@ import type { ExperienceBoundingBox } from "./experience";
 import { Greeting } from "./greeting";
 import { ChatMessage } from "./message";
 import type { BoundingBox } from "./projects";
+import { ThinkingMessage } from "./thinking-message";
 
 const NEAR_BOTTOM_THRESHOLD = 70;
 const MIN_LOADER_VISIBLE_MS = 5000;
@@ -69,7 +69,9 @@ export function Messages({
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [showMinLoader, setShowMinLoader] = useState(false);
   const loadingStartedAtRef = useRef<number | null>(null);
-  const hideLoaderTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hideLoaderTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
   const isLoading = status === "submitted" || status === "streaming";
 
   const updateScrollState = useCallback(() => {
@@ -161,7 +163,7 @@ export function Messages({
         role="log"
       >
         <div className="mx-auto flex w-full max-w-[720px] flex-col gap-8 p-4">
-          {isLoading || showMinLoader ? (
+          {/* {isLoading || showMinLoader ? (
             <div className="flex flex-col">
               <p>loading...</p>
               <hr className="mb-0 w-full border-border" />
@@ -169,7 +171,7 @@ export function Messages({
                 <Loader size={14} />
               </div>
             </div>
-          ) : null}
+          ) : null} */}
           {messages.length === 0 ? (
             <ConversationEmptyState>
               <Greeting />
@@ -190,13 +192,7 @@ export function Messages({
               return (
                 <Fragment key={msg.id}>
                   {showLoaderAboveMessage ? (
-                    <div className="flex flex-col">
-                      <p>loading...</p>
-                      <hr className="mb-0 w-full border-border" />
-                      <div className="flex min-h-[250px] items-start gap-2 py-2 text-muted-foreground text-sm">
-                        <Loader size={14} />
-                      </div>
-                    </div>
+                    <ThinkingMessage />
                   ) : null}
                   <div
                     className={cn(

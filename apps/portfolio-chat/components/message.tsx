@@ -1,7 +1,6 @@
 "use client";
 
 import { Loader } from "@repo/design-system/components/ai-elements/loader";
-import { useEffect, useRef } from "react";
 import {
   Message,
   MessageContent,
@@ -9,6 +8,7 @@ import {
 } from "@repo/design-system/components/ai-elements/message";
 import { cn } from "@repo/design-system/lib/utils";
 import type { UIMessage } from "ai";
+import { useEffect, useRef } from "react";
 import { About } from "./about";
 import type { ExperienceBoundingBox } from "./experience";
 import { Experience, ExperienceSkeleton } from "./experience";
@@ -225,7 +225,7 @@ function getRelatedForMessage(msg: {
   );
 }
 
-const STREAMING_CONTAINER_MIN_HEIGHT_PX = 250;
+const STREAMING_CONTAINER_MIN_HEIGHT_PX = 500;
 
 export type ChatMessageProps = {
   msg: UIMessage;
@@ -250,7 +250,6 @@ const DEBUG_PARTS =
 
 export function ChatMessage({
   msg,
-  isStreamingContainer = false,
   onExperienceExpand,
   onProjectExpand,
   onSuggestionClick,
@@ -263,7 +262,10 @@ export function ChatMessage({
       return;
     }
     const partsKey = msg.parts
-      .map((p) => `${(p as { type?: string }).type}:${(p as { state?: string }).state ?? ""}`)
+      .map(
+        (p) =>
+          `${(p as { type?: string }).type}:${(p as { state?: string }).state ?? ""}`
+      )
       .join(",");
     if (partsKey === prevPartsKey.current) {
       return;
@@ -281,17 +283,7 @@ export function ChatMessage({
   }, [msg.id, msg.role, msg.parts]);
 
   return (
-    <div
-      className="min-w-0 flex-1"
-      style={
-        isStreamingContainer
-          ? { minHeight: STREAMING_CONTAINER_MIN_HEIGHT_PX }
-          : {}
-      }
-    >
-      {isStreamingContainer ? (
-        <hr aria-hidden className="mb-4 w-full border-border" />
-      ) : null}
+    <div className="min-w-0 flex-1">
       <Message
         className={cn(
           "min-w-0 flex-1",

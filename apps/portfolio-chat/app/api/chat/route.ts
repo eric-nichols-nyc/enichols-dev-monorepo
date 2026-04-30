@@ -26,6 +26,7 @@ import tech from "@/data/tech.json";
 
 /** Split text into words and spaces so we can stream with preserved formatting */
 const SPLIT_WORDS_AND_SPACES = /(\s+)/;
+const isMockStreamEnabled = process.env.CHAT_MOCK_STREAM === "true";
 
 type SimpleModelMessage = { role: "system" | "user" | "assistant"; content: string };
 
@@ -192,6 +193,9 @@ const tools = {
 export async function POST(request: Request) {
   try {
     console.log("[chat:api] POST /api/chat received");
+    if (isMockStreamEnabled) {
+      console.log("[chat:api] mock streaming mode enabled");
+    }
     const body = (await request.json()) as { messages?: UIMessage[] };
     /** UIMessage[] from useChat: [{ role, parts: [{ type, text } | { type, ... }] }] */
     const { messages } = body;
@@ -222,6 +226,27 @@ export async function POST(request: Request) {
       "[chat:api] converted to model messages, count:",
       modelMessages.length
     );
+
+    if (isMockStreamEnabled) {
+      const stream = createUIMessageStream({
+        originalMessages: messages,
+        execute: async ({ writer }) => {
+          const mockTextId = "mock-stream-response";
+          const lastPrompt = lastText === "(none)" ? "your message" : `"${lastText}"`;
+          const mockCopy = `Mock mode is enabled, so this reply is locally streamed without calling OpenAI or Google. I received ${lastPrompt}.`;
+
+          await new Promise((resolve) => setTimeout(resolve, 700));
+          await streamCopy(
+            writer as { write: (part: { type: string; id: string; delta?: string }) => void },
+            mockTextId,
+            mockCopy
+          );
+        },
+      });
+
+      console.log("[chat:api] returning mock UI stream response");
+      return createUIMessageStreamResponse({ stream });
+    }
 
     const sampleTitles = projects
       .slice(0, 3)
