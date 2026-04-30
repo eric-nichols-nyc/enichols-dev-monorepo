@@ -1,13 +1,15 @@
 "use client";
 
-import type { UIMessage } from "ai";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "@repo/ai";
+import type { UIMessage } from "ai";
 import {
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
-  type ReactNode,
+  useEffect,
+  useRef,
 } from "react";
 
 type ChatContextValue = {
@@ -24,6 +26,14 @@ export function PortfolioChatProvider({ children }: { children: ReactNode }) {
   const { error, messages, sendMessage, setMessages, status } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
   });
+
+  const prevStatusRef = useRef(status);
+  useEffect(() => {
+    if (prevStatusRef.current !== "streaming" && status === "streaming") {
+      console.log("[portfolio-chat] streaming started");
+    }
+    prevStatusRef.current = status;
+  }, [status]);
 
   const clearMessages = useCallback(() => {
     setMessages([]);
@@ -57,7 +67,9 @@ export function PortfolioChatProvider({ children }: { children: ReactNode }) {
 export function usePortfolioChat() {
   const ctx = useContext(ChatContext);
   if (!ctx) {
-    throw new Error("usePortfolioChat must be used within PortfolioChatProvider");
+    throw new Error(
+      "usePortfolioChat must be used within PortfolioChatProvider"
+    );
   }
   return ctx;
 }
