@@ -125,7 +125,7 @@ export function Chat({
         />
       )}
       <div
-        className="border-border min-h-0 flex-1 overflow-hidden border chat-messages-container"
+        className="chat-messages-container min-h-0 flex-1 overflow-hidden border border-border"
         data-testid="chat-messages-container"
       >
 

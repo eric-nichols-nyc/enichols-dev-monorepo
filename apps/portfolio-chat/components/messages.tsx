@@ -5,14 +5,25 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
 import type { UIMessage } from "ai";
 import { ArrowDownIcon } from "lucide-react";
-import type { MutableRefObject } from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { CSSProperties, MutableRefObject } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { ExperienceBoundingBox } from "./experience";
 import { Greeting } from "./greeting";
 import { ChatMessage } from "./message";
 import type { BoundingBox } from "./projects";
 
 const NEAR_BOTTOM_THRESHOLD = 70;
+
+const CHAT_MESSAGES_CONTAINER_SELECTOR = ".chat-messages-container";
+/** Subtracted from measured `.chat-messages-container` height for the active turn min-height. */
+const ACTIVE_TURN_MIN_HEIGHT_OFFSET_PX = -30;
 
 type MessageWithIndex = { globalIndex: number; msg: UIMessage };
 
@@ -38,6 +49,23 @@ function groupMessagesByUserTurn(messages: UIMessage[]): MessageWithIndex[][] {
 
 function getTurnKey(turn: MessageWithIndex[], turnIndex: number): string {
   return turn[0]?.msg.id ?? `turn-${turnIndex}`;
+}
+
+function getActiveTurnMinHeightStyle(
+  isActiveTurn: boolean,
+  containerHeightPx: number | null
+): CSSProperties | undefined {
+  if (!isActiveTurn) {
+    return;
+  }
+  if (containerHeightPx === null) {
+    return;
+  }
+  const minHeight = Math.max(
+    0,
+    containerHeightPx + ACTIVE_TURN_MIN_HEIGHT_OFFSET_PX
+  );
+  return { minHeight };
 }
 
 /** True when the last message is an assistant message with no visible content yet (avoids empty bubble flash). */
@@ -95,7 +123,32 @@ export function Messages({
 }: MessagesProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
+  const [activeTurnMinHeightPx, setActiveTurnMinHeightPx] = useState<
+    number | null
+  >(null);
   const internalActiveTurnRef = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
+    const scrollEl = scrollRef.current;
+    if (!scrollEl) {
+      return;
+    }
+    const container = scrollEl.closest(CHAT_MESSAGES_CONTAINER_SELECTOR);
+    if (!(container instanceof HTMLElement)) {
+      return;
+    }
+
+    const sync = () => {
+      setActiveTurnMinHeightPx(container.clientHeight);
+    };
+    sync();
+
+    const ro = new ResizeObserver(sync);
+    ro.observe(container);
+    return () => {
+      ro.disconnect();
+    };
+  }, []);
 
   const messageTurns = useMemo(
     () => groupMessagesByUserTurn(messages),
@@ -174,9 +227,7 @@ export function Messages({
                 <div
                   className={cn(
                     "flex flex-col gap-8",
-                    isActiveTurn
-                      ? "min-h-[500px] rounded-lg border-2 border-red-500"
-                      : ""
+                    isActiveTurn ? "rounded-lg border-2 border-red-500" : ""
                   )}
                   key={turnKey}
                   ref={(el) => {
@@ -186,6 +237,10 @@ export function Messages({
                       activeRefTarget.current = null;
                     }
                   }}
+                  style={getActiveTurnMinHeightStyle(
+                    isActiveTurn,
+                    activeTurnMinHeightPx
+                  )}
                 >
                   {turn.map(({ globalIndex: i, msg }) => {
                     const isLastAssistant =
