@@ -52,10 +52,10 @@ function getTurnKey(turn: MessageWithIndex[], turnIndex: number): string {
 }
 
 function getActiveTurnMinHeightStyle(
-  isActiveTurn: boolean,
+  applyMinHeight: boolean,
   containerHeightPx: number | null
 ): CSSProperties | undefined {
-  if (!isActiveTurn) {
+  if (!applyMinHeight) {
     return;
   }
   if (containerHeightPx === null) {
@@ -127,6 +127,7 @@ export function Messages({
     number | null
   >(null);
   const internalActiveTurnRef = useRef<HTMLDivElement | null>(null);
+  const prevStatusRef = useRef(status);
 
   useLayoutEffect(() => {
     const scrollEl = scrollRef.current;
@@ -199,7 +200,10 @@ export function Messages({
   }, [updateScrollState]);
 
   useEffect(() => {
-    if (status === "submitted") {
+    const streamingJustStarted =
+      prevStatusRef.current !== "streaming" && status === "streaming";
+    prevStatusRef.current = status;
+    if (streamingJustStarted) {
       scrollLatestTurnIntoView();
     }
   }, [status, scrollLatestTurnIntoView]);
@@ -212,15 +216,6 @@ export function Messages({
         role="log"
       >
         <div className="mx-auto flex w-full max-w-[720px] flex-col gap-8 p-4">
-          {/* {isLoading || showMinLoader ? (
-            <div className="flex flex-col">
-              <p>loading...</p>
-              <hr className="mb-0 w-full border-border" />
-              <div className="flex min-h-[250px] items-start gap-2 py-2 text-muted-foreground text-sm">
-                <Loader size={14} />
-              </div>
-            </div>
-          ) : null} */}
           {messages.length === 0 ? (
             <ConversationEmptyState>
               <Greeting />
@@ -232,6 +227,11 @@ export function Messages({
               const turnKey = getTurnKey(turn, turnIndex);
               const activeRefTarget =
                 activeTurnRefProp ?? internalActiveTurnRef;
+
+              let applyActiveTurnMinHeight = false;
+              if (isActiveTurn && status === "streaming") {
+                applyActiveTurnMinHeight = true;
+              }
 
               return (
                 <div
@@ -248,7 +248,7 @@ export function Messages({
                     }
                   }}
                   style={getActiveTurnMinHeightStyle(
-                    isActiveTurn,
+                    applyActiveTurnMinHeight,
                     activeTurnMinHeightPx
                   )}
                 >
