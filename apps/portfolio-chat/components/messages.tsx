@@ -13,7 +13,6 @@ import type { BoundingBox } from "./projects";
 import { ThinkingMessage } from "./thinking-message";
 
 const NEAR_BOTTOM_THRESHOLD = 70;
-const MIN_LOADER_VISIBLE_MS = 5000;
 
 /** True when the last message is an assistant message with no visible content yet (avoids empty bubble flash). */
 // function lastAssistantMessageIsEmpty(messages: UIMessage[]): boolean {
@@ -67,12 +66,6 @@ export function Messages({
 }: MessagesProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
-  const [showMinLoader, setShowMinLoader] = useState(false);
-  const loadingStartedAtRef = useRef<number | null>(null);
-  const hideLoaderTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null
-  );
-  const isLoading = status === "submitted" || status === "streaming";
 
   const updateScrollState = useCallback(() => {
     const el = scrollRef.current;
@@ -113,48 +106,6 @@ export function Messages({
     }
   }, [status, scrollToBottom]);
 
-  useEffect(() => {
-    if (isLoading) {
-      if (hideLoaderTimeoutRef.current) {
-        clearTimeout(hideLoaderTimeoutRef.current);
-        hideLoaderTimeoutRef.current = null;
-      }
-
-      if (loadingStartedAtRef.current === null) {
-        loadingStartedAtRef.current = Date.now();
-      }
-      setShowMinLoader(true);
-      return;
-    }
-
-    if (loadingStartedAtRef.current === null) {
-      setShowMinLoader(false);
-      return;
-    }
-
-    const elapsed = Date.now() - loadingStartedAtRef.current;
-    const remaining = Math.max(0, MIN_LOADER_VISIBLE_MS - elapsed);
-
-    if (remaining === 0) {
-      loadingStartedAtRef.current = null;
-      setShowMinLoader(false);
-      return;
-    }
-
-    hideLoaderTimeoutRef.current = setTimeout(() => {
-      loadingStartedAtRef.current = null;
-      setShowMinLoader(false);
-      hideLoaderTimeoutRef.current = null;
-    }, remaining);
-
-    return () => {
-      if (hideLoaderTimeoutRef.current) {
-        clearTimeout(hideLoaderTimeoutRef.current);
-        hideLoaderTimeoutRef.current = null;
-      }
-    };
-  }, [isLoading]);
-
   return (
     <div className="relative flex h-full min-h-0 flex-1 flex-col">
       <div
@@ -185,9 +136,7 @@ export function Messages({
               const isStreamingContainer = isLastAssistant
                 ? isStreaming
                 : false;
-              const showLoaderAboveMessage = isLastAssistant
-                ? isLoading || showMinLoader
-                : false;
+              const showLoaderAboveMessage = isLastAssistant;
 
               return (
                 <Fragment key={msg.id}>
