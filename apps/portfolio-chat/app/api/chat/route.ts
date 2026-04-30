@@ -28,14 +28,20 @@ import tech from "@/data/tech.json";
 const SPLIT_WORDS_AND_SPACES = /(\s+)/;
 const isMockStreamEnabled = process.env.CHAT_MOCK_STREAM === "true";
 
-type SimpleModelMessage = { role: "system" | "user" | "assistant"; content: string };
+type SimpleModelMessage = {
+  role: "system" | "user" | "assistant";
+  content: string;
+};
 
 function toSimpleModelMessages(messages: UIMessage[]): SimpleModelMessage[] {
   return messages
     .map((message) => {
       const content =
         message.parts
-          ?.filter((part): part is { type: "text"; text: string } => part.type === "text")
+          ?.filter(
+            (part): part is { type: "text"; text: string } =>
+              part.type === "text"
+          )
           .map((part) => part.text)
           .join("\n")
           .trim() ?? "";
@@ -44,7 +50,11 @@ function toSimpleModelMessages(messages: UIMessage[]): SimpleModelMessage[] {
         return null;
       }
 
-      if (message.role === "user" || message.role === "assistant" || message.role === "system") {
+      if (
+        message.role === "user" ||
+        message.role === "assistant" ||
+        message.role === "system"
+      ) {
         return {
           role: message.role,
           content,
@@ -232,12 +242,31 @@ export async function POST(request: Request) {
         originalMessages: messages,
         execute: async ({ writer }) => {
           const mockTextId = "mock-stream-response";
-          const lastPrompt = lastText === "(none)" ? "your message" : `"${lastText}"`;
-          const mockCopy = `Mock mode is enabled, so this reply is locally streamed without calling OpenAI or Google. I received ${lastPrompt}.`;
+          const lastPrompt =
+            lastText === "(none)" ? "your message" : `"${lastText}"`;
+          const mockCopy = [
+            `Mock mode is on (CHAT_MOCK_STREAM=true), so this streams locally with no live model. You sent ${lastPrompt}.`,
+            "",
+            `Extra copy for layout: imagine this is Eric's portfolio assistant. ${resume.name} is a ${resume.title} based in ${resume.location}. ${resume.summary}`,
+            "",
+            "In production you'd get tool-backed cards for projects, a scrollable experience timeline, and tech stack grids. Here it's plain text so you can tune scrolling, min-height on the active turn, and stream UX without burning tokens.",
+            "",
+            "Same session shape as the real API: message parts stream in order, then the run completes and status returns to ready. Try a longer prompt next and watch how the 20ms per-token pacing in streamCopy feels.",
+            "",
+            "Paragraph six—padding so the fake stream runs long enough to reproduce sticky bottom, scroll-into-view, and resize observers. Ship the chrome first, wire Gemini later.",
+            "",
+            "Thanks for testing the mock path. Flip CHAT_MOCK_STREAM off when you want real tools and answers.",
+          ].join("\n\n");
 
           await new Promise((resolve) => setTimeout(resolve, 700));
           await streamCopy(
-            writer as { write: (part: { type: string; id: string; delta?: string }) => void },
+            writer as {
+              write: (part: {
+                type: string;
+                id: string;
+                delta?: string;
+              }) => void;
+            },
             mockTextId,
             mockCopy
           );
