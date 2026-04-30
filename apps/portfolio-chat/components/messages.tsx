@@ -174,7 +174,9 @@ export function Messages({
                 <div
                   className={cn(
                     "flex flex-col gap-8",
-                    isActiveTurn ? "rounded-lg border-2 border-red-500" : ""
+                    isActiveTurn
+                      ? "min-h-[500px] rounded-lg border-2 border-red-500"
+                      : ""
                   )}
                   key={turnKey}
                   ref={(el) => {
