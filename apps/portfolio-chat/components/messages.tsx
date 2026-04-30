@@ -5,6 +5,7 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
 import type { UIMessage } from "ai";
 import { ArrowDownIcon } from "lucide-react";
+import type { MutableRefObject } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ExperienceBoundingBox } from "./experience";
 import { Greeting } from "./greeting";
@@ -33,6 +34,10 @@ function groupMessagesByUserTurn(messages: UIMessage[]): MessageWithIndex[][] {
     groups.push(current);
   }
   return groups;
+}
+
+function getTurnKey(turn: MessageWithIndex[], turnIndex: number): string {
+  return turn[0]?.msg.id ?? `turn-${turnIndex}`;
 }
 
 /** True when the last message is an assistant message with no visible content yet (avoids empty bubble flash). */
@@ -75,6 +80,8 @@ type MessagesProps = {
   ) => void;
   onSuggestionClick: (suggestion: string) => void;
   status: "streaming" | "submitted" | "ready" | "error";
+  /** Latest turn wrapper (red border). Defaults to an internal ref if omitted. */
+  activeTurnRef?: MutableRefObject<HTMLDivElement | null>;
 };
 
 export function Messages({
@@ -84,9 +91,11 @@ export function Messages({
   onProjectExpand,
   onSuggestionClick,
   status,
+  activeTurnRef: activeTurnRefProp,
 }: MessagesProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
+  const internalActiveTurnRef = useRef<HTMLDivElement | null>(null);
 
   const messageTurns = useMemo(
     () => groupMessagesByUserTurn(messages),
@@ -154,40 +163,58 @@ export function Messages({
               <Greeting />
             </ConversationEmptyState>
           ) : (
-            messageTurns.map((turn) => (
-              <div
-                className="flex flex-col gap-8 border border-red-500"
-                key={turn[0]?.msg.id ?? "turn"}
-              >
-                {turn.map(({ globalIndex: i, msg }) => {
-                  const isLastAssistant =
-                    i === messages.length - 1 && msg.role === "assistant";
-                  const isStreaming =
-                    status === "submitted" || status === "streaming";
-                  const isStreamingContainer = isLastAssistant
-                    ? isStreaming
-                    : false;
+            messageTurns.map((turn, turnIndex) => {
+              const turnCount = messageTurns.length;
+              const isActiveTurn = turnIndex === turnCount - 1;
+              const turnKey = getTurnKey(turn, turnIndex);
+              const activeRefTarget =
+                activeTurnRefProp ?? internalActiveTurnRef;
 
-                  return (
-                    <div
-                      className={cn(
-                        "flex w-full gap-2",
-                        msg.role === "user" ? "ml-auto" : ""
-                      )}
-                      key={msg.id}
-                    >
-                      <ChatMessage
-                        isStreamingContainer={isStreamingContainer}
-                        msg={msg}
-                        onExperienceExpand={onExperienceExpand}
-                        onProjectExpand={onProjectExpand}
-                        onSuggestionClick={onSuggestionClick}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            ))
+              return (
+                <div
+                  className={cn(
+                    "flex flex-col gap-8",
+                    isActiveTurn ? "rounded-lg border-2 border-red-500" : ""
+                  )}
+                  key={turnKey}
+                  ref={(el) => {
+                    if (isActiveTurn) {
+                      activeRefTarget.current = el;
+                    } else if (activeRefTarget.current === el) {
+                      activeRefTarget.current = null;
+                    }
+                  }}
+                >
+                  {turn.map(({ globalIndex: i, msg }) => {
+                    const isLastAssistant =
+                      i === messages.length - 1 && msg.role === "assistant";
+                    const isStreaming =
+                      status === "submitted" || status === "streaming";
+                    const isStreamingContainer = isLastAssistant
+                      ? isStreaming
+                      : false;
+
+                    return (
+                      <div
+                        className={cn(
+                          "flex w-full gap-2",
+                          msg.role === "user" ? "ml-auto" : ""
+                        )}
+                        key={msg.id}
+                      >
+                        <ChatMessage
+                          isStreamingContainer={isStreamingContainer}
+                          msg={msg}
+                          onExperienceExpand={onExperienceExpand}
+                          onProjectExpand={onProjectExpand}
+                          onSuggestionClick={onSuggestionClick}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })
           )}
           {typeof error === "object" &&
             error !== null &&
