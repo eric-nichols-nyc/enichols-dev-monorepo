@@ -10,7 +10,6 @@ import type { MutableRefObject } from "react";
 import type { ExperienceBoundingBox } from "../experience";
 import { Greeting } from "../greeting";
 import { ChatMessage } from "../message";
-import type { BoundingBox } from "../projects";
 import { ThinkingMessage } from "../thinking-message";
 import { getTurnKey, useChatMessagesScroll } from "./use-chat-messages-scroll";
 
@@ -20,10 +19,6 @@ export type MessagesProps = {
   onExperienceExpand?: (
     experience: import("@/data/experience").ExperienceEntry[],
     boundingBox?: ExperienceBoundingBox
-  ) => void;
-  onProjectExpand?: (
-    project: import("@/data/projects").Project,
-    boundingBox?: BoundingBox
   ) => void;
   onSuggestionClick: (suggestion: string) => void;
   status: "streaming" | "submitted" | "ready" | "error";
@@ -35,7 +30,6 @@ export function Messages({
   error,
   messages,
   onExperienceExpand,
-  onProjectExpand,
   onSuggestionClick,
   status,
   activeTurnRef: activeTurnRefProp,
@@ -95,7 +89,6 @@ export function Messages({
                           <ChatMessage
                             msg={msg}
                             onExperienceExpand={onExperienceExpand}
-                            onProjectExpand={onProjectExpand}
                             onSuggestionClick={onSuggestionClick}
                           />
                         </div>

@@ -159,7 +159,7 @@ export function Artifact({
                 className="flex w-[400px] shrink-0 flex-col border-border border-r bg-muted/30"
                 initial={{ opacity: 0, x: -24 }}
               >
-                <Chat embedded onProjectExpand={onProjectSelect} />
+                <Chat embedded />
               </motion.div>
 
               {/* Column 2: Content slot - parent injects project, experience, etc. */}

@@ -10,7 +10,6 @@ import type { UIMessage } from "ai";
 import { About } from "./about";
 import type { ExperienceBoundingBox } from "./experience";
 import { Experience, ExperienceSkeleton } from "./experience";
-import type { BoundingBox } from "./projects";
 import { Projects, ProjectsSkeleton } from "./projects";
 import { Related } from "./related";
 import { TechStack, TechStackSkeleton } from "./tech-stack";
@@ -31,7 +30,6 @@ function MessagePartRenderer({
   msgId,
   i,
   onExperienceExpand,
-  onProjectExpand,
   onSuggestionClick,
 }: {
   part: {
@@ -45,10 +43,6 @@ function MessagePartRenderer({
   };
   msgId: string;
   i: number;
-  onProjectExpand?: (
-    project: import("@/data/projects").Project,
-    boundingBox?: BoundingBox
-  ) => void;
   onExperienceExpand?: (
     experience: import("@/data/experience").ExperienceEntry[],
     boundingBox?: ExperienceBoundingBox
@@ -71,7 +65,10 @@ function MessagePartRenderer({
     if (suggestions.length > 0) {
       return (
         <div className="mt-4 w-full" key={`${msgId}-${i}`}>
-          <Related onSuggestionClick={onSuggestionClick} suggestions={suggestions} />
+          <Related
+            onSuggestionClick={onSuggestionClick}
+            suggestions={suggestions}
+          />
         </div>
       );
     }
@@ -93,7 +90,7 @@ function MessagePartRenderer({
       };
       return (
         <div className="w-full" key={`${msgId}-${i}`}>
-          <Projects onExpand={onProjectExpand} {...output} />
+          <Projects {...output} />
         </div>
       );
     }
@@ -255,17 +252,12 @@ export type ChatMessageProps = {
     experience: import("@/data/experience").ExperienceEntry[],
     boundingBox?: ExperienceBoundingBox
   ) => void;
-  onProjectExpand?: (
-    project: import("@/data/projects").Project,
-    boundingBox?: BoundingBox
-  ) => void;
   onSuggestionClick: (suggestion: string) => void;
 };
 
 export function ChatMessage({
   msg,
   onExperienceExpand,
-  onProjectExpand,
   onSuggestionClick,
 }: ChatMessageProps) {
   const related = getRelatedForMessage(msg);
@@ -287,7 +279,6 @@ export function ChatMessage({
               key={`${msg.id}-${i}`}
               msgId={msg.id}
               onExperienceExpand={onExperienceExpand}
-              onProjectExpand={onProjectExpand}
               onSuggestionClick={onSuggestionClick}
               part={part}
             />

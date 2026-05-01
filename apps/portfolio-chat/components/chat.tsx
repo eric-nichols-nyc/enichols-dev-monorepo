@@ -23,7 +23,6 @@ import { Suggestions } from "./suggestions";
 
 type ChatProps = {
   embedded?: boolean;
-  onProjectExpand?: (project: Project, boundingBox?: BoundingBox) => void;
   onExperienceExpand?: (
     experience: ExperienceEntry[],
     boundingBox?: ExperienceBoundingBox
@@ -32,7 +31,6 @@ type ChatProps = {
 
 export function Chat({
   embedded,
-  onProjectExpand: onProjectExpandProp,
   onExperienceExpand: onExperienceExpandProp,
 }: ChatProps) {
   const [text, setText] = useState("");
@@ -93,13 +91,6 @@ export function Chat({
     setBoundingBox(null);
   };
 
-  const handleProjectExpand = (project: Project, box?: BoundingBox) => {
-    setSelectedProject(project);
-    setSelectedExperience(null);
-    setBoundingBox(box ?? null);
-    setArtifactOpen(true);
-  };
-
   const handleExperienceExpand = (
     experience: ExperienceEntry[],
     box?: ExperienceBoundingBox
@@ -135,7 +126,6 @@ export function Chat({
           onExperienceExpand={
             onExperienceExpandProp ?? handleExperienceExpand
           }
-          onProjectExpand={onProjectExpandProp ?? handleProjectExpand}
           onSuggestionClick={handleSuggestionClick}
           status={status}
         />
