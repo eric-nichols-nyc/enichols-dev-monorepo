@@ -9,10 +9,10 @@ import { cn } from "@repo/design-system/lib/utils";
 import type { UIMessage } from "ai";
 import { About } from "./about";
 import type { ExperienceBoundingBox } from "./experience";
-import { Experience, ExperienceSkeleton } from "./experience";
-import { Projects, ProjectsSkeleton } from "./projects";
+import { Experience } from "./experience";
+import { Projects } from "./projects";
 import { Related } from "./related";
-import { TechStack, TechStackSkeleton } from "./tech-stack";
+import { TechStack } from "./tech-stack";
 import { ThinkingMessage } from "./thinking-message";
 
 type ExpEntry = {
@@ -78,7 +78,7 @@ function MessagePartRenderer({
     if (part.state === "input-available" || part.state === "input-streaming") {
       return (
         <div className="w-full" key={`${msgId}-${i}`}>
-          <ProjectsSkeleton />
+          <ThinkingMessage />
         </div>
       );
     }
@@ -106,7 +106,7 @@ function MessagePartRenderer({
     if (part.state === "input-available" || part.state === "input-streaming") {
       return (
         <div className="w-full" key={`${msgId}-${i}`}>
-          <ExperienceSkeleton />
+          <ThinkingMessage />
         </div>
       );
     }
@@ -187,7 +187,7 @@ function MessagePartRenderer({
     if (part.state === "input-available" || part.state === "input-streaming") {
       return (
         <div className="w-full" key={`${msgId}-${i}`}>
-          <TechStackSkeleton />
+          <ThinkingMessage />
         </div>
       );
     }
