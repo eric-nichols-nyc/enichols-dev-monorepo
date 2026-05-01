@@ -1,7 +1,6 @@
 "use client";
 
 import { ConversationEmptyState } from "@repo/design-system/components/ai-elements/conversation";
-import { Loader } from "@repo/design-system/components/ai-elements/loader";
 import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
 import type { UIMessage } from "ai";
@@ -12,6 +11,7 @@ import type { ExperienceBoundingBox } from "../experience";
 import { Greeting } from "../greeting";
 import { ChatMessage } from "../message";
 import type { BoundingBox } from "../projects";
+import { ThinkingMessage } from "../thinking-message";
 import { getTurnKey, useChatMessagesScroll } from "./use-chat-messages-scroll";
 
 export type MessagesProps = {
@@ -100,10 +100,7 @@ export function Messages({
                           />
                         </div>
                         {showInlineSubmittedLoader ? (
-                          <div className="flex w-full items-center gap-2 rounded-md border border-amber-500/60 bg-amber-500/10 px-3 py-2 text-amber-300">
-                            <Loader className="text-amber-300" size={18} />
-                            <span className="text-sm">Loading response...</span>
-                          </div>
+                          <ThinkingMessage />
                         ) : null}
                       </Fragment>
                     );

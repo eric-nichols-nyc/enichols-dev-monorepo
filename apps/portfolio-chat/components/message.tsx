@@ -1,6 +1,5 @@
 "use client";
 
-import { Loader } from "@repo/design-system/components/ai-elements/loader";
 import {
   Message,
   MessageContent,
@@ -15,6 +14,7 @@ import type { BoundingBox } from "./projects";
 import { Projects, ProjectsSkeleton } from "./projects";
 import { Related } from "./related";
 import { TechStack, TechStackSkeleton } from "./tech-stack";
+import { ThinkingMessage } from "./thinking-message";
 
 type ExpEntry = {
   duration: string;
@@ -37,6 +37,7 @@ function MessagePartRenderer({
   part: {
     type: string;
     state?: string;
+    preliminary?: boolean;
     output?: unknown;
     errorText?: string;
     text?: string;
@@ -128,8 +129,8 @@ function MessagePartRenderer({
   if (part.type === "tool-show_about" || part.type === "tool-showAbout") {
     if (part.state === "input-available" || part.state === "input-streaming") {
       return (
-        <div key={`${msgId}-${i}`}>
-          <Loader />
+        <div className="w-full" key={`${msgId}-${i}`}>
+          <ThinkingMessage />
         </div>
       );
     }
@@ -141,12 +142,15 @@ function MessagePartRenderer({
         related?: string[];
       };
       return (
-        <div className="w-full" key={`${msgId}-${i}`}>
+        <div className="w-full space-y-3" key={`${msgId}-${i}`}>
           <About
             paragraphs={output.paragraphs}
             socialLinks={output.socialLinks}
             title={output.title}
           />
+          {part.preliminary ? (
+            <p className="text-muted-foreground text-xs">Streaming about...</p>
+          ) : null}
           {(output.related?.length ?? 0) > 0 ? (
             <Related
               onSuggestionClick={onSuggestionClick}

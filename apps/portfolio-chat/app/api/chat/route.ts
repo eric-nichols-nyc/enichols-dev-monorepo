@@ -23,10 +23,13 @@ import { about } from "@/data/about";
 import experience from "@/data/experience";
 import projects from "@/data/projects";
 import tech from "@/data/tech.json";
+import { aboutCopy, showAboutTool } from "@/lib/ai/tools/about";
 
 /** Split text into words and spaces so we can stream with preserved formatting */
 const SPLIT_WORDS_AND_SPACES = /(\s+)/;
 const isMockStreamEnabled = process.env.CHAT_MOCK_STREAM === "true";
+const aboutRenderMode =
+  process.env.CHAT_ABOUT_RENDER_MODE === "component" ? "component" : "text";
 
 type SimpleModelMessage = {
   role: "system" | "user" | "assistant";
@@ -84,29 +87,7 @@ async function streamCopy(
 }
 
 const tools = {
-  /** Returns about section content for the UI */
-  show_about: tool({
-    description: "Display the about section",
-    // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
-    inputSchema: z.object({}) as any,
-    execute: () => ({
-      title: about.title,
-      paragraphs: about.paragraphs,
-      socialLinks: [
-        { href: "https://github.com/eric-nichols-nyc", label: "GitHub" },
-        { href: "https://instagram.com/ebn646/", label: "Instagram" },
-        {
-          href: "https://www.linkedin.com/in/eric-nichols-ab509118/",
-          label: "LinkedIn",
-        },
-      ],
-      related: [
-        "Show me your projects",
-        "What's your experience?",
-        "What's your tech stack?",
-      ],
-    }),
-  }),
+  show_about: showAboutTool,
   /** Returns project count and project data for the UI to render cards */
   show_projects: tool({
     description: "Display portfolio projects",
@@ -229,6 +210,7 @@ export async function POST(request: Request) {
      */
     const stream = createUIMessageStream({
       originalMessages: messages,
+      // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: stream routing over tool chunks
       execute: async ({ writer }) => {
         const result = streamText({
           // biome-ignore lint/suspicious/noExplicitAny: ToolSet/Zod mismatch between app deps and @repo/ai
@@ -248,8 +230,11 @@ Answer portfolio-related questions conversationally.`,
         });
 
         const uiStream = result.toUIMessageStream();
+        const textIdAbout = "about-follow-up";
         const textIdProjects = "projects-follow-up";
         const textIdTechStack = "tech-stack-follow-up";
+        let hasStreamedAboutText = false;
+        const suppressedAboutToolCallIds = new Set<string>();
 
         const writeChunk = writer as {
           write: (p: { type: string; id?: string; delta?: string }) => void;
@@ -259,8 +244,32 @@ Answer portfolio-related questions conversationally.`,
           const c = chunk as {
             type?: string;
             toolName?: string;
+            toolCallId?: string;
             output?: unknown;
           };
+
+          if (aboutRenderMode === "text") {
+            if (c.toolName === "show_about") {
+              if (typeof c.toolCallId === "string") {
+                suppressedAboutToolCallIds.add(c.toolCallId);
+              }
+              if (!hasStreamedAboutText) {
+                hasStreamedAboutText = true;
+                await streamCopy(writeChunk, textIdAbout, aboutCopy);
+              }
+              // Suppress show_about chunks in text mode.
+              continue;
+            }
+
+            if (
+              typeof c.toolCallId === "string" &&
+              suppressedAboutToolCallIds.has(c.toolCallId)
+            ) {
+              // Suppress all subsequent chunks (including input-delta/output)
+              // for the same show_about tool call ID.
+              continue;
+            }
+          }
 
           writer.write(chunk);
 
