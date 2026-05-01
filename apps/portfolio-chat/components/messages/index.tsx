@@ -40,6 +40,8 @@ export function Messages({
   status,
   activeTurnRef: activeTurnRefProp,
 }: MessagesProps) {
+  const lastMessageIndex = messages.length - 1;
+
   const {
     scrollRef,
     isAtBottom,
@@ -54,21 +56,8 @@ export function Messages({
 
   return (
     <div className="relative flex h-full min-h-0 flex-1 flex-col">
-      <div
-        className={cn(
-          "flex-1 overflow-y-auto overscroll-contain",
-          status === "submitted"
-            ? "rounded-md border-2 border-amber-500/80"
-            : "border border-transparent"
-        )}
-        data-chat-status={status}
-        ref={scrollRef}
-        role="log"
-      >
+      <div className="flex-1 overflow-y-auto overscroll-contain" ref={scrollRef} role="log">
         <div className="mx-auto flex w-full max-w-[720px] flex-col gap-8 p-4">
-          <div className="text-muted-foreground text-xs">
-            status: <span className="font-mono">{status}</span>
-          </div>
           {messages.length === 0 ? (
             <ConversationEmptyState>
               <Greeting />
@@ -90,11 +79,10 @@ export function Messages({
                   style={turnStyle}
                 >
                   {turn.map(({ globalIndex: i, msg }) => {
-                    const isLastMessage = i === messages.length - 1;
-                    let showInlineSubmittedLoader = false;
-                    if (status === "submitted" && isLastMessage) {
-                      showInlineSubmittedLoader = msg.role === "user";
-                    }
+                    const showInlineSubmittedLoader =
+                      status === "submitted" &&
+                      i === lastMessageIndex &&
+                      msg.role === "user";
 
                     return (
                       <Fragment key={msg.id}>
