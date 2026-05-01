@@ -39,6 +39,7 @@ function MessagePartRenderer({
     state?: string;
     preliminary?: boolean;
     output?: unknown;
+    data?: unknown;
     errorText?: string;
     text?: string;
   };
@@ -56,6 +57,24 @@ function MessagePartRenderer({
 }) {
   if (part.type === "text") {
     return <MessageResponse key={`${msgId}-${i}`}>{part.text}</MessageResponse>;
+  }
+
+  if (part.type === "data-related") {
+    const suggestions =
+      part.data &&
+      typeof part.data === "object" &&
+      "suggestions" in part.data &&
+      Array.isArray((part.data as { suggestions?: unknown }).suggestions)
+        ? ((part.data as { suggestions: string[] }).suggestions ?? [])
+        : [];
+
+    if (suggestions.length > 0) {
+      return (
+        <div className="mt-4 w-full" key={`${msgId}-${i}`}>
+          <Related onSuggestionClick={onSuggestionClick} suggestions={suggestions} />
+        </div>
+      );
+    }
   }
 
   if (part.type === "tool-show_projects" || part.type === "tool-showProjects") {

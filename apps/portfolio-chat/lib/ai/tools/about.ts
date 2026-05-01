@@ -11,7 +11,7 @@ const ABOUT_SOCIAL_LINKS = [
   },
 ] as const;
 
-const ABOUT_RELATED = [
+export const aboutRelated = [
   "Show me your projects",
   "What's your experience?",
   "What's your tech stack?",
@@ -28,6 +28,6 @@ export const showAboutTool = tool({
     title: about.title,
     paragraphs: about.paragraphs,
     socialLinks: [...ABOUT_SOCIAL_LINKS],
-    related: [...ABOUT_RELATED],
+    related: [...aboutRelated],
   }),
 });

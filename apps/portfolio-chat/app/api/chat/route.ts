@@ -23,13 +23,15 @@ import { about } from "@/data/about";
 import experience from "@/data/experience";
 import projects from "@/data/projects";
 import tech from "@/data/tech.json";
-import { aboutCopy, showAboutTool } from "@/lib/ai/tools/about";
+import {
+  createAboutStreamModeState,
+  getAboutStreamModeDecision,
+} from "@/lib/ai/about-stream-mode";
+import { aboutCopy, aboutRelated, showAboutTool } from "@/lib/ai/tools/about";
 
 /** Split text into words and spaces so we can stream with preserved formatting */
 const SPLIT_WORDS_AND_SPACES = /(\s+)/;
 const isMockStreamEnabled = process.env.CHAT_MOCK_STREAM === "true";
-const aboutRenderMode =
-  process.env.CHAT_ABOUT_RENDER_MODE === "component" ? "component" : "text";
 
 type SimpleModelMessage = {
   role: "system" | "user" | "assistant";
@@ -233,11 +235,15 @@ Answer portfolio-related questions conversationally.`,
         const textIdAbout = "about-follow-up";
         const textIdProjects = "projects-follow-up";
         const textIdTechStack = "tech-stack-follow-up";
-        let hasStreamedAboutText = false;
-        const suppressedAboutToolCallIds = new Set<string>();
+        const aboutStreamModeState = createAboutStreamModeState();
 
         const writeChunk = writer as {
-          write: (p: { type: string; id?: string; delta?: string }) => void;
+          write: (p: {
+            type: string;
+            id?: string;
+            delta?: string;
+            data?: unknown;
+          }) => void;
         };
 
         for await (const chunk of uiStream) {
@@ -248,27 +254,23 @@ Answer portfolio-related questions conversationally.`,
             output?: unknown;
           };
 
-          if (aboutRenderMode === "text") {
-            if (c.toolName === "show_about") {
-              if (typeof c.toolCallId === "string") {
-                suppressedAboutToolCallIds.add(c.toolCallId);
-              }
-              if (!hasStreamedAboutText) {
-                hasStreamedAboutText = true;
-                await streamCopy(writeChunk, textIdAbout, aboutCopy);
-              }
-              // Suppress show_about chunks in text mode.
-              continue;
-            }
+          const aboutDecision = getAboutStreamModeDecision({
+            aboutRenderMode: "text",
+            chunk: c,
+            state: aboutStreamModeState,
+          });
 
-            if (
-              typeof c.toolCallId === "string" &&
-              suppressedAboutToolCallIds.has(c.toolCallId)
-            ) {
-              // Suppress all subsequent chunks (including input-delta/output)
-              // for the same show_about tool call ID.
-              continue;
-            }
+          if (aboutDecision.shouldStreamAboutText) {
+            await streamCopy(writeChunk, textIdAbout, aboutCopy);
+            writeChunk.write({
+              type: "data-related",
+              id: "about-related",
+              data: { suggestions: [...aboutRelated] },
+            });
+          }
+
+          if (aboutDecision.suppressChunk) {
+            continue;
           }
 
           writer.write(chunk);
