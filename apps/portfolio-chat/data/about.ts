@@ -1,9 +1,31 @@
+import { resume } from "./resume";
+
+const [voteMate, imagination, ibm, havas] = resume.experience;
+
+/**
+ * About narrative derived from `resume.ts`, first-person and conversational.
+ * Update resume for facts; adjust prose here when your story changes.
+ */
 export const about = {
   title: "About",
   paragraphs: [
-    "I’m a frontend engineer with a specialty in web accessibility, focused on building pixel-perfect, intuitive user interfaces. I enjoy working at the intersection of design and engineering, where great user experience meets robust, clean, and scalable code.",
-    "Currently, I'm a senior frontend engineer at Klaviyo, where I work on the component library team to help maintain and evolve our design system. In this role, I lead accessibility efforts across components, tooling, and patterns, partnering closely with designers and engineers to ensure accessibility is part of our core architecture.",
-    "Previously, I’ve worked across a wide range of environments, from product studios to startups and large tech companies, including Apple, Starry Internet, and Upstatement. Alongside my professional work, I also created an online video course a few years ago which walks through building a real-world, API-driven application from scratch. These experiences have shaped how I think about building products that are both well-crafted and widely usable.",
-    "Outside of work, you can usually find me climbing, playing tennis, hanging out with my wife and two cats, or running around Hyrule searching for Korok seeds.",
-  ],
+    `👋 I'm ${resume.name}, a ${resume.title} based in ${resume.location}. ${resume.summary}`,
+    voteMate
+      ? `These days I'm at ${voteMate.company}, where I lead front-end for an AI-powered civic engagement platform 🗳️—we match voters with local candidates based on their values and policy preferences. I've architected the core chatbot experience, added Playwright tests for the critical journeys, and wired GitHub Actions so those AI-driven flows stay stable as we ship.`
+      : "",
+    [
+      imagination
+        ? `Before that I was at ${imagination.company}, where I led front-end for a Ford Auto Show registration platform—we restructured the experience and saw a measurable lift in registrations—and I built a Storybook component library with over 20 components that teams in the US and internationally adopted.`
+        : "",
+      ibm
+        ? `At ${ibm.company} I was lead architect on a back-office platform used by thousands of content marketers, shipping React and TypeScript with the IBM Design System and IBM Cloud, and partnering closely with product and design.`
+        : "",
+      havas
+        ? `Earlier at ${havas.company} I delivered high-visibility client work with accessible React SPAs, documented component patterns in Storybook, and spent real time mentoring junior developers.`
+        : "",
+    ]
+      .filter(Boolean)
+      .join(" "),
+    `Across those roles I've leaned on React ecosystems, design systems, cloud integration, and CI/CD—and more recently, AI-first product work and LLM integrations. 💬 Ask me about projects, stack, or how I like to build—I'm happy to go deeper.`,
+  ].filter((p) => p.length > 0),
 };

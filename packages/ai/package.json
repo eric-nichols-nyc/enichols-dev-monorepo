@@ -7,9 +7,10 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.65",
     "@ai-sdk/openai": "^2.0.77",
     "@t3-oss/env-nextjs": "^0.13.8",
-    "ai": "^5.0.107",
+    "ai": "^6.0.169",
     "react": "19.2.1",
     "streamdown": "^1.6.10",
     "tailwind-merge": "^3.4.0",

@@ -1,14 +1,9 @@
 "use client";
 
-import type { UIMessage } from "ai";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "@repo/ai";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  type ReactNode,
-} from "react";
+import type { UIMessage } from "ai";
+import { createContext, type ReactNode, useCallback, useContext } from "react";
 
 type ChatContextValue = {
   clearMessages: () => void;
@@ -57,7 +52,9 @@ export function PortfolioChatProvider({ children }: { children: ReactNode }) {
 export function usePortfolioChat() {
   const ctx = useContext(ChatContext);
   if (!ctx) {
-    throw new Error("usePortfolioChat must be used within PortfolioChatProvider");
+    throw new Error(
+      "usePortfolioChat must be used within PortfolioChatProvider"
+    );
   }
   return ctx;
 }

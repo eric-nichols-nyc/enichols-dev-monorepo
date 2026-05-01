@@ -124,7 +124,11 @@ export function Chat({
           open={artifactOpen}
         />
       )}
-      <div className="min-h-0 flex-1 overflow-hidden">
+      <div
+        className="chat-messages-container min-h-0 flex-1 overflow-hidden border border-border"
+        data-testid="chat-messages-container"
+      >
+
         <Messages
           error={error}
           messages={messages}

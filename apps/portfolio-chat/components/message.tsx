@@ -224,8 +224,6 @@ function getRelatedForMessage(msg: {
   );
 }
 
-const STREAMING_CONTAINER_MIN_HEIGHT_PX = 250;
-
 export type ChatMessageProps = {
   msg: UIMessage;
   /** When true, applies min-height and divider so streaming appears below the line */
@@ -243,7 +241,6 @@ export type ChatMessageProps = {
 
 export function ChatMessage({
   msg,
-  isStreamingContainer = false,
   onExperienceExpand,
   onProjectExpand,
   onSuggestionClick,
@@ -251,17 +248,7 @@ export function ChatMessage({
   const related = getRelatedForMessage(msg);
 
   return (
-    <div
-      className="min-w-0 flex-1"
-      style={
-        isStreamingContainer
-          ? { minHeight: STREAMING_CONTAINER_MIN_HEIGHT_PX }
-          : {}
-      }
-    >
-      {isStreamingContainer ? (
-        <hr aria-hidden className="mb-4 w-full border-border" />
-      ) : null}
+    <div className="min-w-0 flex-1">
       <Message
         className={cn(
           "min-w-0 flex-1",
