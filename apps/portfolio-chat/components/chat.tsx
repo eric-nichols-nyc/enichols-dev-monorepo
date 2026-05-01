@@ -19,6 +19,7 @@ import { ArtifactEmptyState } from "./artifact-empty-state";
 import { FeaturedExperience } from "./featured-experience";
 import { FeaturedProject } from "./featured-project";
 import { Messages } from "./messages";
+import { ProjectsObjectStreamTest } from "./projects-object-stream-test";
 import { Suggestions } from "./suggestions";
 
 type ChatProps = {
@@ -142,6 +143,7 @@ export function Chat({
       </div>
 
       <div className="sticky bottom-0 z-10 flex shrink-0 flex-col items-center gap-3 border-border border-t bg-app p-3">
+        <ProjectsObjectStreamTest />
         {messages.length === 0 && (
           <Suggestions onSuggestionClick={handleSuggestionClick} />
         )}

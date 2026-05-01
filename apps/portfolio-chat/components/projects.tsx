@@ -1,10 +1,8 @@
 "use client";
 
 import { Skeleton } from "@repo/design-system/components/ui/skeleton";
-import { ExternalLink } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
 import type { Project } from "@/data/projects";
+import { projectPreviewSentence } from "@/lib/project-preview-sentence";
 
 export type BoundingBox = {
   top: number;
@@ -37,21 +35,12 @@ export function ProjectsSkeleton() {
           (_, i) => `skeleton-${i}`
         ).map((id) => (
           <div
-            className="flex w-full flex-col overflow-hidden rounded-lg border border-border bg-card"
+            className="rounded-md border border-border bg-background/80 p-2"
             key={id}
           >
-            <Skeleton className="aspect-2/1 w-full rounded-none" />
-            <div className="flex flex-1 flex-col p-4">
-              <Skeleton className="mb-2 h-5 w-3/4" />
-              <Skeleton className="mb-1 h-4 max-w-full" />
-              <Skeleton className="mb-3 h-4 max-w-sm" />
-              <div className="flex gap-1.5">
-                <Skeleton className="h-5 w-14 rounded-full" />
-                <Skeleton className="h-5 w-16 rounded-full" />
-                <Skeleton className="h-5 w-12 rounded-full" />
-              </div>
-              <Skeleton className="mt-3 h-4 w-24" />
-            </div>
+            <Skeleton className="mb-2 h-5 w-2/5" />
+            <Skeleton className="mb-2 h-4 w-full" />
+            <Skeleton className="h-3 w-11/12" />
           </div>
         ))}
       </div>
@@ -75,50 +64,16 @@ export function Projects({ copy, onExpand, projects }: ProjectsProps) {
 export function ProjectCard({
   project,
 }: ProjectCardProps) {
+  const sentence = projectPreviewSentence(project.description);
   return (
-    <div className="relative flex w-full flex-col overflow-hidden rounded-lg border bg-card transition-all hover:shadow-lg">
-      <div className="relative aspect-2/1 w-full overflow-hidden bg-muted">
-        <Image
-          alt={project.title}
-          className="object-cover transition-transform"
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
-          src={
-            project.image ||
-            `https://placehold.co/800x450/1a1a1a/ffffff?text=${encodeURIComponent(project.title)}`
-          }
-        />
-      </div>
-      <div className="flex flex-1 flex-col p-4">
-        <h3 className="mb-2 font-semibold text-lg">
-          {project.title}
-        </h3>
-        <p className="mb-3 line-clamp-2 flex-1 text-muted-foreground text-sm">
-          {project.shortDescription}
+    <div className="rounded-md border border-border bg-background/80 p-2">
+      <p className="font-medium text-sm">{project.title}</p>
+      <p className="text-muted-foreground text-xs">{project.shortDescription}</p>
+      {sentence ? (
+        <p className="mt-1 text-muted-foreground/90 text-xs leading-snug">
+          {sentence}
         </p>
-        <div className="flex flex-wrap gap-1.5">
-          {project.tags.slice(0, 3).map((tag) => (
-            <span
-              className="rounded-full bg-muted px-2 py-0.5 text-muted-foreground text-xs"
-              key={tag}
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-        <div className="mt-3 flex items-center justify-end gap-2">
-          <Link
-            className="flex items-center gap-1 text-primary text-sm transition-colors hover:text-primary/80"
-            href={project.url}
-            onClick={(e) => e.stopPropagation()}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <span>View project</span>
-            <ExternalLink className="size-3" />
-          </Link>
-        </div>
-      </div>
+      ) : null}
     </div>
   );
 }
