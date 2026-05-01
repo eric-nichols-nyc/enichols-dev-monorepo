@@ -8,7 +8,6 @@ import {
 } from "@repo/design-system/components/ai-elements/message";
 import { cn } from "@repo/design-system/lib/utils";
 import type { UIMessage } from "ai";
-import { useEffect, useRef } from "react";
 import { About } from "./about";
 import type { ExperienceBoundingBox } from "./experience";
 import { Experience, ExperienceSkeleton } from "./experience";
@@ -225,8 +224,6 @@ function getRelatedForMessage(msg: {
   );
 }
 
-const STREAMING_CONTAINER_MIN_HEIGHT_PX = 500;
-
 export type ChatMessageProps = {
   msg: UIMessage;
   /** When true, applies min-height and divider so streaming appears below the line */
@@ -242,12 +239,6 @@ export type ChatMessageProps = {
   onSuggestionClick: (suggestion: string) => void;
 };
 
-/** Set to true or use ?debug=chat in URL to log message part updates (helps debug stream ordering). */
-const DEBUG_PARTS =
-  typeof window !== "undefined" &&
-  (process.env.NODE_ENV === "development" ||
-    /[?&]debug=chat/.test(window.location.search));
-
 export function ChatMessage({
   msg,
   onExperienceExpand,
@@ -255,32 +246,6 @@ export function ChatMessage({
   onSuggestionClick,
 }: ChatMessageProps) {
   const related = getRelatedForMessage(msg);
-  const prevPartsKey = useRef<string>("");
-
-  useEffect(() => {
-    if (!DEBUG_PARTS || msg.role !== "assistant") {
-      return;
-    }
-    const partsKey = msg.parts
-      .map(
-        (p) =>
-          `${(p as { type?: string }).type}:${(p as { state?: string }).state ?? ""}`
-      )
-      .join(",");
-    if (partsKey === prevPartsKey.current) {
-      return;
-    }
-    prevPartsKey.current = partsKey;
-    const summary = msg.parts.map((p) => {
-      const part = p as { type?: string; state?: string; text?: string };
-      return {
-        type: part.type,
-        state: part.state,
-        textLen: typeof part.text === "string" ? part.text.length : 0,
-      };
-    });
-    console.log("[ChatMessage] parts changed", { id: msg.id, parts: summary });
-  }, [msg.id, msg.role, msg.parts]);
 
   return (
     <div className="min-w-0 flex-1">

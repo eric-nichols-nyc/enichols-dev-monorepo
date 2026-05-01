@@ -19,9 +19,9 @@ import {
 } from "@repo/ai";
 import { models } from "@repo/ai/lib/models";
 import { z } from "zod";
+import { about } from "@/data/about";
 import experience from "@/data/experience";
 import projects from "@/data/projects";
-import { resume } from "@/data/resume";
 import tech from "@/data/tech.json";
 
 /** Split text into words and spaces so we can stream with preserved formatting */
@@ -89,44 +89,23 @@ const tools = {
     description: "Display the about section",
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
     inputSchema: z.object({}) as any,
-    execute: () => {
-      const primaryRole = resume.experience[0];
-      const secondaryRole = resume.experience[1];
-      const skillHighlights = resume.skills.slice(0, 3).join(" · ");
-      const roleHighlights = [
-        primaryRole
-          ? `${primaryRole.title} at ${primaryRole.company} (${primaryRole.dates})`
-          : null,
-        secondaryRole
-          ? `${secondaryRole.title} at ${secondaryRole.company} (${secondaryRole.dates})`
-          : null,
-      ].filter(Boolean);
-
-      return {
-        title: "About",
-        paragraphs: [
-          `I’m ${resume.name}, a ${resume.title} based in ${resume.location}.`,
-          resume.summary,
-          `Core strengths include ${skillHighlights}.`,
-          roleHighlights.length
-            ? `Recent roles include ${roleHighlights.join(" and ")}.`
-            : "Recent experience spans senior front-end and full-stack roles.",
-        ],
-        socialLinks: [
-          { href: "https://github.com/eric-nichols-nyc", label: "GitHub" },
-          { href: "https://instagram.com/ebn646/", label: "Instagram" },
-          {
-            href: "https://www.linkedin.com/in/eric-nichols-ab509118/",
-            label: "LinkedIn",
-          },
-        ],
-        related: [
-          "Show me your projects",
-          "What's your experience?",
-          "What's your tech stack?",
-        ],
-      };
-    },
+    execute: () => ({
+      title: about.title,
+      paragraphs: about.paragraphs,
+      socialLinks: [
+        { href: "https://github.com/eric-nichols-nyc", label: "GitHub" },
+        { href: "https://instagram.com/ebn646/", label: "Instagram" },
+        {
+          href: "https://www.linkedin.com/in/eric-nichols-ab509118/",
+          label: "LinkedIn",
+        },
+      ],
+      related: [
+        "Show me your projects",
+        "What's your experience?",
+        "What's your tech stack?",
+      ],
+    }),
   }),
   /** Returns project count and project data for the UI to render cards */
   show_projects: tool({
@@ -134,9 +113,6 @@ const tools = {
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
     inputSchema: z.object({}) as any,
     execute: async () => {
-      console.log(
-        "[chat:tool] show_projects called, delaying 1.5s so skeleton is visible"
-      );
       await new Promise((resolve) => setTimeout(resolve, 1500));
       // Copy/follow-up is injected in the stream after this tool—see execute below
       return {
@@ -157,9 +133,6 @@ const tools = {
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
     inputSchema: z.object({}) as any,
     execute: async () => {
-      console.log(
-        "[chat:tool] show_experience called, delaying 1.5s so skeleton is visible"
-      );
       await new Promise((resolve) => setTimeout(resolve, 1500));
       return {
         copy: "Here's my work experience. Click the expand button on any card to see the full timeline. Feel free to ask about a specific role or company.",
@@ -178,7 +151,6 @@ const tools = {
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
     inputSchema: z.object({}) as any,
     execute: () => {
-      console.log("[chat:tool] show_tech_stack called");
       const techData = tech as Record<
         string,
         Array<{ name: string; icon?: string; level?: string; years?: string }>
@@ -202,61 +174,25 @@ const tools = {
 
 export async function POST(request: Request) {
   try {
-    console.log("[chat:api] POST /api/chat received");
-    if (isMockStreamEnabled) {
-      console.log("[chat:api] mock streaming mode enabled");
-    }
     const body = (await request.json()) as { messages?: UIMessage[] };
     /** UIMessage[] from useChat: [{ role, parts: [{ type, text } | { type, ... }] }] */
     const { messages } = body;
 
     if (!messages?.length) {
-      console.log("[chat:api] rejected: no messages");
       return new Response(JSON.stringify({ error: "Messages are required" }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    const lastUser = messages.filter((m) => m.role === "user").at(-1);
-    const lastText =
-      lastUser?.parts
-        ?.filter((p): p is { type: "text"; text: string } => p.type === "text")
-        .map((p) => p.text)
-        .join(" ") ?? "(none)";
-    console.log(
-      "[chat:api] messages count:",
-      messages.length,
-      "| last user:",
-      lastText
-    );
-
     const modelMessages = toSimpleModelMessages(messages);
-    console.log(
-      "[chat:api] converted to model messages, count:",
-      modelMessages.length
-    );
 
     if (isMockStreamEnabled) {
       const stream = createUIMessageStream({
         originalMessages: messages,
         execute: async ({ writer }) => {
           const mockTextId = "mock-stream-response";
-          const lastPrompt =
-            lastText === "(none)" ? "your message" : `"${lastText}"`;
-          const mockCopy = [
-            `Mock mode is on (CHAT_MOCK_STREAM=true), so this streams locally with no live model. You sent ${lastPrompt}.`,
-            "",
-            `Extra copy for layout: imagine this is Eric's portfolio assistant. ${resume.name} is a ${resume.title} based in ${resume.location}. ${resume.summary}`,
-            "",
-            "In production you'd get tool-backed cards for projects, a scrollable experience timeline, and tech stack grids. Here it's plain text so you can tune scrolling, min-height on the active turn, and stream UX without burning tokens.",
-            "",
-            "Same session shape as the real API: message parts stream in order, then the run completes and status returns to ready. Try a longer prompt next and watch how the 20ms per-token pacing in streamCopy feels.",
-            "",
-            "Paragraph six—padding so the fake stream runs long enough to reproduce sticky bottom, scroll-into-view, and resize observers. Ship the chrome first, wire Gemini later.",
-            "",
-            "Thanks for testing the mock path. Flip CHAT_MOCK_STREAM off when you want real tools and answers.",
-          ].join("\n\n");
+          const mockCopy = about.paragraphs.join("\n\n");
 
           await new Promise((resolve) => setTimeout(resolve, 700));
           await streamCopy(
@@ -273,7 +209,6 @@ export async function POST(request: Request) {
         },
       });
 
-      console.log("[chat:api] returning mock UI stream response");
       return createUIMessageStreamResponse({ stream });
     }
 
@@ -346,7 +281,6 @@ Answer portfolio-related questions conversationally.`,
       },
     });
 
-    console.log("[chat:api] returning UI stream response");
     return createUIMessageStreamResponse({ stream });
   } catch (error) {
     console.error("[chat:api] error:", error);
