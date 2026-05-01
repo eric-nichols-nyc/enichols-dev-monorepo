@@ -1,10 +1,12 @@
 "use client";
 
 import { ConversationEmptyState } from "@repo/design-system/components/ai-elements/conversation";
+import { Loader } from "@repo/design-system/components/ai-elements/loader";
 import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
 import type { UIMessage } from "ai";
 import { ArrowDownIcon } from "lucide-react";
+import { Fragment } from "react";
 import type { MutableRefObject } from "react";
 import type { ExperienceBoundingBox } from "../experience";
 import { Greeting } from "../greeting";
@@ -53,11 +55,20 @@ export function Messages({
   return (
     <div className="relative flex h-full min-h-0 flex-1 flex-col">
       <div
-        className="flex-1 overflow-y-auto overscroll-contain"
+        className={cn(
+          "flex-1 overflow-y-auto overscroll-contain",
+          status === "submitted"
+            ? "rounded-md border-2 border-amber-500/80"
+            : "border border-transparent"
+        )}
+        data-chat-status={status}
         ref={scrollRef}
         role="log"
       >
         <div className="mx-auto flex w-full max-w-[720px] flex-col gap-8 p-4">
+          <div className="text-muted-foreground text-xs">
+            status: <span className="font-mono">{status}</span>
+          </div>
           {messages.length === 0 ? (
             <ConversationEmptyState>
               <Greeting />
@@ -79,30 +90,34 @@ export function Messages({
                   style={turnStyle}
                 >
                   {turn.map(({ globalIndex: i, msg }) => {
-                    const isLastAssistant =
-                      i === messages.length - 1 && msg.role === "assistant";
-                    const isStreaming =
-                      status === "submitted" || status === "streaming";
-                    const isStreamingContainer = isLastAssistant
-                      ? isStreaming
-                      : false;
+                    const isLastMessage = i === messages.length - 1;
+                    let showInlineSubmittedLoader = false;
+                    if (status === "submitted" && isLastMessage) {
+                      showInlineSubmittedLoader = msg.role === "user";
+                    }
 
                     return (
-                      <div
-                        className={cn(
-                          "flex w-full gap-2",
-                          msg.role === "user" ? "ml-auto" : ""
-                        )}
-                        key={msg.id}
-                      >
-                        <ChatMessage
-                          isStreamingContainer={isStreamingContainer}
-                          msg={msg}
-                          onExperienceExpand={onExperienceExpand}
-                          onProjectExpand={onProjectExpand}
-                          onSuggestionClick={onSuggestionClick}
-                        />
-                      </div>
+                      <Fragment key={msg.id}>
+                        <div
+                          className={cn(
+                            "flex w-full gap-2",
+                            msg.role === "user" ? "ml-auto" : ""
+                          )}
+                        >
+                          <ChatMessage
+                            msg={msg}
+                            onExperienceExpand={onExperienceExpand}
+                            onProjectExpand={onProjectExpand}
+                            onSuggestionClick={onSuggestionClick}
+                          />
+                        </div>
+                        {showInlineSubmittedLoader ? (
+                          <div className="flex w-full items-center gap-2 rounded-md border border-amber-500/60 bg-amber-500/10 px-3 py-2 text-amber-300">
+                            <Loader className="text-amber-300" size={18} />
+                            <span className="text-sm">Loading response...</span>
+                          </div>
+                        ) : null}
+                      </Fragment>
                     );
                   })}
                 </div>
