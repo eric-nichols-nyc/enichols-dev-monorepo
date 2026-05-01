@@ -1,13 +1,10 @@
 "use client";
 
 import { Skeleton } from "@repo/design-system/components/ui/skeleton";
-import { ExternalLink, Maximize2 } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
 import type { Project } from "@/data/projects";
-import { useMediaQuery } from "@/hooks/use-media-query";
-import { ShineButton } from "./shine-button";
 
 export type BoundingBox = {
   top: number;
@@ -24,7 +21,6 @@ type ProjectsProps = {
 };
 
 type ProjectCardProps = {
-  isGallery: boolean;
   onExpand?: (project: Project, boundingBox?: BoundingBox) => void;
   project: Project;
 };
@@ -32,26 +28,19 @@ type ProjectCardProps = {
 const PROJECT_SKELETON_COUNT = 3;
 
 export function ProjectsSkeleton() {
-  const isGallery = useMediaQuery("(min-width: 500px)");
   return (
     <div className="space-y-4">
       <Skeleton className="h-4 w-24" />
-      <div
-        className={
-          isGallery
-            ? "flex flex-row gap-4 overflow-x-auto pb-2"
-            : "-mx-4 flex flex-col gap-4 px-4 pb-2"
-        }
-      >
+      <div className="-mx-4 flex flex-col gap-4 px-4 pb-2">
         {Array.from(
           { length: PROJECT_SKELETON_COUNT },
           (_, i) => `skeleton-${i}`
         ).map((id) => (
           <div
-            className={`flex shrink-0 flex-col overflow-hidden rounded-lg border border-border bg-card ${isGallery ? "w-[280px]" : "w-full"}`}
+            className="flex w-full flex-col overflow-hidden rounded-lg border border-border bg-card"
             key={id}
           >
-            <Skeleton className="aspect-video w-full rounded-none" />
+            <Skeleton className="aspect-2/1 w-full rounded-none" />
             <div className="flex flex-1 flex-col p-4">
               <Skeleton className="mb-2 h-5 w-3/4" />
               <Skeleton className="mb-1 h-4 max-w-full" />
@@ -71,23 +60,11 @@ export function ProjectsSkeleton() {
 }
 
 export function Projects({ copy, onExpand, projects }: ProjectsProps) {
-  const isGallery = useMediaQuery("(min-width: 500px)");
   return (
     <div className="space-y-4">
-      <div
-        className={
-          isGallery
-            ? "flex flex-row gap-4 overflow-x-auto pb-2"
-            : "-mx-4 flex flex-col gap-4 px-4 pb-2"
-        }
-      >
+      <div className="-mx-4 flex flex-col gap-4 px-4 pb-2">
         {projects.map((project) => (
-          <ProjectCard
-            isGallery={isGallery}
-            key={project.id}
-            onExpand={onExpand}
-            project={project}
-          />
+          <ProjectCard key={project.id} onExpand={onExpand} project={project} />
         ))}
       </div>
       {copy ? <p className="text-foreground text-sm">{copy}</p> : null}
@@ -96,36 +73,14 @@ export function Projects({ copy, onExpand, projects }: ProjectsProps) {
 }
 
 export function ProjectCard({
-  isGallery,
-  onExpand,
   project,
 }: ProjectCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const handleExpand = () => {
-    const rect = cardRef.current?.getBoundingClientRect();
-    onExpand?.(
-      project,
-      rect
-        ? {
-            top: rect.top,
-            left: rect.left,
-            width: rect.width,
-            height: rect.height,
-          }
-        : undefined
-    );
-  };
-
   return (
-    <div
-      className={`group relative flex shrink-0 flex-col overflow-hidden rounded-lg border bg-card transition-all hover:shadow-lg ${isGallery ? "w-[280px]" : "w-full"}`}
-      ref={cardRef}
-    >
-      <div className="relative aspect-video w-full overflow-hidden bg-muted">
+    <div className="relative flex w-full flex-col overflow-hidden rounded-lg border bg-card transition-all hover:shadow-lg">
+      <div className="relative aspect-2/1 w-full overflow-hidden bg-muted">
         <Image
           alt={project.title}
-          className="object-cover transition-transform group-hover:scale-105"
+          className="object-cover transition-transform"
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
           src={
@@ -133,15 +88,9 @@ export function ProjectCard({
             `https://placehold.co/800x450/1a1a1a/ffffff?text=${encodeURIComponent(project.title)}`
           }
         />
-        <ShineButton
-          className="absolute top-2 right-2 hidden items-center justify-center rounded-md bg-background/90 p-2 shadow-lg backdrop-blur-sm transition-all hover:scale-110 hover:bg-background md:flex"
-          onClick={handleExpand}
-        >
-          <Maximize2 className="size-5 text-foreground" />
-        </ShineButton>
       </div>
       <div className="flex flex-1 flex-col p-4">
-        <h3 className="mb-2 font-semibold text-lg group-hover:text-primary">
+        <h3 className="mb-2 font-semibold text-lg">
           {project.title}
         </h3>
         <p className="mb-3 line-clamp-2 flex-1 text-muted-foreground text-sm">
