@@ -90,14 +90,13 @@ async function streamCopy(
 
 const tools = {
   show_about: showAboutTool,
-  /** Returns project count and project data for the UI to render cards */
+  /** Returns project count and project data for the UI */
   show_projects: tool({
     description: "Display portfolio projects",
     // biome-ignore lint/suspicious/noExplicitAny: Zod version mismatch with @repo/ai
     inputSchema: z.object({}) as any,
     execute: async () => {
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      // Copy/follow-up is injected in the stream after this tool—see execute below
       return {
         projectCount: projects.length,
         projects,

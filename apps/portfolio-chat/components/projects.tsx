@@ -27,20 +27,20 @@ const PROJECT_SKELETON_COUNT = 3;
 
 export function ProjectsSkeleton() {
   return (
-    <div className="space-y-4">
-      <Skeleton className="h-4 w-24" />
-      <div className="-mx-4 flex flex-col gap-4 px-4 pb-2">
+    <div className="w-full space-y-4">
+      <Skeleton className="h-4 w-full" />
+      <div className="-mx-4 flex w-full flex-col gap-4 px-4 pb-2">
         {Array.from(
           { length: PROJECT_SKELETON_COUNT },
           (_, i) => `skeleton-${i}`
         ).map((id) => (
           <div
-            className="rounded-md border border-border bg-background/80 p-2"
+            className="w-full rounded-md border border-border bg-background/80 p-2"
             key={id}
           >
-            <Skeleton className="mb-2 h-5 w-2/5" />
+            <Skeleton className="mb-2 h-5 w-full" />
             <Skeleton className="mb-2 h-4 w-full" />
-            <Skeleton className="h-3 w-11/12" />
+            <Skeleton className="h-3 w-full" />
           </div>
         ))}
       </div>

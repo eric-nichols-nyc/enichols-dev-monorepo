@@ -17,13 +17,13 @@ type TechStackProps = {
 
 export function TechStackSkeleton() {
   return (
-    <div className="space-y-4">
+    <div className="w-full space-y-4">
       {[1, 2, 3].map((i) => (
-        <div className="space-y-2" key={i}>
-          <Skeleton className="h-4 w-24" />
-          <div className="flex flex-wrap gap-2">
+        <div className="w-full space-y-2" key={i}>
+          <Skeleton className="h-4 w-full" />
+          <div className="grid w-full grid-cols-2 gap-2 sm:grid-cols-4">
             {[1, 2, 3, 4].map((j) => (
-              <Skeleton className="h-7 w-20 rounded-md" key={j} />
+              <Skeleton className="h-7 w-full rounded-md" key={j} />
             ))}
           </div>
         </div>
