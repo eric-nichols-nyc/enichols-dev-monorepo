@@ -2,11 +2,10 @@
 
 import { Badge } from "@repo/design-system/components/ui/badge";
 import { Skeleton } from "@repo/design-system/components/ui/skeleton";
-import { ExternalLink, Maximize2 } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useRef } from "react";
 import type { ExperienceEntry } from "@/data/experience";
-import { ShineButton } from "./shine-button";
 
 export type ExperienceBoundingBox = {
   top: number;
@@ -46,35 +45,15 @@ export function ExperienceSkeleton() {
   );
 }
 
-export function Experience({ experience, onExpand }: ExperienceProps) {
+export function Experience({ experience }: ExperienceProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const handleExpand = () => {
-    const rect = containerRef.current?.getBoundingClientRect();
-    onExpand?.(
-      experience,
-      rect
-        ? {
-            top: rect.top,
-            left: rect.left,
-            width: rect.width,
-            height: rect.height,
-          }
-        : undefined
-    );
-  };
 
   return (
     <div
       className="relative flex h-[400px] w-full flex-col overflow-hidden rounded-lg border border-border bg-muted/50 p-4 dark:bg-muted"
       ref={containerRef}
     >
-      <ShineButton
-        className="absolute top-2 right-2 z-10 hidden items-center justify-center rounded-md bg-background/90 p-2 shadow-lg backdrop-blur-sm transition-all hover:scale-110 hover:bg-background md:flex"
-        onClick={handleExpand}
-      >
-        <Maximize2 className="size-5 text-foreground" />
-      </ShineButton>
       <div className="min-h-0 flex-1 space-y-6 overflow-y-auto">
         <h2 className="font-semibold text-foreground text-lg tracking-wide">
           EXPERIENCE
