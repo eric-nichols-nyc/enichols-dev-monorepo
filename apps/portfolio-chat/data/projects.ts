@@ -7,6 +7,7 @@ export type ProjectMetric = {
 
 export type Project = {
   id: string;
+  position: number;
   title: string;
   tags: string[];
   categories: string[];
@@ -29,9 +30,10 @@ export type Project = {
   highlights?: string[];
 };
 
-const projects: Project[] = [
+const projectsUnsorted: Project[] = [
   {
     id: "audiograph",
+    position: 3,
     title: "AudioGraph",
     tags: ["nextjs", "analytics", "PostgreSQL", "typescript"],
     categories: ["health"],
@@ -83,6 +85,7 @@ const projects: Project[] = [
   },
   {
     id: "ai-taskwizard",
+    position: 4,
     title: "AI-TaskWizard",
     tags: ["ai", "microfrontend", "postgres", "typescript"],
     categories: ["ai"],
@@ -133,16 +136,17 @@ const projects: Project[] = [
   },
   {
     id: "trellnode",
-    title: "Trellnode",
+    position: 1,
+    title: "Trellix",
     tags: ["api", "fullstack", "NoSQL", "typescript"],
     categories: ["ai"],
     description:
       "Full-stack Kanban board for task and project management. Drag-and-drop boards with real-time updates. Node.js API with MongoDB for flexible NoSQL storage. RESTful API architecture with responsive React frontend.",
     shortDescription: "Kanban board with drag-and-drop UX.",
     date: "2023-04-01",
-    url: "https://trellnode.vercel.app/",
+    url: "https://trellix-one.vercel.app/",
     published: true,
-    image: "/images/trellnode.png",
+    image: "/images/trellix.png",
     gallery: [],
     subtitle: "Kanban Board Application",
     problem:
@@ -172,7 +176,7 @@ const projects: Project[] = [
       { label: "Data Store", value: "MongoDB" },
       { label: "Stack", value: "Full Stack" },
     ],
-    githubUrl: "https://github.com/eric-nichols-nyc/trellnode",
+    githubUrl: "https://github.com/eric-nichols-nyc/trellix",
     badges: ["Full Stack", "NoSQL", "API"],
     highlights: [
       "Architected RESTful API with MongoDB",
@@ -180,6 +184,48 @@ const projects: Project[] = [
       "Built responsive task management interface",
     ],
   },
+  {
+    id: "github-codebase-copilot",
+    position: 0,
+    title: "GitHub Codebase Copilot",
+    tags: ["nextjs", "ai", "github", "typescript"],
+    categories: ["ai", "fullstack"],
+    description:
+      "Web app for exploring GitHub repositories with a dashboard-style experience: synced repos, overview metadata, file browsing, and architecture-oriented navigation. Built for fast portfolio and codebase discovery with a polished Vercel deployment.",
+    shortDescription:
+      "GitHub-aware dashboard for exploring repos and codebase context.",
+    date: "2026-05-03",
+    url: "https://github-codebase-copilot-app.vercel.app/",
+    published: true,
+    image: "/images/github-codebase-copilot.png",
+    gallery: [],
+    subtitle: "GitHub Repository & Codebase Explorer",
+    problem:
+      "Developers and visitors needed a focused way to browse linked GitHub work—stars, languages, activity, and structure—without jumping through multiple GitHub screens.",
+    solution:
+      "Shipped a Next.js app with repository listings, rich overview panels, and navigation tuned for portfolio and technical storytelling.",
+    tech: ["Next.js", "TypeScript", "React", "GitHub integration", "Vercel"],
+    features: [
+      "Repository dashboard with sync metadata",
+      "Overview, README, files, and architecture-oriented views",
+      "Theme toggle and responsive layout",
+      "Deep links to GitHub for source of truth",
+    ],
+    metrics: [
+      { label: "Deployment", value: "Vercel" },
+      { label: "Focus", value: "Repos + docs" },
+      { label: "Stack", value: "Next.js" },
+    ],
+    githubUrl: "https://github.com/eric-nichols-nyc/github-codebase-copilot",
+    badges: ["AI", "GitHub", "Portfolio"],
+    highlights: [
+      "Designed repo-centric navigation and metadata surfaces",
+      "Integrated GitHub context for portfolio storytelling",
+      "Deployed production app on Vercel",
+    ],
+  },
 ];
+
+const projects = [...projectsUnsorted].sort((a, b) => a.position - b.position);
 
 export default projects;
