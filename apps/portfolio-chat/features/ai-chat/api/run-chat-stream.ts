@@ -14,7 +14,10 @@ import type {
   RoutingResult,
 } from "@/features/ai-chat/types/routing-result";
 import { buildGroundedSystemPrompt } from "@/features/ai-chat/utils/build-grounded-prompt";
-import { getHybridNarration } from "@/features/ai-chat/utils/get-hybrid-narration";
+import {
+  getTechStackPostToolText,
+  shouldStreamProjectsFollowUp,
+} from "@/features/ai-chat/utils/post-tool-follow-up";
 import {
   getLegacyPortfolioAssistantSystemPrompt,
   getPortfolioAssistantSystemPrompt,
@@ -51,9 +54,6 @@ function getProjectsFollowUp(): string {
   return `From ${sampleTitles}—here are some of my projects spanning AI and full-stack work. Each has a live demo you can explore. Pick one and I'll dive in, or ask me about the stack, challenges, or anything else.`;
 }
 
-const TECH_STACK_FOLLOW_UP =
-  "Here's the tech stack. Want to hear about a specific technology? Or how I've used it in a project?";
-
 function buildStreamTextOptions(
   params: RunChatStreamParams & { forcedTool?: PortfolioToolName }
 ) {
@@ -72,6 +72,17 @@ function buildStreamTextOptions(
     };
   }
 
+  if (forcedTool) {
+    return {
+      tools: portfolioChatTools as any,
+      model: models.chat as any,
+      stopWhen: stepCountIs(1),
+      system: getPortfolioAssistantSystemPrompt(),
+      messages: modelMessages,
+      toolChoice: { type: "tool", toolName: forcedTool } as const,
+    };
+  }
+
   if (routing.responseType === "context_aware_ai") {
     return {
       model: models.chat as any,
@@ -87,9 +98,6 @@ function buildStreamTextOptions(
     stopWhen: stepCountIs(1),
     system: getPortfolioAssistantSystemPrompt(),
     messages: modelMessages,
-    toolChoice: forcedTool
-      ? ({ type: "tool", toolName: forcedTool } as const)
-      : undefined,
   };
 }
 
@@ -116,10 +124,8 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
   const textIdAbout = "about-follow-up";
   const textIdProjects = "projects-follow-up";
   const textIdTechStack = "tech-stack-follow-up";
-  const textIdHybrid = "hybrid-narration";
   const aboutStreamModeState = createAboutStreamModeState();
   const projectsFollowUp = getProjectsFollowUp();
-  let hybridNarrationSent = false;
 
   for await (const chunk of uiStream) {
     const c = chunk as {
@@ -155,21 +161,19 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
       c.output &&
       typeof c.output === "object"
     ) {
-      if ("projects" in c.output) {
+      if (
+        "projects" in c.output &&
+        shouldStreamProjectsFollowUp(routing, useLegacyAboutStream)
+      ) {
         await streamCopy(writeChunk, textIdProjects, projectsFollowUp);
       } else if ("technologies" in c.output) {
-        await streamCopy(writeChunk, textIdTechStack, TECH_STACK_FOLLOW_UP);
-
-        if (
-          routing.responseType === "hybrid" &&
-          !hybridNarrationSent &&
-          !useLegacyAboutStream
-        ) {
-          const narration = getHybridNarration(knowledgeContext);
-          if (narration) {
-            await streamCopy(writeChunk, textIdHybrid, narration);
-            hybridNarrationSent = true;
-          }
+        const techFollowUp = getTechStackPostToolText(
+          routing,
+          knowledgeContext,
+          useLegacyAboutStream
+        );
+        if (techFollowUp) {
+          await streamCopy(writeChunk, textIdTechStack, techFollowUp);
         }
       }
     }

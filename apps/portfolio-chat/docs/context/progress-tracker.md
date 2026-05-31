@@ -56,6 +56,7 @@
 
 ## Session Notes
 
+- **2026-05-31:** Stage 4 response handler — fixed clarification path to force `show_projects` via `toolChoice`; static tech stack pills skip follow-up prose (RH10); hybrid uses grounded narration from `tech-stack.md`.
 - **2026-05-31:** Knowledge Assistant Stage 0 specs: `00-implementation-stages` through `07-integration-cleanup`; merged `feature/ai-chat` into main; branch `feature/knowledge-assistant-phase0`.
 - **2026-05-30:** Completed feature specs 03, 04, 05, 07 — entire registry now Shipped-level documentation.
 - **2026-05-30 (later):** Completed 02 + 06 feature specs; extracted system prompt to `lib/ai/prompts/portfolio-assistant.ts`.
