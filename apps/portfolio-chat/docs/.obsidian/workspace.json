@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "feature-specs/knowledge-assistant/03-intent-router.md",
+                "file": "feature-specs/knowledge-assistant/02-knowledge-sources.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "03-intent-router"
+              "title": "02-knowledge-sources"
             }
           }
         ]
@@ -202,13 +202,7 @@
     "context/ui-context.md",
     "context/project-overview.md",
     "context/progress-tracker.md",
-    "context/code-standards.md",
-    "context/architecture.md",
-    "context/ai-workflow-rules.md",
     "context",
-    "Portfolio-chat/Welcome.md",
-    "Portfolio-chat",
-    "AGENTS.md",
-    "AGENT-DOC-BOOTSTRAP-PROMPT.md"
+    "Portfolio-chat"
   ]
 }

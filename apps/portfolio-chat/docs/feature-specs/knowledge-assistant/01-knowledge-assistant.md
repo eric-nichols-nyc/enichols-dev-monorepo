@@ -1,5 +1,8 @@
 # Dynamic Portfolio Assistant
 
+**Status:** In progress  
+**Implementation plan:** [00 — Implementation Stages](./00-implementation-stages.md)
+
 ## Goal
 
 Upgrade the existing portfolio chat so it can respond dynamically based on the user’s intent and Eric’s portfolio knowledge.
@@ -115,3 +118,18 @@ general_question
 * Simple display questions can return structured UI content without unnecessary AI generation.
 * The assistant does not invent details that are not in the portfolio knowledge.
 * The existing chat UI continues to work.
+
+---
+
+## Spec registry
+
+| Stage | Spec |
+|-------|------|
+| Baseline | [current-state.md](./current-state.md) |
+| 0 — Plan & decisions | [00-implementation-stages.md](./00-implementation-stages.md) |
+| 1 — Knowledge files | [02-knowledge-sources.md](./02-knowledge-sources.md) |
+| 2 — Intent router | [03-intent-router.md](./03-intent-router.md) |
+| 3 — Context loader | [04-context-loader.md](./04-context-loader.md) |
+| 4 — Response handler | [05-response-handler.md](./05-response-handler.md) |
+| 5 — Dynamic suggestions | [06-dynamic-suggestions.md](./06-dynamic-suggestions.md) |
+| 6 — Integration & cleanup | [07-integration-cleanup.md](./07-integration-cleanup.md) |
