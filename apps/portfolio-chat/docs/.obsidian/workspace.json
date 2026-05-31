@@ -11,10 +11,14 @@
             "id": "31f9911e450520a5",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "feature-specs/knowledge-assistant/02-knowledge-sources.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "02-knowledge-sources"
             }
           }
         ]
@@ -177,5 +181,33 @@
     }
   },
   "active": "31f9911e450520a5",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "feature-specs/knowledge-assistant/03-intent-router.md",
+    "reference/README.md",
+    "reference/agents-cursorrules-feature-specs.md",
+    "reference/00-index.md",
+    "reference",
+    "prd.md",
+    "feature-specs/99-feature-spec-template.md",
+    "feature-specs/07-portfolio-data.md",
+    "feature-specs/06-ai-chat.md",
+    "feature-specs/05-artifacts.md",
+    "feature-specs/04-chat-context.md",
+    "feature-specs/03-sidebar-layout.md",
+    "feature-specs/02-chat-ui.md",
+    "feature-specs/01-design-system.md",
+    "feature-specs/00-index.md",
+    "feature-specs",
+    "context/ui-context.md",
+    "context/project-overview.md",
+    "context/progress-tracker.md",
+    "context/code-standards.md",
+    "context/architecture.md",
+    "context/ai-workflow-rules.md",
+    "context",
+    "Portfolio-chat/Welcome.md",
+    "Portfolio-chat",
+    "AGENTS.md",
+    "AGENT-DOC-BOOTSTRAP-PROMPT.md"
+  ]
 }

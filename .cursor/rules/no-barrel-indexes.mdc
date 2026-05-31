@@ -1,0 +1,11 @@
+---
+description: Avoid barrel index.ts re-exports in Portfolio Chat
+globs: apps/portfolio-chat/**/*
+alwaysApply: false
+---
+
+# No barrel index files
+
+- Do not add `index.ts` files that only re-export from sibling modules.
+- Import directly from the concrete file (e.g. `@/lib/ai/tools/show-projects`).
+- Tool registries and aggregators belong in a named file (e.g. `portfolio-tools.ts`), not `index.ts`.
