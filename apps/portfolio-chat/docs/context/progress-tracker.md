@@ -8,7 +8,7 @@
 
 ## Current Goal
 
-Product work (P7 project → artifact) **or** migrate `sidebar-layout` / `chat-context` / `artifacts`.
+Migrate `sidebar-layout` / `chat-context` / `artifacts` **or** P7b deep links / P8 rate limiting.
 
 ## In Progress
 
@@ -16,6 +16,7 @@ Product work (P7 project → artifact) **or** migrate `sidebar-layout` / `chat-c
 
 ## Completed
 
+- p7-project-artifact — Click project card in chat opens artifact with `FeaturedProject` + bounding-box animation
 - ai-chat-migration — `features/ai-chat/` + thin route + `@/lib/ai/*` shims
 - chat-ui-migration — `features/chat-ui/` + legacy shims at `components/chat`, `messages`, etc.
 - specs-all — Full specs for 02–07 feature registry (all shipped areas documented)
@@ -30,7 +31,7 @@ Product work (P7 project → artifact) **or** migrate `sidebar-layout` / `chat-c
 
 ## Next Up
 
-- PRD P7 — wire project cards → artifact (`onProjectSelect` / P7 in 05-artifacts)
+- PRD P7b — per-project routes / deep links
 - Migrate sidebar, context, or artifacts into `features/`
 - PRD P8 — rate limiting on `/api/chat`
 - Data quality: R8 schema tests, R9 link checker (07-portfolio-data)

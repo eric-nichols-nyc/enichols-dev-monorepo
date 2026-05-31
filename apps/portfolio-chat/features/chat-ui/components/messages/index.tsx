@@ -8,6 +8,8 @@ import { ArrowDownIcon } from "lucide-react";
 import { Fragment } from "react";
 import type { MutableRefObject } from "react";
 import type { ExperienceBoundingBox } from "@/components/experience";
+import type { BoundingBox } from "@/components/projects";
+import type { Project } from "@/data/projects";
 import { Greeting } from "@/features/chat-ui/components/greeting";
 import { ChatMessage } from "@/features/chat-ui/components/message";
 import { ThinkingMessage } from "@/features/chat-ui/components/thinking-message";
@@ -20,6 +22,7 @@ export type MessagesProps = {
     experience: import("@/data/experience").ExperienceEntry[],
     boundingBox?: ExperienceBoundingBox
   ) => void;
+  onProjectSelect?: (project: Project, boundingBox?: BoundingBox) => void;
   onSuggestionClick: (suggestion: string) => void;
   status: "streaming" | "submitted" | "ready" | "error";
   /** Latest turn wrapper element. Defaults to an internal ref if omitted. */
@@ -30,6 +33,7 @@ export function Messages({
   error,
   messages,
   onExperienceExpand,
+  onProjectSelect,
   onSuggestionClick,
   status,
   activeTurnRef: activeTurnRefProp,
@@ -89,6 +93,7 @@ export function Messages({
                           <ChatMessage
                             msg={msg}
                             onExperienceExpand={onExperienceExpand}
+                            onProjectSelect={onProjectSelect}
                             onSuggestionClick={onSuggestionClick}
                           />
                         </div>

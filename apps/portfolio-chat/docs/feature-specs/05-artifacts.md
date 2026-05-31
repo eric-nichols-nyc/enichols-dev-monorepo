@@ -50,7 +50,7 @@ As a visitor, when I expand experience (or select a project detail), I want a fo
 
 ### Props note
 
-- [x] **R16** — `onProjectSelect` passed from `Chat` to `Artifact` — reserved for project-card → artifact flow; **project open-from-card may be incomplete** — verify `Projects` / cards wire `setSelectedProject` + `setArtifactOpen` when adding P7
+- [x] **R16** — Project cards call `onProjectSelect` → `Chat` sets project + bounding box + opens artifact (`components/projects.tsx`)
 
 ### Embedded mode
 
@@ -58,7 +58,7 @@ As a visitor, when I expand experience (or select a project detail), I want a fo
 
 ### Not yet implemented
 
-- [ ] **R18** — PRD P7: per-project detail chat routes or deep links
+- [ ] **R18** — PRD P7b: per-project detail chat routes or deep links
 - [ ] **R19** — Persist artifact selection across `clearMessages`
 - [ ] **R20** — Migrate artifact stack to `features/artifacts/`
 
@@ -74,7 +74,7 @@ As a visitor, when I expand experience (or select a project detail), I want a fo
 - [x] Experience expand opens modal with animation and embedded chat
 - [x] Close restores body scroll and clears selection state
 - [x] Empty artifact shows `ArtifactEmptyState` when no selection
-- [ ] Project card → artifact flow documented and wired (R16 / P7)
+- [x] Project card → artifact flow wired (R16)
 - [ ] R20 migration when scheduled
 
 ## Implementation prompt

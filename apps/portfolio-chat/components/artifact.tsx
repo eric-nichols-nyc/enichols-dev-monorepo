@@ -5,7 +5,6 @@ import { X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
-import type { Project } from "@/data/projects";
 import { useWindowSize } from "@/hooks/use-window-size";
 import { Chat } from "./chat";
 import type { BoundingBox } from "./projects";
@@ -15,7 +14,6 @@ type ArtifactProps = {
   content: ReactNode;
   isLoading?: boolean;
   onClose: () => void;
-  onProjectSelect?: (project: Project) => void;
   open: boolean;
 };
 
@@ -51,7 +49,6 @@ export function Artifact({
   content,
   isLoading = false,
   onClose,
-  onProjectSelect,
   open,
 }: ArtifactProps) {
   const { width: windowWidth, height: windowHeight } = useWindowSize();

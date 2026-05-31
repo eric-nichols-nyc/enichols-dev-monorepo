@@ -10,7 +10,9 @@ import type { UIMessage } from "ai";
 import { About } from "@/components/about";
 import type { ExperienceBoundingBox } from "@/components/experience";
 import { Experience } from "@/components/experience";
+import type { BoundingBox } from "@/components/projects";
 import { Projects } from "@/components/projects";
+import type { Project } from "@/data/projects";
 import { Related } from "@/components/related";
 import { TechStack } from "@/components/tech-stack";
 import { ThinkingMessage } from "@/features/chat-ui/components/thinking-message";
@@ -30,6 +32,7 @@ function MessagePartRenderer({
   msgId,
   i,
   onExperienceExpand,
+  onProjectSelect,
   onSuggestionClick,
 }: {
   part: {
@@ -47,6 +50,7 @@ function MessagePartRenderer({
     experience: import("@/data/experience").ExperienceEntry[],
     boundingBox?: ExperienceBoundingBox
   ) => void;
+  onProjectSelect?: (project: Project, boundingBox?: BoundingBox) => void;
   onSuggestionClick: (s: string) => void;
 }) {
   if (part.type === "text") {
@@ -90,7 +94,7 @@ function MessagePartRenderer({
       };
       return (
         <div className="w-full" key={`${msgId}-${i}`}>
-          <Projects {...output} />
+          <Projects {...output} onProjectSelect={onProjectSelect} />
         </div>
       );
     }
@@ -252,12 +256,14 @@ export type ChatMessageProps = {
     experience: import("@/data/experience").ExperienceEntry[],
     boundingBox?: ExperienceBoundingBox
   ) => void;
+  onProjectSelect?: (project: Project, boundingBox?: BoundingBox) => void;
   onSuggestionClick: (suggestion: string) => void;
 };
 
 export function ChatMessage({
   msg,
   onExperienceExpand,
+  onProjectSelect,
   onSuggestionClick,
 }: ChatMessageProps) {
   const related = getRelatedForMessage(msg);
@@ -279,6 +285,7 @@ export function ChatMessage({
               key={`${msg.id}-${i}`}
               msgId={msg.id}
               onExperienceExpand={onExperienceExpand}
+              onProjectSelect={onProjectSelect}
               onSuggestionClick={onSuggestionClick}
               part={part}
             />
