@@ -39,6 +39,11 @@
 3. `@repo/*`
 4. `@/` internal (features → components → lib → data)
 
+## Module structure
+
+- No barrel `index.ts` files that only re-export siblings — import from the concrete module (see `.cursor/rules/no-barrel-indexes.mdc`).
+- Named aggregator files are fine (e.g. `lib/ai/tools/portfolio-tools.ts` for the tool registry).
+
 ## Testing
 
 - Unit: Vitest under `__tests__/`

@@ -18,9 +18,9 @@ import {
 } from "@/features/ai-chat/lib/about-stream-mode";
 import { streamCopy } from "@/features/ai-chat/lib/stream-copy";
 import { toSimpleModelMessages } from "@/features/ai-chat/lib/to-simple-model-messages";
-import { getPortfolioAssistantSystemPrompt } from "@/features/ai-chat/prompts/portfolio-assistant";
-import { aboutCopy, aboutRelated } from "@/features/ai-chat/tools/about";
-import { portfolioChatTools } from "@/features/ai-chat/tools/portfolio-tools";
+import { getPortfolioAssistantSystemPrompt } from "@/lib/ai/prompts/portfolio-assistant";
+import { aboutCopy, aboutRelated } from "@/lib/ai/tools/about";
+import { portfolioChatTools } from "@/lib/ai/tools/portfolio-tools";
 
 const isMockStreamEnabled = process.env.CHAT_MOCK_STREAM === "true";
 

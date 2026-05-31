@@ -16,6 +16,7 @@ import type { Project } from "@/data/projects";
 import { Related } from "@/components/related";
 import { TechStack } from "@/components/tech-stack";
 import { ThinkingMessage } from "@/features/chat-ui/components/thinking-message";
+import { getAssistantThinkingVariant } from "@/features/chat-ui/lib/assistant-thinking";
 
 type ExpEntry = {
   duration: string;
@@ -80,11 +81,7 @@ function MessagePartRenderer({
 
   if (part.type === "tool-show_projects" || part.type === "tool-showProjects") {
     if (part.state === "input-available" || part.state === "input-streaming") {
-      return (
-        <div className="w-full" key={`${msgId}-${i}`}>
-          <ThinkingMessage />
-        </div>
-      );
+      return null;
     }
     if (part.state === "output-available") {
       const output = part.output as {
@@ -108,11 +105,7 @@ function MessagePartRenderer({
     part.type === "tool-showExperience"
   ) {
     if (part.state === "input-available" || part.state === "input-streaming") {
-      return (
-        <div className="w-full" key={`${msgId}-${i}`}>
-          <ThinkingMessage />
-        </div>
-      );
+      return null;
     }
     if (part.state === "output-available") {
       const output = part.output as
@@ -148,11 +141,7 @@ function MessagePartRenderer({
 
   if (part.type === "tool-show_about" || part.type === "tool-showAbout") {
     if (part.state === "input-available" || part.state === "input-streaming") {
-      return (
-        <div className="w-full" key={`${msgId}-${i}`}>
-          <ThinkingMessage />
-        </div>
-      );
+      return null;
     }
     if (part.state === "output-available") {
       const output = part.output as {
@@ -189,11 +178,7 @@ function MessagePartRenderer({
     part.type === "tool-showTechStack"
   ) {
     if (part.state === "input-available" || part.state === "input-streaming") {
-      return (
-        <div className="w-full" key={`${msgId}-${i}`}>
-          <ThinkingMessage />
-        </div>
-      );
+      return null;
     }
     if (part.state === "output-available") {
       const output = part.output as {
@@ -250,8 +235,9 @@ function getRelatedForMessage(msg: {
 
 export type ChatMessageProps = {
   msg: UIMessage;
-  /** When true, applies min-height and divider so streaming appears below the line */
-  isStreamingContainer?: boolean;
+  /** Active assistant in the latest turn (shows pinned thinking header) */
+  isActiveAssistant?: boolean;
+  chatStatus?: "streaming" | "submitted" | "ready" | "error";
   onExperienceExpand?: (
     experience: import("@/data/experience").ExperienceEntry[],
     boundingBox?: ExperienceBoundingBox
@@ -262,11 +248,21 @@ export type ChatMessageProps = {
 
 export function ChatMessage({
   msg,
+  isActiveAssistant = false,
+  chatStatus = "ready",
   onExperienceExpand,
   onProjectSelect,
   onSuggestionClick,
 }: ChatMessageProps) {
   const related = getRelatedForMessage(msg);
+  const thinkingVariant =
+    msg.role === "assistant"
+      ? getAssistantThinkingVariant({
+          parts: msg.parts ?? [],
+          status: chatStatus,
+          isActiveAssistant,
+        })
+      : null;
 
   return (
     <div className="min-w-0 flex-1">
@@ -279,6 +275,9 @@ export function ChatMessage({
         from={msg.role}
       >
         <MessageContent className="text-base">
+          {thinkingVariant ? (
+            <ThinkingMessage variant={thinkingVariant} />
+          ) : null}
           {msg.parts.map((part, i) => (
             <MessagePartRenderer
               i={i}
