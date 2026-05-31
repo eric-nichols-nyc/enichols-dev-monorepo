@@ -91,6 +91,7 @@ export async function POST(request: Request) {
             routing,
             knowledgeContext,
             useLegacyAboutStream: true,
+            dynamicSuggestionsEnabled: false,
           });
           return;
         }
@@ -108,6 +109,7 @@ export async function POST(request: Request) {
           routing,
           knowledgeContext,
           useLegacyAboutStream,
+          dynamicSuggestionsEnabled: true,
         });
       },
     });
