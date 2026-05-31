@@ -8,11 +8,11 @@
 
 ## Current Goal
 
-**Knowledge Assistant Stage 5:** Dynamic suggestions per [06-dynamic-suggestions.md](../feature-specs/knowledge-assistant/06-dynamic-suggestions.md).
+**Knowledge Assistant Stage 7:** Integration & cleanup per [07-integration-cleanup.md](../feature-specs/knowledge-assistant/07-integration-cleanup.md).
 
 ## Completed
 
-- knowledge-assistant-stage4 — Response handler wired in `post-chat.ts` (route → load → stream)
+- knowledge-assistant-stage5 — Dynamic suggestions (`generate-suggestions.ts`, `suggestion-templates.ts`, wired in `run-chat-stream.ts`)
 - knowledge-assistant-stage2-3 — Context loader + intent router with unit tests
 - knowledge-assistant-stage1 — `knowledge/` markdown corpus (candidate + projects)
 - p7-project-artifact — Click project card in chat opens artifact with `FeaturedProject` + bounding-box animation
@@ -30,11 +30,11 @@
 
 ## In Progress
 
-- (idle — pick Stage 5 dynamic suggestions or manual QA of Stage 4 in browser)
+- (idle — Stage 7 integration cleanup or manual QA of dynamic suggestions)
 
 ## Next Up
 
-- knowledge-assistant Stage 5 — dynamic suggestions
+- knowledge-assistant Stage 7 — integration cleanup (remove static tool `related`, guardrails)
 - PRD P7b — per-project routes / deep links
 - PRD P8 — rate limiting on `/api/chat` (not in app today)
 - Migrate sidebar, context, or artifacts into `features/`
@@ -56,7 +56,7 @@
 
 ## Session Notes
 
-- **2026-05-31:** Stage 4 response handler — fixed clarification path to force `show_projects` via `toolChoice`; static tech stack pills skip follow-up prose (RH10); hybrid uses grounded narration from `tech-stack.md`.
+- **2026-05-31:** Stage 5 dynamic suggestions — rule-based `generateSuggestions()` per intent; emits `data-related` at end of turn; strips static tool `related` when KA enabled.
 - **2026-05-31:** Knowledge Assistant Stage 0 specs: `00-implementation-stages` through `07-integration-cleanup`; merged `feature/ai-chat` into main; branch `feature/knowledge-assistant-phase0`.
 - **2026-05-30:** Completed feature specs 03, 04, 05, 07 — entire registry now Shipped-level documentation.
 - **2026-05-30 (later):** Completed 02 + 06 feature specs; extracted system prompt to `lib/ai/prompts/portfolio-assistant.ts`.

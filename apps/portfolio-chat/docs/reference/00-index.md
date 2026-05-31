@@ -2,7 +2,7 @@
 
 | Doc | Topic |
 |-----|--------|
-| [agents-cursorrules-feature-specs.md](./agents-cursorrules-feature-specs.md) | How the agent doc system fits together |
+| [how-dynamic-suggestions-work.md](./how-dynamic-suggestions-work.md) | Knowledge Assistant follow-up pills — narrative explainer |
 | [../chat-rendering.md](../chat-rendering.md) | Tool vs text message parts |
 | [../chat-context.md](../chat-context.md) | Provider and clear-chat |
 | [../message-layout.md](../message-layout.md) | Streaming min-height, Motion |

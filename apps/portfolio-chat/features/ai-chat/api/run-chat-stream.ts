@@ -22,6 +22,7 @@ import {
   getLegacyPortfolioAssistantSystemPrompt,
   getPortfolioAssistantSystemPrompt,
 } from "@/lib/ai/prompts/portfolio-assistant";
+import { generateSuggestions } from "@/features/ai-chat/utils/generate-suggestions";
 import { aboutCopy, aboutRelated } from "@/lib/ai/tools/about";
 import { portfolioChatTools } from "@/lib/ai/tools/portfolio-tools";
 
@@ -34,6 +35,7 @@ type StreamWriter = {
     id?: string;
     delta?: string;
     data?: unknown;
+    output?: unknown;
   }) => void;
 };
 
@@ -43,15 +45,16 @@ type RunChatStreamParams = {
   routing: RoutingResult;
   knowledgeContext: LoadedKnowledgeContext;
   useLegacyAboutStream: boolean;
+  dynamicSuggestionsEnabled?: boolean;
 };
 
-function getProjectsFollowUp(): string {
-  const sampleTitles = projects
-    .slice(0, 3)
-    .map((project) => project.title)
-    .join(", ");
+function stripStaticRelated(output: unknown): unknown {
+  if (!output || typeof output !== "object") {
+    return output;
+  }
 
-  return `From ${sampleTitles}—here are some of my projects spanning AI and full-stack work. Each has a live demo you can explore. Pick one and I'll dive in, or ask me about the stack, challenges, or anything else.`;
+  const { related: _related, ...rest } = output as { related?: unknown };
+  return rest;
 }
 
 function buildStreamTextOptions(
@@ -102,7 +105,13 @@ function buildStreamTextOptions(
 }
 
 export async function runChatStream(params: RunChatStreamParams): Promise<void> {
-  const { writer, routing, knowledgeContext, useLegacyAboutStream } = params;
+  const {
+    writer,
+    routing,
+    knowledgeContext,
+    useLegacyAboutStream,
+    dynamicSuggestionsEnabled = false,
+  } = params;
   const writeChunk = params.writer;
 
   if (routing.clarificationNeeded) {
@@ -125,7 +134,8 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
   const textIdProjects = "projects-follow-up";
   const textIdTechStack = "tech-stack-follow-up";
   const aboutStreamModeState = createAboutStreamModeState();
-  const projectsFollowUp = getProjectsFollowUp();
+  let assistantText = routing.clarificationNeeded ? CLARIFICATION_COPY : "";
+  let lastToolName: string | undefined;
 
   for await (const chunk of uiStream) {
     const c = chunk as {
@@ -133,7 +143,15 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
       toolName?: string;
       toolCallId?: string;
       output?: unknown;
+      delta?: string;
+      text?: string;
     };
+
+    if (typeof c.text === "string") {
+      assistantText += c.text;
+    } else if (typeof c.delta === "string") {
+      assistantText += c.delta;
+    }
 
     const aboutDecision = getAboutStreamModeDecision({
       aboutRenderMode: "text",
@@ -142,21 +160,45 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
     });
 
     if (aboutDecision.shouldStreamAboutText) {
+      lastToolName = c.toolName ?? "show_about";
       await streamCopy(writeChunk, textIdAbout, aboutCopy);
-      writeChunk.write({
-        type: "data-related",
-        id: "about-related",
-        data: { suggestions: [...aboutRelated] },
-      });
+      assistantText += aboutCopy;
+
+      if (!dynamicSuggestionsEnabled) {
+        writeChunk.write({
+          type: "data-related",
+          id: "about-related",
+          data: { suggestions: [...aboutRelated] },
+        });
+      }
     }
 
     if (aboutDecision.suppressChunk) {
       continue;
     }
 
-    writer.write(chunk);
+    if (
+      dynamicSuggestionsEnabled &&
+      c.type === "tool-output-available" &&
+      c.output &&
+      typeof c.output === "object"
+    ) {
+      lastToolName = c.toolName;
+      writeChunk.write({
+        ...(chunk as Record<string, unknown>),
+        type: c.type ?? "tool-output-available",
+        output: stripStaticRelated(c.output),
+      });
+    } else {
+      writer.write(chunk);
+
+      if (c.type === "tool-output-available") {
+        lastToolName = c.toolName;
+      }
+    }
 
     if (
+      !dynamicSuggestionsEnabled &&
       c.type === "tool-output-available" &&
       c.output &&
       typeof c.output === "object"
@@ -165,7 +207,13 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
         "projects" in c.output &&
         shouldStreamProjectsFollowUp(routing, useLegacyAboutStream)
       ) {
+        const sampleTitles = projects
+          .slice(0, 3)
+          .map((project) => project.title)
+          .join(", ");
+        const projectsFollowUp = `From ${sampleTitles}—here are some of my projects spanning AI and full-stack work. Each has a live demo you can explore. Pick one and I'll dive in, or ask me about the stack, challenges, or anything else.`;
         await streamCopy(writeChunk, textIdProjects, projectsFollowUp);
+        assistantText += projectsFollowUp;
       } else if ("technologies" in c.output) {
         const techFollowUp = getTechStackPostToolText(
           routing,
@@ -174,8 +222,26 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
         );
         if (techFollowUp) {
           await streamCopy(writeChunk, textIdTechStack, techFollowUp);
+          assistantText += techFollowUp;
         }
       }
+    }
+  }
+
+  if (dynamicSuggestionsEnabled) {
+    const suggestions = generateSuggestions({
+      routingResult: routing,
+      loadedContext: knowledgeContext,
+      assistantText: assistantText.trim() || undefined,
+      toolName: lastToolName,
+    });
+
+    if (suggestions.length > 0) {
+      writeChunk.write({
+        type: "data-related",
+        id: "dynamic-suggestions",
+        data: { suggestions },
+      });
     }
   }
 }

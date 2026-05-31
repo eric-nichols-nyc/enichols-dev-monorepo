@@ -1,6 +1,6 @@
 # Knowledge Assistant — Dynamic Suggestions
 
-**Status:** Not started  
+**Status:** Shipped  
 **Stage:** 5  
 **Depends on:** [05 — Response Handler](./05-response-handler.md) · [04 — Context Loader](./04-context-loader.md) · [02-chat-ui.md](../02-chat-ui.md)  
 **Feeds:** [07 — Integration & Cleanup](./07-integration-cleanup.md)
@@ -12,6 +12,8 @@
 Replace **static** follow-up suggestions with suggestions derived from **intent**, **entities**, **loaded knowledge sections**, and the **assistant's latest response**—using existing UI channels (`data-related` parts and tool `output.related`).
 
 No chat UI rebuild. No new pill component.
+
+**Human explainer (how to describe this in conversation):** [how-dynamic-suggestions-work.md](../../reference/how-dynamic-suggestions-work.md)
 
 ---
 
