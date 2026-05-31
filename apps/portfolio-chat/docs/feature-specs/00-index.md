@@ -11,6 +11,7 @@ Permanent map of features. Update **Status** when shipping; use **progress-track
 | Artifacts | [05-artifacts.md](./05-artifacts.md) | `artifact.tsx`, `featured-*`, `about.tsx`, etc. → `features/artifacts/` | — | Shipped |
 | AI chat API & tools | [06-ai-chat.md](./06-ai-chat.md) | `features/ai-chat/` (thin `app/api/chat/route.ts`) | POST `/api/chat` | Shipped |
 | Portfolio data | [07-portfolio-data.md](./07-portfolio-data.md) | `data/*` (stays at app root) | Tools read data | Shipped |
+| Sidebar nav visibility | [09-sidebar-nav-visibility.md](./09-sidebar-nav-visibility.md) | `collapsible-sidebar-layout.tsx` → `features/sidebar-layout/` | — | In progress (P1–P2) |
 | Agent documentation | — | `docs/**` | — | Shipped |
 
 ### Status legend

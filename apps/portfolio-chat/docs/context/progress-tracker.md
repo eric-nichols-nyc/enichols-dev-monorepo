@@ -8,10 +8,12 @@
 
 ## Current Goal
 
-Migrate `sidebar-layout` / `chat-context` / `artifacts` **or** P7b deep links / P8 rate limiting.
+Sidebar nav visibility **P3** (active section highlight) on `feature/sidebar-nav-p1` — P1–P2 shipped.
 
 ## Completed
 
+- sidebar-nav-p2 — Nav pill affordance at rest: `bg-muted/30` + `hover:bg-muted` on desktop + mobile ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P2)
+- sidebar-nav-p1 — Distinct sidebar surface: `--sidebar-background` + `bg-sidebar` on desktop + mobile drawer ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P1)
 - p7-project-artifact — Click project card in chat opens artifact with `FeaturedProject` + bounding-box animation
 - ai-chat-migration — `features/ai-chat/` + thin route + `@/lib/ai/*` shims
 - chat-ui-migration — `features/chat-ui/` + legacy shims at `components/chat`, `messages`, etc.
