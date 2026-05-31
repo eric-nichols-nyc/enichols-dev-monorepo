@@ -1,0 +1,30 @@
+# Portfolio Chat agent scope — index only apps/portfolio-chat/
+# See apps/portfolio-chat/docs/AGENTS.md and .cursor/rules/project-scope.mdc
+
+# Other apps in the monorepo
+apps/ai-chatbots/
+apps/app/
+apps/api/
+apps/docs/
+apps/email/
+apps/render-lab/
+apps/security-lab/
+apps/storybook/
+apps/web/
+apps/wih-animation/
+apps/with-javascript/
+apps/with-optimization/
+apps/with-seo/
+apps/with-solid/
+apps/with-sse/
+
+# All workspace packages (ask user before editing)
+packages/
+
+# Build artifacts and deps
+**/node_modules/
+**/.next/
+**/.turbo/
+**/dist/
+**/playwright-report/
+**/.cache/

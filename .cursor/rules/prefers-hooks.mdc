@@ -1,0 +1,15 @@
+---
+description: Extract reusable React logic into colocated use-* hooks
+globs: apps/portfolio-chat/**/*
+alwaysApply: false
+---
+
+# Prefer hooks for React logic
+
+When adding or refactoring interactive UI in Portfolio Chat:
+
+- Extract reusable state, effects, and handlers into **`use-*`** hooks.
+- Colocate hooks under **`features/<name>/hooks/`** for new feature folders, or next to the component in **`hooks/`** for legacy layout until migrated.
+- Keep components focused on rendering; avoid large inline effect chains in JSX files.
+
+Do not extract one-off logic used in a single component unless it materially improves readability.

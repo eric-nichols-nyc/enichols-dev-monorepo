@@ -1,0 +1,51 @@
+# Progress tracker — Portfolio Chat
+
+**Live session state.** Update after every meaningful change. The feature index (`docs/feature-specs/00-index.md`) is the permanent map.
+
+## Current Phase
+
+**Phase 2 — Spec hardening & incremental migration prep**
+
+## Current Goal
+
+Flesh out remaining **Spec TODO** feature specs (03–05, 07) or start first `features/` migration (`chat-ui` or `ai-chat`).
+
+## In Progress
+
+- (empty)
+
+## Completed
+
+- specs-core — Full specs for [02-chat-ui](../feature-specs/02-chat-ui.md) and [06-ai-chat](../feature-specs/06-ai-chat.md) from codebase
+- ai-prompt — System prompt extracted to `lib/ai/prompts/portfolio-assistant.ts`
+- agent-docs — Spec-driven doc system (AGENTS chain, context/, feature-specs/, reference/, Cursor rules, .cursorignore)
+- chat-core — Streaming chat UI with `useChat`, message parts, suggestions (`components/chat.tsx`, `messages/`, `message.tsx`)
+- chat-api — POST `/api/chat` with tools: about, projects, experience, tech stack
+- about-stream — Word-by-word about stream mode (`lib/ai/about-stream-mode.ts`, e2e spec)
+- layout — Collapsible sidebar + artifact panel for featured project/experience
+- data-layer — Typed portfolio content in `data/*`
+
+## Next Up
+
+- Write full specs for 03-sidebar-layout, 04-chat-context, 05-artifacts, 07-portfolio-data
+- Migrate `components/chat` + messages → `features/chat-ui/` (or `ai-chat` first — pick one)
+- PRD P7 per-project detail chats, P8 rate limiting
+
+## Open Questions
+
+- [TBD] Target hosting URL and analytics requirements
+- [TBD] Priority order for legacy → `features/` migration (chat-ui vs ai-chat first)
+
+## Architecture Decisions
+
+| Date | Decision | Rationale |
+|------|----------|-----------|
+| 2026-05-30 | Agent scope = `apps/portfolio-chat/` only | User choice; packages require explicit approval |
+| 2026-05-30 | New code under `features/<name>/` | User choice; gradual migration from flat `components/` |
+| 2026-05-30 | Specs live in `docs/feature-specs/` | User choice (not under `context/`) |
+| 2026-05-30 | Repo root `AGENTS.md` points here | Portfolio Chat primary entry for this repo |
+
+## Session Notes
+
+- **2026-05-30 (later):** Completed 02 + 06 feature specs; extracted system prompt to `lib/ai/prompts/portfolio-assistant.ts`.
+- **2026-05-30:** Bootstrapped agent doc system from `AGENT-DOC-BOOTSTRAP-PROMPT.md`. Existing narrative docs (`chat-rendering.md`, etc.) linked from `reference/00-index.md` — not requirements.

@@ -1,0 +1,15 @@
+---
+description: Restrict agents to Portfolio Chat app only
+alwaysApply: true
+---
+
+# Monorepo scope — Portfolio Chat
+
+You are strictly confined to **`apps/portfolio-chat/`**.
+
+- NEVER index, read, or edit paths under `packages/`, other `apps/*`, or repo tooling unless the user **explicitly** expands scope in the current task.
+- If a task requires `@repo/design-system`, `@repo/ai`, or any package change, **stop and ask the user** before reading or modifying those paths.
+
+Aligned with repo-root **`.cursorignore`** and **[AGENTS.md](../../AGENTS.md)**.
+
+Main playbook: **`apps/portfolio-chat/docs/AGENTS.md`**.

@@ -1,21 +1,41 @@
-# Portfolio Chat Documentation
+# Portfolio Chat documentation
 
-This folder contains documentation for the portfolio chat application.
+## For AI agents (start here)
 
-## Available Documentation
+1. **[AGENTS.md](./AGENTS.md)** — read order, scope, commands, workflows
+2. **[context/progress-tracker.md](./context/progress-tracker.md)** — live session state
+3. **[feature-specs/00-index.md](./feature-specs/00-index.md)** — feature registry
 
-- **[Chat Rendering: Tools vs Text](./chat-rendering.md)** - Explains how the chat interface renders different types of message parts, including regular text messages and tool call outputs.
-- **[Chat Context and State Management](./chat-context.md)** - Describes how chat state is shared via context and how to clear the chat.
-- **[Message Layout and Streaming UX](./message-layout.md)** - Documents the active assistant min-height pattern, layout animation with Motion, and component structure (ChatMessage, MessagePartRenderer).
+Requirements live in **`feature-specs/`** and **`context/`**. Narrative deep-dives are **reference** only (see [reference/README.md](./reference/README.md)).
 
-## Overview
+## Product
 
-The portfolio chat application uses the Vercel AI SDK to create an interactive chat interface that can:
+- **[prd.md](./prd.md)** — living product requirements
 
-- Display conversational text responses
-- Execute tools and display their results
-- Handle multiple message parts in a single response
-- Show loading states and error messages
-- Clear the chat via the sidebar logo button
+## Context pack
 
-For detailed information, see the documentation files above.
+| File | Topic |
+|------|--------|
+| [context/project-overview.md](./context/project-overview.md) | Goals, users, flows |
+| [context/architecture.md](./context/architecture.md) | Stack, boundaries, API |
+| [context/ui-context.md](./context/ui-context.md) | Design system, layout |
+| [context/code-standards.md](./context/code-standards.md) | TS / Next / API conventions |
+| [context/ai-workflow-rules.md](./context/ai-workflow-rules.md) | Agent scoping rules |
+
+## Feature specs
+
+[feature-specs/](./feature-specs/) — one spec per feature + [template](./feature-specs/99-feature-spec-template.md)
+
+## Reference (not requirements)
+
+| Doc | Topic |
+|-----|--------|
+| [chat-rendering.md](./chat-rendering.md) | Tool vs text parts |
+| [chat-context.md](./chat-context.md) | Provider & clear chat |
+| [message-layout.md](./message-layout.md) | Streaming layout / Motion |
+| [tech-stack-flow.md](./tech-stack-flow.md) | Tech stack tool flow |
+| [reference/](./reference/) | Index + agent system guide |
+
+## Bootstrap
+
+[AGENT-DOC-BOOTSTRAP-PROMPT.md](./AGENT-DOC-BOOTSTRAP-PROMPT.md) — template used to create this structure.

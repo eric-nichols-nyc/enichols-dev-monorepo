@@ -1,0 +1,25 @@
+---
+description: Portfolio Chat — read agent docs and keep progress-tracker in sync
+globs: apps/portfolio-chat/**/*
+alwaysApply: false
+---
+
+# Portfolio Chat app rules
+
+## At task start
+
+1. Read **`apps/portfolio-chat/docs/AGENTS.md`** (read order).
+2. Read **`apps/portfolio-chat/docs/context/progress-tracker.md`** (Current Goal, In Progress).
+
+## While implementing
+
+- Follow the active row in **`docs/feature-specs/00-index.md`** and its spec file.
+- **New domains:** code under `features/<name>/` per **`docs/feature-specs/01-design-system.md`**.
+- **Legacy paths** (`components/`, `lib/`, `contexts/`): touch only when the spec or task says so; prefer `features/` for new work.
+- Do not invent product behavior missing from specs or `docs/prd.md`.
+
+## Before done
+
+- Update **`docs/context/progress-tracker.md`** (Completed, Current Goal, In Progress, Next Up, Open Questions, Session Notes as needed).
+- Run **`pnpm typecheck`** from `apps/portfolio-chat` when types, routes, or API handlers changed.
+- Run **`pnpm build`** when touching `app/` layout, env, or Next config.
