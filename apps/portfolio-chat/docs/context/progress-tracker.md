@@ -12,6 +12,7 @@
 
 ## Completed
 
+- concise-about-intro — Short rule-based intro variants (`data/about.ts`, `select-about-intro.ts`); all `candidate_overview` use about-stream; trimmed `candidate-profile.md`
 - knowledge-assistant-stage5 — Dynamic suggestions (`generate-suggestions.ts`, `suggestion-templates.ts`, wired in `run-chat-stream.ts`)
 - knowledge-assistant-stage2-3 — Context loader + intent router with unit tests
 - knowledge-assistant-stage1 — `knowledge/` markdown corpus (candidate + projects)
@@ -56,6 +57,7 @@
 
 ## Session Notes
 
+- **2026-05-31:** Concise about intro — `selectAboutIntro()` variants by phrase cluster; sidebar “About” sends “Tell me about yourself”; stream path for all `candidate_overview`.
 - **2026-05-31:** Stage 5 dynamic suggestions — rule-based `generateSuggestions()` per intent; emits `data-related` at end of turn; strips static tool `related` when KA enabled.
 - **2026-05-31:** Knowledge Assistant Stage 0 specs: `00-implementation-stages` through `07-integration-cleanup`; merged `feature/ai-chat` into main; branch `feature/knowledge-assistant-phase0`.
 - **2026-05-30:** Completed feature specs 03, 04, 05, 07 — entire registry now Shipped-level documentation.

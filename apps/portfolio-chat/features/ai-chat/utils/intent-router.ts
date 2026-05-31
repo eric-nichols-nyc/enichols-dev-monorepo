@@ -10,6 +10,7 @@ const MAX_KNOWLEDGE_FILES = 3;
 
 const SUGGESTION_ALIASES: Record<string, string> = {
   experience: "show my work experience",
+  "about me": "tell me about yourself",
 };
 
 const PROJECT_ALIASES: Record<string, string> = {
