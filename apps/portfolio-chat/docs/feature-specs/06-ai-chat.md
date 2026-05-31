@@ -50,13 +50,13 @@ As a visitor, when I ask about Eric's work, the assistant declines off-topic req
 
 - [ ] **R16** — Rate limiting / abuse protection
 - [ ] **R17** — Request body Zod validation (currently trusts shape)
-- [ ] **R18** — Migrate to `features/ai-chat/` with thin `app/api/chat/route.ts`
+- [x] **R18** — Migrated to `features/ai-chat/` with thin `app/api/chat/route.ts`
 
 ## System boundaries
 
 | In scope | Out of scope |
 |----------|----------------|
-| `app/api/chat/route.ts`, `lib/ai/**` | Editing `packages/ai` models (ask user) |
+| `features/ai-chat/**`, thin `app/api/chat/route.ts` | Editing `packages/ai` models (ask user) |
 | Tool data from `@/data/*` | Persisted chat history |
 | Stream orchestration | Client `MessagePartRenderer` (see 02-chat-ui) |
 
@@ -76,13 +76,15 @@ Body: { messages: UIMessage[] }
 
 | File | Role |
 |------|------|
-| `app/api/chat/route.ts` | POST handler, stream pipe, tool registry, follow-up injection |
-| `lib/ai/prompts/portfolio-assistant.ts` | System prompt |
-| `lib/ai/tools/about.ts` | `showAboutTool`, `aboutCopy`, `aboutRelated` |
-| `lib/ai/about-stream-mode.ts` | Suppress about tool chunks; trigger text stream |
-| `lib/ai/project-preview-sentence.ts` | [if used elsewhere] |
+| `app/api/chat/route.ts` | Re-exports `POST` from `features/ai-chat` |
+| `features/ai-chat/api/post-chat.ts` | Stream pipe, follow-up injection |
+| `features/ai-chat/tools/portfolio-tools.ts` | Tool registry |
+| `features/ai-chat/tools/about.ts` | `showAboutTool`, `aboutCopy`, `aboutRelated` |
+| `features/ai-chat/prompts/portfolio-assistant.ts` | System prompt |
+| `features/ai-chat/lib/about-stream-mode.ts` | About text mode |
+| `features/ai-chat/lib/stream-copy.ts` | Word-stream helper |
 
-**Migration target:** `features/ai-chat/{api,tools,prompts,lib}/`
+Legacy shims: `@/lib/ai/*` re-export from `features/ai-chat/`.
 
 ## Invariants
 
@@ -96,7 +98,8 @@ Body: { messages: UIMessage[] }
 - [x] About request streams paragraph text without duplicate About card (e2e)
 - [x] Projects / tech stack receive server-injected follow-up text after tool output
 - [x] `pnpm test:run` and `pnpm test:e2e` pass for about streaming
-- [ ] R16–R18 when prioritized in PRD/tracker
+- [x] R18 migration complete
+- [ ] R16–R17 when prioritized in PRD/tracker
 
 ## Implementation prompt
 

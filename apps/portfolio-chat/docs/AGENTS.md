@@ -55,7 +55,7 @@ Run from `apps/portfolio-chat` (or via Turborepo filter from repo root if config
 - **UI:** Import from `@repo/design-system/components/ui/*` and `components/ai-elements/*`; semantic tokens per `ui-context.md`.
 - **Next.js:** Prefer Server Components; `"use client"` only for hooks, browser APIs, and interactivity.
 - **Routes:** Keep `app/` thin — page composes providers and layout; logic in features or `components/`.
-- **API:** Single chat route at `app/api/chat/route.ts`; tools and streaming logic colocated or under `lib/ai/` until migrated to `features/ai-chat/`.
+- **API:** Thin route `app/api/chat/route.ts` → `features/ai-chat/`.
 
 ## Protected (unless explicitly asked)
 
@@ -99,6 +99,7 @@ apps/portfolio-chat/
   app/                 # App Router (page, api/chat)
   features/            # NEW domain code (components/, hooks/, utils/)
   features/chat-ui/    # Chat column, messages, message parts, suggestions
+  features/ai-chat/    # POST handler, tools, prompts, stream helpers
   components/          # Legacy shims + artifacts, layout, tool section UI
   contexts/            # React context (chat session)
   lib/                 # AI helpers, tools (legacy → features/ai-chat)

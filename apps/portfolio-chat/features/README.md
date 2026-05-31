@@ -7,6 +7,7 @@ New domain code goes here: `features/<name>/` with `components/`, `hooks/`, and 
 | Feature | Path | Legacy shims |
 |---------|------|----------------|
 | Chat UI | [`chat-ui/`](./chat-ui/) | `@/components/chat`, `message`, `messages`, `suggestions`, `greeting`, `thinking-message` |
+| AI chat API | [`ai-chat/`](./ai-chat/) | `app/api/chat/route.ts`, `@/lib/ai/*` |
 
 Before creating a new folder:
 

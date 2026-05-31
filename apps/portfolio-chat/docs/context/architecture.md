@@ -23,11 +23,10 @@ Browser
         │     └── Chat → Messages → MessagePartRenderer
         └── Artifact panel (projects / experience detail)
 
-app/api/chat/route.ts
-  ├── streamText + tools (inline in route today)
-  ├── lib/ai/prompts/portfolio-assistant.ts (system prompt)
-  ├── lib/ai/tools/about.ts (show_about tool)
-  └── lib/ai/about-stream-mode.ts (word stream for about)
+app/api/chat/route.ts → features/ai-chat/api/post-chat.ts
+  ├── features/ai-chat/tools/ (portfolio tools)
+  ├── features/ai-chat/prompts/portfolio-assistant.ts
+  └── features/ai-chat/lib/about-stream-mode.ts, stream-copy.ts
 ```
 
 ## Folder conventions
@@ -38,7 +37,7 @@ app/api/chat/route.ts
 | `features/<name>/` | **New** domain code (`components/`, `hooks/`, `utils/`) |
 | `components/` | Legacy UI — chat, messages, artifacts, layout |
 | `contexts/` | App-wide React context (`chat-context.tsx`) |
-| `lib/` | AI utilities and tools (migrate → `features/ai-chat/`) |
+| `lib/` | App helpers (`project-preview-sentence`); AI in `features/ai-chat/` |
 | `data/` | Static portfolio content (source of truth for tools) |
 | `hooks/` | App-level hooks (legacy) |
 
@@ -50,7 +49,7 @@ app/api/chat/route.ts
 
 | Tool | UI part type (typical) | Data |
 |------|------------------------|------|
-| `show_about` | `tool-show_about` | `data/about.ts`, `lib/ai/tools/about.ts` |
+| `show_about` | `tool-show_about` | `data/about.ts`, `features/ai-chat/tools/about.ts` |
 | `show_projects` | `tool-show_projects` | `data/projects.ts` |
 | `show_experience` | `tool-show_experience` | `data/experience.ts` |
 | `show_tech_stack` | `tool-show_tech_stack` | `data/tech.json` |
