@@ -59,7 +59,7 @@ As a visitor, I want quick section prompts from the sidebar and social links in 
 ### Not yet implemented
 
 - [ ] **R19** — Migrate to `features/sidebar-layout/`
-- [ ] **R20** — Active nav state / highlight for current section → see [09-sidebar-nav-visibility.md](./09-sidebar-nav-visibility.md) **P3**
+- [x] **R20** — Active nav state / highlight for current section ([09-sidebar-nav-visibility.md](./09-sidebar-nav-visibility.md) P3)
 
 ## System boundaries
 

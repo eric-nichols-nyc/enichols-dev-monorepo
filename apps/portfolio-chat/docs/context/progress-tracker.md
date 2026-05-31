@@ -8,10 +8,17 @@
 
 ## Current Goal
 
-**Knowledge Assistant Stage 7:** Integration & cleanup per [07-integration-cleanup.md](../feature-specs/knowledge-assistant/07-integration-cleanup.md).
+Sidebar nav visibility **P6** (brand accent on active nav) — P1–P5, P7–P8, P3 shipped on `feature/sidebar-nav-p1`.
 
 ## Completed
 
+- sidebar-nav-p3 — Active section highlight via `useActiveNavSection` + optimistic nav clicks ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P3)
+- sidebar-nav-shell — Matched header heights (`h-[4.5rem]`), social icons right + 10% smaller
+- sidebar-nav-p8 — Brand subtitle “Ask about my work” under name (expanded + mobile) ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P8)
+- sidebar-nav-p5-p7 — Muted inactive nav text + hover pop; `--sidebar-border` + `border-sidebar-r` edge ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P5, P7)
+- sidebar-nav-p4 — “Explore” section label above nav (expanded + mobile; hidden collapsed) ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P4)
+- sidebar-nav-p2 — Nav pill affordance at rest: `bg-muted/30` + `hover:bg-muted` on desktop + mobile ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P2)
+- sidebar-nav-p1 — Distinct sidebar surface: `--sidebar-background` + `bg-sidebar` on desktop + mobile drawer ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P1)
 - tech-stack-table — `TechStack` renders per-category tables (Technology, Proficiency, Experience) from `data/tech.json` ([08-tech-stack-table](../feature-specs/08-tech-stack-table.md))
 - concise-about-intro — Short rule-based intro variants (`data/about.ts`, `select-about-intro.ts`); all `candidate_overview` use about-stream; trimmed `candidate-profile.md`
 - knowledge-assistant-stage5 — Dynamic suggestions (`generate-suggestions.ts`, `suggestion-templates.ts`, wired in `run-chat-stream.ts`)

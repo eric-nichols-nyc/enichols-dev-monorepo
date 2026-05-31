@@ -1,6 +1,6 @@
 # Feature spec — Sidebar navigation visibility & contrast
 
-**Status:** Not started
+**Status:** In progress (P6 open)
 
 **Extends:** [03-sidebar-layout.md](./03-sidebar-layout.md) (R20 active nav state)
 
@@ -35,12 +35,12 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 
 ### P1 — Sidebar surface elevation (highest impact)
 
-- [ ] **R1** — Sidebar `<aside>` uses a **different background** than the main chat column — not the same `bg-background` on both planes.
-- [ ] **R2** — Prefer semantic tokens over raw hex in component code:
+- [x] **R1** — Sidebar `<aside>` uses a **different background** than the main chat column — not the same `bg-background` on both planes.
+- [x] **R2** — Prefer semantic tokens over raw hex in component code:
   - Sidebar: `bg-muted/40`, `bg-card`, or a new app-level utility (e.g. `.bg-sidebar`) defined once in `app/styles.css` if no suitable token exists.
   - Main column: keep `bg-background` (or current app background).
-- [ ] **R3** — Elevation read should match Morphic/Perplexity **layering logic** (two distinct surfaces), not their exact colors.
-- [ ] **R4** — Apply consistently on **desktop sidebar** and **mobile drawer** (same sidebar surface token).
+- [x] **R3** — Elevation read should match Morphic/Perplexity **layering logic** (two distinct surfaces), not their exact colors.
+- [x] **R4** — Apply consistently on **desktop sidebar** and **mobile drawer** (same sidebar surface token).
 
 **Acceptance:** At a glance, sidebar reads as a separate panel from the chat canvas without increasing global brightness.
 
@@ -48,11 +48,11 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 
 ### P2 — Persistent nav pill affordance
 
-- [ ] **R5** — Each nav item has a **visible resting state** — subtle rounded background at all times (not only on `:hover`).
+- [x] **R5** — Each nav item has a **visible resting state** — subtle rounded background at all times (not only on `:hover`).
   - Suggested: `bg-muted/30` or `bg-secondary/50` at rest; stronger on hover.
-- [ ] **R6** — Resting pills make items look **clickable** before any mouse interaction (addresses “won’t be seen” feedback).
-- [ ] **R7** — Collapsed desktop mode: pill wraps icon only; expanded mode: icon + label.
-- [ ] **R8** — Preserve existing behavior: click sends preset via `sendMessage({ text: message, files: [] })`.
+- [x] **R6** — Resting pills make items look **clickable** before any mouse interaction (addresses “won’t be seen” feedback).
+- [x] **R7** — Collapsed desktop mode: pill wraps icon only; expanded mode: icon + label.
+- [x] **R8** — Preserve existing behavior: click sends preset via `sendMessage({ text: message, files: [] })`.
 
 **Acceptance:** Nav items are scannable as buttons on first paint; hover still provides feedback.
 
@@ -60,14 +60,14 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 
 ### P3 — Active section highlight
 
-- [ ] **R9** — Track **active nav id** (`projects` | `about` | `experience` | `tech`) in layout or a small hook (e.g. `useActiveNavSection`).
-- [ ] **R10** — Set active id when user triggers a nav preset **or** when chat content clearly maps to a section (see mapping table below).
-- [ ] **R11** — Active item styling is **always visible** while that section is active:
+- [x] **R9** — Track **active nav id** (`projects` | `about` | `experience` | `tech`) in layout or a small hook (e.g. `useActiveNavSection`).
+- [x] **R10** — Set active id when user triggers a nav preset **or** when chat content clearly maps to a section (see mapping table below).
+- [x] **R11** — Active item styling is **always visible** while that section is active:
   - Stronger pill background than rest state.
   - `text-foreground` (if P5 uses muted default for inactive items).
   - Optional left border or icon accent (see P6).
-- [ ] **R12** — Clearing chat (`SidebarBrand` → `clearMessages`) resets active nav to **none** (no highlight).
-- [ ] **R13** — `aria-current="page"` (or `true`) on the active nav button for accessibility.
+- [x] **R12** — Clearing chat (`SidebarBrand` → `clearMessages`) resets active nav to **none** (no highlight).
+- [x] **R13** — `aria-current="page"` (or `true`) on the active nav button for accessibility.
 
 **Section → nav id mapping (initial heuristic)**
 
@@ -78,7 +78,7 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 | User message closely matches preset | Match `NAV_ITEMS[].message` (case-insensitive trim) |
 | Ambiguous / general chat | No active highlight |
 
-- [ ] **R14** — Document mapping logic in code comment or hook JSDoc; refine in follow-up if false positives occur.
+- [x] **R14** — Document mapping logic in code comment or hook JSDoc; refine in follow-up if false positives occur.
 
 **Acceptance:** After “Tech stack” (nav or typed), **Tech** stays highlighted until clear or another section is selected. Resolves [03-sidebar-layout.md](./03-sidebar-layout.md) **R20**.
 
@@ -86,10 +86,10 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 
 ### P4 — Section group label
 
-- [ ] **R15** — Add a small label above the nav list (expanded sidebar + mobile drawer only; hidden when collapsed on desktop).
+- [x] **R15** — Add a small label above the nav list (expanded sidebar + mobile drawer only; hidden when collapsed on desktop).
   - Copy: **“Explore”** or **“Portfolio”** (pick one at implement time; prefer “Explore”).
-- [ ] **R16** — Style: `text-xs font-medium uppercase tracking-wide text-muted-foreground` (or equivalent token).
-- [ ] **R17** — Provides framing similar to Morphic’s “History” / Perplexity section headers.
+- [x] **R16** — Style: `text-xs font-medium uppercase tracking-wide text-muted-foreground` (or equivalent token).
+- [x] **R17** — Provides framing similar to Morphic’s “History” / Perplexity section headers.
 
 **Acceptance:** Nav list is grouped under a visible section heading.
 
@@ -97,10 +97,10 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 
 ### P5 — Text hierarchy (inactive vs active)
 
-- [ ] **R18** — **Inactive** nav items: `text-muted-foreground` (icons inherit or match).
-- [ ] **R19** — **Hover**: `text-foreground` + stronger pill (P2).
-- [ ] **R20** — **Active** (P3): `text-foreground` + strongest pill.
-- [ ] **R21** — Brand name (“Eric Nichols”) remains `text-foreground` / semibold — do not mute the brand row.
+- [x] **R18** — **Inactive** nav items: `text-muted-foreground` (icons inherit or match).
+- [x] **R19** — **Hover**: `text-foreground` + stronger pill (P2).
+- [x] **R20** — **Active** (P3): `text-foreground` + strongest pill.
+- [x] **R21** — Brand name (“Eric Nichols”) remains `text-foreground` / semibold — do not mute the brand row.
 
 **Acceptance:** Inactive links recede; hover and active states pop without changing theme globally.
 
@@ -121,11 +121,11 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 
 ### P7 — Sidebar edge separation
 
-- [ ] **R25** — Strengthen separation between sidebar and main column:
+- [x] **R25** — Strengthen separation between sidebar and main column:
   - Prefer slightly more visible `border-border` **or**
   - Subtle inset shadow on sidebar inner edge (`shadow-[inset_-1px_0_0_0_...]`) **or**
   - 1px divider with higher contrast token.
-- [ ] **R26** — Do not rely on border alone if P1 surface change is skipped (P1 + P7 together recommended).
+- [x] **R26** — Do not rely on border alone if P1 surface change is skipped (P1 + P7 together recommended).
 
 **Acceptance:** Panel boundary is visible even when nav text is muted.
 
@@ -133,10 +133,10 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 
 ### P8 — Optional brand subtitle (lowest priority)
 
-- [ ] **R27** — Under “Eric Nichols” (expanded + mobile only), optional one-line subtitle:
+- [x] **R27** — Under “Eric Nichols” (expanded + mobile only), optional one-line subtitle:
   - Example: **“Ask about my work”**
-- [ ] **R28** — `text-xs text-muted-foreground`, truncated on narrow widths.
-- [ ] **R29** — **Skip by default** unless user requests P8 when saying “implement” — reinforces primary IA without adding clutter.
+- [x] **R28** — `text-xs text-muted-foreground`, truncated on narrow widths.
+- [x] **R29** — **Skip by default** unless user requests P8 when saying “implement” — reinforces primary IA without adding clutter.
 
 **Acceptance:** Subtitle supports discoverability; hidden when sidebar collapsed.
 
@@ -215,6 +215,6 @@ When the user says **“implement sidebar nav visibility”** or **“implement 
 
 ## Open questions
 
-- [ ] **OQ1** — Section label copy: “Explore” vs “Portfolio”?
+- [x] **OQ1** — Section label copy: **“Explore”** (chosen at P4 ship).
 - [ ] **OQ2** — P6 accent: left border vs icon color vs both?
-- [ ] **OQ3** — Include P8 subtitle on first ship or defer?
+- [x] **OQ3** — Include P8 subtitle on first ship — **yes**, copy: “Ask about my work”.
