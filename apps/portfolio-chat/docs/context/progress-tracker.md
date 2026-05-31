@@ -4,11 +4,11 @@
 
 ## Current Phase
 
-**Phase 2 — Spec hardening & incremental migration prep**
+**Phase 3 — Optional `features/` migration or product (P7/P8)**
 
 ## Current Goal
 
-Flesh out remaining **Spec TODO** feature specs (03–05, 07) or start first `features/` migration (`chat-ui` or `ai-chat`).
+Start first code migration (`features/chat-ui/`) **or** product work (per-project artifact/chat P7, rate limit P8).
 
 ## In Progress
 
@@ -16,6 +16,7 @@ Flesh out remaining **Spec TODO** feature specs (03–05, 07) or start first `fe
 
 ## Completed
 
+- specs-all — Full specs for 02–07 feature registry (all shipped areas documented)
 - specs-core — Full specs for [02-chat-ui](../feature-specs/02-chat-ui.md) and [06-ai-chat](../feature-specs/06-ai-chat.md) from codebase
 - ai-prompt — System prompt extracted to `lib/ai/prompts/portfolio-assistant.ts`
 - agent-docs — Spec-driven doc system (AGENTS chain, context/, feature-specs/, reference/, Cursor rules, .cursorignore)
@@ -27,9 +28,10 @@ Flesh out remaining **Spec TODO** feature specs (03–05, 07) or start first `fe
 
 ## Next Up
 
-- Write full specs for 03-sidebar-layout, 04-chat-context, 05-artifacts, 07-portfolio-data
-- Migrate `components/chat` + messages → `features/chat-ui/` (or `ai-chat` first — pick one)
-- PRD P7 per-project detail chats, P8 rate limiting
+- Migrate `components/chat` + messages → `features/chat-ui/` (re-export shims at old paths)
+- PRD P7 — wire project cards → artifact (`onProjectSelect` / P7 in 05-artifacts)
+- PRD P8 — rate limiting on `/api/chat`
+- Data quality: R8 schema tests, R9 link checker (07-portfolio-data)
 
 ## Open Questions
 
@@ -47,5 +49,6 @@ Flesh out remaining **Spec TODO** feature specs (03–05, 07) or start first `fe
 
 ## Session Notes
 
+- **2026-05-30:** Completed feature specs 03, 04, 05, 07 — entire registry now Shipped-level documentation.
 - **2026-05-30 (later):** Completed 02 + 06 feature specs; extracted system prompt to `lib/ai/prompts/portfolio-assistant.ts`.
 - **2026-05-30:** Bootstrapped agent doc system from `AGENT-DOC-BOOTSTRAP-PROMPT.md`. Existing narrative docs (`chat-rendering.md`, etc.) linked from `reference/00-index.md` — not requirements.

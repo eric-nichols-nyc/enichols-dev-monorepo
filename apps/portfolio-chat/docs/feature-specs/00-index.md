@@ -6,11 +6,11 @@ Permanent map of features. Update **Status** when shipping; use **progress-track
 |---------|------|--------------------------|-----------|--------|
 | Design system (shared) | [01-design-system.md](./01-design-system.md) | `features/*` + `@repo/design-system` | — | Shipped (rules) |
 | Chat UI | [02-chat-ui.md](./02-chat-ui.md) | `components/chat.tsx`, `messages/`, `message.tsx` → `features/chat-ui/` | — | Shipped |
-| Sidebar & layout | [03-sidebar-layout.md](./03-sidebar-layout.md) | `components/collapsible-sidebar-layout.tsx` → `features/sidebar-layout/` | — | Shipped (Spec TODO) |
-| Chat context | [04-chat-context.md](./04-chat-context.md) | `contexts/chat-context.tsx` → `features/chat-context/` | — | Shipped (Spec TODO) |
-| Artifacts | [05-artifacts.md](./05-artifacts.md) | `artifact.tsx`, `featured-*`, `about.tsx`, etc. → `features/artifacts/` | — | Shipped (Spec TODO) |
+| Sidebar & layout | [03-sidebar-layout.md](./03-sidebar-layout.md) | `components/collapsible-sidebar-layout.tsx` → `features/sidebar-layout/` | — | Shipped |
+| Chat context | [04-chat-context.md](./04-chat-context.md) | `contexts/chat-context.tsx` → `features/chat-context/` | — | Shipped |
+| Artifacts | [05-artifacts.md](./05-artifacts.md) | `artifact.tsx`, `featured-*`, `about.tsx`, etc. → `features/artifacts/` | — | Shipped |
 | AI chat API & tools | [06-ai-chat.md](./06-ai-chat.md) | — → `features/ai-chat/` | `app/api/chat/route.ts`, `lib/ai/` | Shipped |
-| Portfolio data | [07-portfolio-data.md](./07-portfolio-data.md) | `data/*` (stays at app root) | Tools read data | Shipped (Spec TODO) |
+| Portfolio data | [07-portfolio-data.md](./07-portfolio-data.md) | `data/*` (stays at app root) | Tools read data | Shipped |
 | Agent documentation | — | `docs/**` | — | Shipped |
 
 ### Status legend

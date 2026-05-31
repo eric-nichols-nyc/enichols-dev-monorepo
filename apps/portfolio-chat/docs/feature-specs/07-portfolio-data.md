@@ -1,31 +1,74 @@
 # Feature spec — Portfolio data
 
-**Status:** Shipped — **Spec TODO** for editorial workflow.
+**Status:** Shipped
 
 ## Goal
 
-Single source of truth for projects, experience, about narrative, resume facts, and tech stack JSON consumed by tools and UI.
+Typed, version-controlled portfolio content consumed by AI tools and UI—single source of truth, no CMS.
 
 ## User story
 
-As Eric, I want to update portfolio facts in one place so chat and components stay consistent.
+As Eric, I update facts in one place so chat tools and components stay aligned; as a visitor, I see consistent projects, roles, and narrative.
 
-## Requirements (inventory)
+## Requirements
 
-- [x] R1 — `data/projects.ts`, `experience.ts`, `about.ts`, `resume.ts`, `tech.json`
-- [x] R2 — About prose derived from resume experience entries
-- [ ] R3 — [TBD] Validation script or CI check for data shape
-- [ ] R4 — [TBD] Content update checklist in docs
+### Files & roles
+
+| File | Export | Consumers |
+|------|--------|-----------|
+| `data/resume.ts` | `resume` — name, title, summary, skills, raw experience bullets | `data/about.ts` (source facts) |
+| `data/about.ts` | `about` — title, `paragraphs[]` (first-person narrative) | `show_about` tool, mock stream, `About` UI |
+| `data/experience.ts` | `ExperienceEntry[]` | `show_experience` tool, `Experience` / artifact |
+| `data/projects.ts` | `Project[]` (sorted, filtered `published`) | `show_projects` tool, `Projects` / `FeaturedProject` |
+| `data/tech.json` | Categories → tech entries | `show_tech_stack` tool, `TechStack` UI |
+
+- [x] **R1** — All imports use `@/data/*` paths
+- [x] **R2** — `Project` type includes artifact fields: `subtitle`, `problem`, `solution`, `tech`, `features`, `metrics`, `githubUrl`, etc.
+- [x] **R3** — `projects` default export: unpublished entries excluded from chat lists
+- [x] **R4** — `about.paragraphs` built from `resume` experience — update **resume** for facts, **about.ts** for voice/story
+
+### Tool / UI alignment
+
+- [x] **R5** — Tool outputs must match shapes expected in `02-chat-ui` (`message.tsx`)
+- [x] **R6** — `about` social links in tool (`lib/ai/tools/about.ts`) should match `socialLinks` in `components/constants.ts` when profiles change
+- [x] **R7** — `lib/project-preview-sentence.ts` derives card blurbs from `project.description`
+
+### Editorial workflow (manual today)
+
+1. Edit `data/resume.ts` for employment facts and highlights
+2. Refresh `data/about.ts` paragraphs if narrative should change
+3. Add/update `data/projects.ts` entries (`published: true` to surface)
+4. Update `data/experience.ts` for chat timeline cards
+5. Edit `data/tech.json` for stack categories
+6. Smoke-test: nav presets + one tool per section in dev
+
+- [ ] **R8** — [TBD] JSON schema or Vitest snapshot tests for data shape
+- [ ] **R9** — [TBD] Script to validate broken image URLs / links
+
+### Not in `data/`
+
+- System prompts → `lib/ai/prompts/`
+- Nav preset strings → `components/constants.ts` (should stay semantically aligned with tools)
 
 ## System boundaries
 
 | In scope | Out of scope |
 |----------|----------------|
-| `data/*` | CMS, database |
+| `data/*`, `lib/project-preview-sentence.ts` | Database, CMS, admin UI |
+| Stays at app root `data/` (not under `features/`) | Generating copy via LLM at runtime except model narration |
 
-**Note:** Data remains at `data/` (not under `features/`) — cross-cutting content layer.
+## Invariants
+
+- Do not duplicate project lists inside components—always import from `data/projects`.
+- Changing `ExperienceEntry` shape requires updates to tool execute, `message.tsx`, and artifact components.
+- Images live under `public/images/`; paths in `Project.image` / `gallery`.
 
 ## Acceptance criteria
 
-- [x] Tools and components import from `@/data/*`
-- [ ] Editorial workflow documented
+- [x] All four tools return data consistent with files on disk
+- [x] About narrative reflects resume companies/order
+- [ ] R8–R9 when quality gates are prioritized
+
+## Implementation prompt
+
+Content-only PRs should run `pnpm dev` and trigger each tool once. No API route changes unless shapes change.
