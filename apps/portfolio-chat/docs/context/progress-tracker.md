@@ -8,11 +8,12 @@
 
 ## Current Goal
 
-**Knowledge Assistant Stage 0 → 1:** Phase 0 specs complete; next author `knowledge/` corpus per [02-knowledge-sources.md](../feature-specs/knowledge-assistant/02-knowledge-sources.md).
+**Knowledge Assistant Stage 4:** Wire response handler in `post-chat.ts` (M1: project Q&A) per [05-response-handler.md](../feature-specs/knowledge-assistant/05-response-handler.md).
 
 ## Completed
 
-- knowledge-assistant-phase0 — Implementation stage specs (`00`–`07`) + resolved open questions
+- knowledge-assistant-stage2-3 — Context loader + intent router with unit tests
+- knowledge-assistant-stage1 — `knowledge/` markdown corpus (candidate + projects)
 - p7-project-artifact — Click project card in chat opens artifact with `FeaturedProject` + bounding-box animation
 - ai-chat-migration — `features/ai-chat/` + thin route + `@/lib/ai/*` shims
 - chat-ui-migration — `features/chat-ui/` + legacy shims at `components/chat`, `messages`, etc.
@@ -28,12 +29,11 @@
 
 ## In Progress
 
-- knowledge-assistant Stage 1 — author `knowledge/` markdown corpus
+- knowledge-assistant Stage 4 — response handler / `post-chat.ts` integration
 
 ## Next Up
 
-- knowledge-assistant Stage 1 — `knowledge/` markdown corpus
-- knowledge-assistant Stage 2 — intent router + unit tests
+- knowledge-assistant Stage 5 — dynamic suggestions
 - PRD P7b — per-project routes / deep links
 - PRD P8 — rate limiting on `/api/chat` (not in app today)
 - Migrate sidebar, context, or artifacts into `features/`

@@ -156,9 +156,9 @@ From [01 — Knowledge Assistant](./01-knowledge-assistant.md):
 |-----|-------|--------|
 | [current-state.md](./current-state.md) | Baseline audit | Shipped (docs) |
 | [01-knowledge-assistant.md](./01-knowledge-assistant.md) | Overview | Shipped (docs) |
-| [02-knowledge-sources.md](./02-knowledge-sources.md) | 1 | In progress |
-| [04-context-loader.md](./04-context-loader.md) | 2 | Not started |
-| [03-intent-router.md](./03-intent-router.md) | 3 | Not started |
+| [02-knowledge-sources.md](./02-knowledge-sources.md) | 1 | Shipped |
+| [04-context-loader.md](./04-context-loader.md) | 2 | Shipped |
+| [03-intent-router.md](./03-intent-router.md) | 3 | Shipped |
 | [05-response-handler.md](./05-response-handler.md) | 4 | Not started |
 | [06-dynamic-suggestions.md](./06-dynamic-suggestions.md) | 5 | Not started |
 | [07-integration-cleanup.md](./07-integration-cleanup.md) | 6 | Not started |
