@@ -1,6 +1,15 @@
 "use client";
 
+import { ShineBorder } from "@repo/design-system/components/ui/shine-border";
 import { motion } from "motion/react";
+import { useEffect, useState } from "react";
+import {
+  GREETING_VARIANTS,
+  type GreetingVariant,
+  pickRandomGreetingVariant,
+} from "@/features/chat-ui/data/greeting-variants";
+
+const GREETING_SHINE_COLORS = ["#6366f1", "#a21caf", "#f472b6"];
 
 const fadeUpIn = {
   initial: { opacity: 0, y: 16 },
@@ -12,6 +21,12 @@ const fadeUpIn = {
 };
 
 export function Greeting() {
+  const [variant, setVariant] = useState<GreetingVariant>(GREETING_VARIANTS[0]!);
+
+  useEffect(() => {
+    setVariant(pickRandomGreetingVariant());
+  }, []);
+
   return (
     <motion.div
       animate={fadeUpIn.animate}
@@ -27,17 +42,20 @@ export function Greeting() {
       >
         <motion.div
           animate={fadeUpIn.animate}
-          className="max-w-xl"
+          className="relative max-w-xl overflow-hidden rounded-xl bg-card/80 p-6 text-center shadow-sm"
           initial={fadeUpIn.initial}
           transition={{ ...fadeUpIn.transition, delay: 0.2 }}
         >
-          <strong>Hello there!</strong>
-          <p className="text-muted-foreground">
-            I'm Eric — a senior frontend engineer in New York City. <br />I
-            focus on accessibility, React, and building AI-driven experiences.
-            Ask about my projects, experience, or anything else you'd like to
-            know.
-          </p>
+          <ShineBorder
+            borderWidth={2}
+            className="rounded-xl"
+            duration={8}
+            shineColor={GREETING_SHINE_COLORS}
+          />
+          <div className="relative z-10 text-white">
+            <strong className="text-lg">{variant.heading}</strong>
+            <p className="mt-3 text-sm leading-relaxed">{variant.body}</p>
+          </div>
         </motion.div>
       </motion.div>
     </motion.div>
