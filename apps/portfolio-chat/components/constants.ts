@@ -11,6 +11,8 @@ import {
 export const SIDEBAR_WIDTH_EXPANDED = "16rem";
 export const SIDEBAR_WIDTH_COLLAPSED = "4rem";
 
+export const SIDEBAR_BRAND_SUBTITLE = "Ask about my work";
+
 export const NAV_ITEMS = [
   {
     id: "projects",
@@ -27,6 +29,8 @@ export const NAV_ITEMS = [
   },
   { id: "tech", label: "Tech", icon: Code2, message: "Tech stack" },
 ] as const;
+
+export type NavItemId = (typeof NAV_ITEMS)[number]["id"];
 
 export const socialLinks = [
   {
