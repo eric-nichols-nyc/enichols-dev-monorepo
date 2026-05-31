@@ -10,10 +10,12 @@
 
 ## Current Goal
 
-Sidebar nav visibility **P3** (active section highlight) on `feature/sidebar-nav-p1` — P1–P2 shipped.
+Sidebar nav visibility **P3** (active section highlight) — P1, P2, P4, P5, P7 shipped on `feature/sidebar-nav-p1`.
 
 ## Completed
 
+- sidebar-nav-p5-p7 — Muted inactive nav text + hover pop; `--sidebar-border` + `border-sidebar-r` edge ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P5, P7)
+- sidebar-nav-p4 — “Explore” section label above nav (expanded + mobile; hidden collapsed) ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P4)
 - sidebar-nav-p2 — Nav pill affordance at rest: `bg-muted/30` + `hover:bg-muted` on desktop + mobile ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P2)
 - sidebar-nav-p1 — Distinct sidebar surface: `--sidebar-background` + `bg-sidebar` on desktop + mobile drawer ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P1)
 - tech-stack-table — `TechStack` renders per-category tables (Technology, Proficiency, Experience) from `data/tech.json` ([08-tech-stack-table](../feature-specs/08-tech-stack-table.md))

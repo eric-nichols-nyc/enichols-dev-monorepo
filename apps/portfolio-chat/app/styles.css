@@ -29,6 +29,8 @@
     --background: rgb(16, 14, 18);
     /* Slightly darker than main column — sidebar panel elevation (09-sidebar-nav-visibility P1) */
     --sidebar-background: rgb(11, 10, 13);
+    /* Higher-contrast edge vs main column (09-sidebar-nav-visibility P7) */
+    --sidebar-border: rgb(45, 42, 50);
   }
 }
 
@@ -39,6 +41,11 @@
 
   .bg-sidebar {
     background-color: var(--sidebar-background);
+  }
+
+  .border-sidebar-r {
+    border-right: 1px solid var(--sidebar-border);
+    box-shadow: inset -1px 0 0 0 color-mix(in srgb, var(--sidebar-border) 60%, transparent);
   }
 
   .animate-logo-glow {

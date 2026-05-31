@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight, Menu } from "lucide-react";
 import Link from "next/link";
+import { cn } from "@repo/design-system/lib/utils";
 import { useCallback, useState } from "react";
 import { usePortfolioChat } from "@/contexts/chat-context";
 import {
@@ -14,8 +15,64 @@ import { Chat } from "./chat";
 import { SidebarBrand } from "./sidebar-brand";
 import { SidebarLogo } from "./sidebar-logo";
 
-const NAV_ITEM_BUTTON_CLASS =
-  "flex w-full items-center gap-3 rounded-lg bg-muted/30 px-3 py-2 text-left text-foreground text-sm transition-colors hover:bg-muted";
+const NAV_ITEM_BUTTON_BASE =
+  "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors";
+
+/** P5 inactive + hover; active tier (R20) used when P3 sets activeNavId */
+const NAV_ITEM_INACTIVE_CLASS =
+  "bg-muted/30 text-muted-foreground hover:bg-muted hover:text-foreground";
+
+const NAV_ITEM_ACTIVE_CLASS = "bg-muted text-foreground";
+
+const NAV_SECTION_LABEL_CLASS =
+  "mb-2 px-3 font-medium text-muted-foreground text-xs uppercase tracking-wide";
+
+const SIDEBAR_ASIDE_CLASS =
+  "bg-sidebar border-sidebar-r flex shrink-0 flex-col transition-[width] duration-200 ease-in-out";
+
+type SidebarNavListProps = {
+  activeNavId?: string | null;
+  collapsed?: boolean;
+  onNavClick: (message: string) => void;
+};
+
+function SidebarNavList({
+  activeNavId = null,
+  collapsed = false,
+  onNavClick,
+}: SidebarNavListProps) {
+  return (
+    <nav aria-label="Navigation" className="flex-1 overflow-y-auto p-2">
+      {!collapsed ? (
+        <p className={NAV_SECTION_LABEL_CLASS}>Explore</p>
+      ) : null}
+      <ul className="flex flex-col gap-1">
+        {NAV_ITEMS.map(({ id, label, icon: Icon, message }) => {
+          const isActive = activeNavId === id;
+
+          return (
+            <li key={id}>
+              <button
+                aria-current={isActive ? "page" : undefined}
+                aria-label={collapsed ? label : undefined}
+                className={cn(
+                  NAV_ITEM_BUTTON_BASE,
+                  isActive ? NAV_ITEM_ACTIVE_CLASS : NAV_ITEM_INACTIVE_CLASS
+                )}
+                onClick={() => onNavClick(message)}
+                title={collapsed ? label : undefined}
+                type="button"
+              >
+                <Icon className="size-4 shrink-0" />
+                {!collapsed ? <span className="truncate">{label}</span> : null}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}
 
 export function CollapsibleSidebarLayout() {
   const [collapsed, setCollapsed] = useState(false);
@@ -38,7 +95,7 @@ export function CollapsibleSidebarLayout() {
     <div className="flex h-dvh">
       {/* Desktop sidebar */}
       <aside
-        className="bg-sidebar hidden shrink-0 flex-col border-border border-r transition-[width] duration-200 ease-in-out md:flex"
+        className={cn(SIDEBAR_ASIDE_CLASS, "hidden md:flex")}
         style={{ width: sidebarWidth }}
       >
         <div className="flex h-full flex-col overflow-hidden">
@@ -67,24 +124,7 @@ export function CollapsibleSidebarLayout() {
             </button>
           </div>
 
-          <nav aria-label="Navigation" className="flex-1 overflow-y-auto p-2">
-            <ul className="flex flex-col gap-1">
-              {NAV_ITEMS.map(({ id, label, icon: Icon, message }) => (
-                <li key={id}>
-                  <button
-                    aria-label={collapsed ? label : ""}
-                    className={NAV_ITEM_BUTTON_CLASS}
-                    onClick={() => handleNavClick(message)}
-                    title={collapsed ? label : ""}
-                    type="button"
-                  >
-                    <Icon className="size-4 shrink-0" />
-                    {!collapsed && <span className="truncate">{label}</span>}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <SidebarNavList collapsed={collapsed} onNavClick={handleNavClick} />
         </div>
       </aside>
 
@@ -98,7 +138,10 @@ export function CollapsibleSidebarLayout() {
         />
       ) : null}
       <aside
-        className="bg-sidebar fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-border border-r transition-transform duration-200 md:hidden"
+        className={cn(
+          SIDEBAR_ASIDE_CLASS,
+          "fixed inset-y-0 left-0 z-50 w-64 transition-transform duration-200 md:hidden"
+        )}
         style={{
           transform: mobileOpen ? "translateX(0)" : "translateX(-100%)",
         }}
@@ -118,22 +161,7 @@ export function CollapsibleSidebarLayout() {
               <ChevronLeft className="size-4" />
             </button>
           </div>
-          <nav aria-label="Navigation" className="flex-1 overflow-y-auto p-2">
-            <ul className="flex flex-col gap-1">
-              {NAV_ITEMS.map(({ id, label, icon: Icon, message }) => (
-                <li key={id}>
-                  <button
-                    className={NAV_ITEM_BUTTON_CLASS}
-                    onClick={() => handleNavClick(message)}
-                    type="button"
-                  >
-                    <Icon className="size-4 shrink-0" />
-                    <span>{label}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <SidebarNavList onNavClick={handleNavClick} />
         </div>
       </aside>
 
