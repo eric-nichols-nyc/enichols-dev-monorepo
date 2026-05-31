@@ -27,12 +27,18 @@
 
   .dark {
     --background: rgb(16, 14, 18);
+    /* Slightly darker than main column — sidebar panel elevation (09-sidebar-nav-visibility P1) */
+    --sidebar-background: rgb(11, 10, 13);
   }
 }
 
 @layer utilities {
   .bg-app {
     background-color: rgb(16, 14, 18);
+  }
+
+  .bg-sidebar {
+    background-color: var(--sidebar-background);
   }
 
   .animate-logo-glow {

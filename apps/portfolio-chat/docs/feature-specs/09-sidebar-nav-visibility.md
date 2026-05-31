@@ -1,6 +1,6 @@
 # Feature spec — Sidebar navigation visibility & contrast
 
-**Status:** Not started
+**Status:** In progress (P1 shipped on branch)
 
 **Extends:** [03-sidebar-layout.md](./03-sidebar-layout.md) (R20 active nav state)
 
@@ -35,12 +35,12 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 
 ### P1 — Sidebar surface elevation (highest impact)
 
-- [ ] **R1** — Sidebar `<aside>` uses a **different background** than the main chat column — not the same `bg-background` on both planes.
-- [ ] **R2** — Prefer semantic tokens over raw hex in component code:
+- [x] **R1** — Sidebar `<aside>` uses a **different background** than the main chat column — not the same `bg-background` on both planes.
+- [x] **R2** — Prefer semantic tokens over raw hex in component code:
   - Sidebar: `bg-muted/40`, `bg-card`, or a new app-level utility (e.g. `.bg-sidebar`) defined once in `app/styles.css` if no suitable token exists.
   - Main column: keep `bg-background` (or current app background).
-- [ ] **R3** — Elevation read should match Morphic/Perplexity **layering logic** (two distinct surfaces), not their exact colors.
-- [ ] **R4** — Apply consistently on **desktop sidebar** and **mobile drawer** (same sidebar surface token).
+- [x] **R3** — Elevation read should match Morphic/Perplexity **layering logic** (two distinct surfaces), not their exact colors.
+- [x] **R4** — Apply consistently on **desktop sidebar** and **mobile drawer** (same sidebar surface token).
 
 **Acceptance:** At a glance, sidebar reads as a separate panel from the chat canvas without increasing global brightness.
 
@@ -48,11 +48,11 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 
 ### P2 — Persistent nav pill affordance
 
-- [ ] **R5** — Each nav item has a **visible resting state** — subtle rounded background at all times (not only on `:hover`).
+- [x] **R5** — Each nav item has a **visible resting state** — subtle rounded background at all times (not only on `:hover`).
   - Suggested: `bg-muted/30` or `bg-secondary/50` at rest; stronger on hover.
-- [ ] **R6** — Resting pills make items look **clickable** before any mouse interaction (addresses “won’t be seen” feedback).
-- [ ] **R7** — Collapsed desktop mode: pill wraps icon only; expanded mode: icon + label.
-- [ ] **R8** — Preserve existing behavior: click sends preset via `sendMessage({ text: message, files: [] })`.
+- [x] **R6** — Resting pills make items look **clickable** before any mouse interaction (addresses “won’t be seen” feedback).
+- [x] **R7** — Collapsed desktop mode: pill wraps icon only; expanded mode: icon + label.
+- [x] **R8** — Preserve existing behavior: click sends preset via `sendMessage({ text: message, files: [] })`.
 
 **Acceptance:** Nav items are scannable as buttons on first paint; hover still provides feedback.
 

@@ -14,6 +14,9 @@ import { Chat } from "./chat";
 import { SidebarBrand } from "./sidebar-brand";
 import { SidebarLogo } from "./sidebar-logo";
 
+const NAV_ITEM_BUTTON_CLASS =
+  "flex w-full items-center gap-3 rounded-lg bg-muted/30 px-3 py-2 text-left text-foreground text-sm transition-colors hover:bg-muted";
+
 export function CollapsibleSidebarLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -35,7 +38,7 @@ export function CollapsibleSidebarLayout() {
     <div className="flex h-dvh">
       {/* Desktop sidebar */}
       <aside
-        className="hidden shrink-0 flex-col border-border border-r bg-background transition-[width] duration-200 ease-in-out md:flex"
+        className="bg-sidebar hidden shrink-0 flex-col border-border border-r transition-[width] duration-200 ease-in-out md:flex"
         style={{ width: sidebarWidth }}
       >
         <div className="flex h-full flex-col overflow-hidden">
@@ -70,7 +73,7 @@ export function CollapsibleSidebarLayout() {
                 <li key={id}>
                   <button
                     aria-label={collapsed ? label : ""}
-                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-foreground text-sm transition-colors hover:bg-muted"
+                    className={NAV_ITEM_BUTTON_CLASS}
                     onClick={() => handleNavClick(message)}
                     title={collapsed ? label : ""}
                     type="button"
@@ -95,7 +98,7 @@ export function CollapsibleSidebarLayout() {
         />
       ) : null}
       <aside
-        className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-border border-r bg-background transition-transform duration-200 md:hidden"
+        className="bg-sidebar fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-border border-r transition-transform duration-200 md:hidden"
         style={{
           transform: mobileOpen ? "translateX(0)" : "translateX(-100%)",
         }}
@@ -120,7 +123,7 @@ export function CollapsibleSidebarLayout() {
               {NAV_ITEMS.map(({ id, label, icon: Icon, message }) => (
                 <li key={id}>
                   <button
-                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-foreground text-sm transition-colors hover:bg-muted"
+                    className={NAV_ITEM_BUTTON_CLASS}
                     onClick={() => handleNavClick(message)}
                     type="button"
                   >
