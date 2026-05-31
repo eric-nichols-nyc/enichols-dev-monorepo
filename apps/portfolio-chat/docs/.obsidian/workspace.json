@@ -182,8 +182,8 @@
   },
   "active": "31f9911e450520a5",
   "lastOpenFiles": [
-    "feature-specs/knowledge-assistant/02-knowledge-sources.md",
     "feature-specs/knowledge-assistant/03-intent-router.md",
+    "feature-specs/knowledge-assistant/02-knowledge-sources.md",
     "reference/README.md",
     "reference/agents-cursorrules-feature-specs.md",
     "reference/00-index.md",
