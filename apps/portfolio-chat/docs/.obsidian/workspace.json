@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "feature-specs/knowledge-assistant/02-knowledge-sources.md",
+                "file": "feature-specs/knowledge-assistant/03-intent-router.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "02-knowledge-sources"
+              "title": "03-intent-router"
             }
           }
         ]
@@ -182,6 +182,7 @@
   },
   "active": "31f9911e450520a5",
   "lastOpenFiles": [
+    "feature-specs/knowledge-assistant/02-knowledge-sources.md",
     "feature-specs/knowledge-assistant/03-intent-router.md",
     "reference/README.md",
     "reference/agents-cursorrules-feature-specs.md",
