@@ -12,6 +12,7 @@ Permanent map of features. Update **Status** when shipping; use **progress-track
 | AI chat API & tools | [06-ai-chat.md](./06-ai-chat.md) | `features/ai-chat/` (thin `app/api/chat/route.ts`) | POST `/api/chat` | Shipped |
 | Portfolio data | [07-portfolio-data.md](./07-portfolio-data.md) | `data/*` (stays at app root) | Tools read data | Shipped |
 | Tech stack table UI | [08-tech-stack-table.md](./08-tech-stack-table.md) | `components/tech-stack.tsx` | `show_tech_stack` (display only) | Shipped |
+| Sidebar nav visibility | [09-sidebar-nav-visibility.md](./09-sidebar-nav-visibility.md) | `collapsible-sidebar-layout.tsx` → `features/sidebar-layout/` | — | Not started |
 | Agent documentation | — | `docs/**` | — | Shipped |
 | Knowledge Assistant | [knowledge-assistant/](./knowledge-assistant/00-implementation-stages.md) | — (uses existing chat UI) | Extends POST `/api/chat` | In progress |
 | Concise about intro | [knowledge-assistant/08-concise-about-intro.md](./knowledge-assistant/08-concise-about-intro.md) | `components/about.tsx`, `data/about.ts` | `candidate_overview` / `show_about` stream | Shipped |
