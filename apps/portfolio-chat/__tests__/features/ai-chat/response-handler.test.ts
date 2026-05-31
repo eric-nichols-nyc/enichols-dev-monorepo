@@ -59,3 +59,22 @@ describe("buildGroundedSystemPrompt", () => {
     expect(prompt).toContain("I don't have that in my portfolio materials.");
   });
 });
+
+describe("clarification routing", () => {
+  it("forces show_projects tool when an unknown project is referenced", () => {
+    const routing = routeIntent("Tell me about Unknown Project");
+    expect(routing).toMatchObject({
+      clarificationNeeded: true,
+      responseType: "context_aware_ai",
+    });
+
+    const forcedTool =
+      routing.responseType === "static_display" || routing.responseType === "hybrid"
+        ? routing.tool
+        : routing.clarificationNeeded
+          ? "show_projects"
+          : undefined;
+
+    expect(forcedTool).toBe("show_projects");
+  });
+});
