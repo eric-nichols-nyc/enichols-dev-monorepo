@@ -1,6 +1,6 @@
 # Knowledge Assistant — Intent Router
 
-**Status:** Not started  
+**Status:** Shipped  
 **Stage:** 3  
 **Depends on:** [01 — Knowledge Assistant](./01-knowledge-assistant.md) · [current-state.md](./current-state.md) · [02 — Knowledge Sources](./02-knowledge-sources.md)  
 **Feeds:** [04 — Context Loader](./04-context-loader.md) · [05 — Response Handler](./05-response-handler.md) · [06 — Dynamic Suggestions](./06-dynamic-suggestions.md)

@@ -11,6 +11,6 @@ export {
   toSimpleModelMessages,
   type SimpleModelMessage,
 } from "./lib/to-simple-model-messages";
-export { getPortfolioAssistantSystemPrompt } from "./prompts/portfolio-assistant";
+export { getPortfolioAssistantSystemPrompt } from "@/lib/ai/prompts/portfolio-assistant";
 export { aboutCopy, aboutRelated, showAboutTool } from "@/lib/ai/tools/about";
 export { portfolioChatTools } from "@/lib/ai/tools/portfolio-tools";

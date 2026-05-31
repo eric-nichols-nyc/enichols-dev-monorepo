@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "feature-specs/knowledge-assistant/02-knowledge-sources.md",
+                "file": "feature-specs/knowledge-assistant/04-context-loader.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "02-knowledge-sources"
+              "title": "04-context-loader"
             }
           }
         ]
