@@ -37,13 +37,17 @@ Return UIMessage stream (existing chat UI — no rebuild)
 |-------|------|----------|------------|-------------|
 | **0** | This doc (§ Phase 0) | Resolved decisions, spec registry, tracker setup | — | 0.5 day |
 | **1** | [02 — Knowledge Sources](./02-knowledge-sources.md) | `knowledge/` markdown corpus | Stage 0 | 1–2 days |
-| **2** | [03 — Intent Router](./03-intent-router.md) | Pure `routeIntent()` + unit tests | Stage 1 (paths exist) | 1–2 days |
-| **3** | [04 — Context Loader](./04-context-loader.md) | Server-side file read + section slices | Stages 1–2 | 1 day |
+| **2** | [04 — Context Loader](./04-context-loader.md) | Server-side file read + section slices | Stage 1 | 1 day |
+| **3** | [03 — Intent Router](./03-intent-router.md) | Pure `routeIntent()` + unit tests | Stages 1–2 | 1–2 days |
 | **4** | [05 — Response Handler](./05-response-handler.md) | `post-chat.ts` integration | Stages 2–3 | 2–3 days |
 | **5** | [06 — Dynamic Suggestions](./06-dynamic-suggestions.md) | Replace static `related` arrays | Stage 4 | 1–2 days |
 | **6** | [07 — Integration & Cleanup](./07-integration-cleanup.md) | Remove dead paths, e2e, CI guard | Stages 4–5 | 1 day |
 
-**Build order rationale:** Content before code. Router and loader are pure functions testable without LLM. API wiring is highest risk and comes after primitives. Suggestions need intent + loaded context + response text.
+**Build order rationale:** Content first (Stage 1). Loader next (Stage 2)—testable with fixture paths and mock routing inputs. Router (Stage 3)—outputs paths the loader consumes. API wiring (Stage 4+) is highest risk and comes last.
+
+**Runtime order** (each request): router → loader → response handler → suggestions. Stage numbers are *build* order, not request order.
+
+**Note:** Spec *filenames* (`03-intent-router`, `04-context-loader`) are doc IDs, not stage numbers.
 
 ---
 
@@ -106,13 +110,13 @@ apps/portfolio-chat/
 ├── features/ai-chat/
 │   ├── api/post-chat.ts                # Stage 4 — orchestration
 │   ├── utils/
-│   │   ├── intent-router.ts            # Stage 2
-│   │   ├── load-knowledge-context.ts   # Stage 3
+│   │   ├── load-knowledge-context.ts   # Stage 2
+│   │   ├── intent-router.ts            # Stage 3
 │   │   ├── build-grounded-prompt.ts    # Stage 4
 │   │   └── generate-suggestions.ts     # Stage 5
 │   ├── lib/                            # existing: about-stream, stream-copy
 │   └── types/
-│       └── routing-result.ts           # Stage 2 — shared contract
+│       └── routing-result.ts           # Stage 3 — shared contract
 └── lib/ai/
     ├── prompts/portfolio-assistant.ts  # Stage 6 — slim down tool routing
     └── tools/                          # Stage 5–6 — remove static related
@@ -152,9 +156,9 @@ From [01 — Knowledge Assistant](./01-knowledge-assistant.md):
 |-----|-------|--------|
 | [current-state.md](./current-state.md) | Baseline audit | Shipped (docs) |
 | [01-knowledge-assistant.md](./01-knowledge-assistant.md) | Overview | Shipped (docs) |
-| [02-knowledge-sources.md](./02-knowledge-sources.md) | 1 | Not started |
-| [03-intent-router.md](./03-intent-router.md) | 2 | Not started |
-| [04-context-loader.md](./04-context-loader.md) | 3 | Not started |
+| [02-knowledge-sources.md](./02-knowledge-sources.md) | 1 | In progress |
+| [04-context-loader.md](./04-context-loader.md) | 2 | Not started |
+| [03-intent-router.md](./03-intent-router.md) | 3 | Not started |
 | [05-response-handler.md](./05-response-handler.md) | 4 | Not started |
 | [06-dynamic-suggestions.md](./06-dynamic-suggestions.md) | 5 | Not started |
 | [07-integration-cleanup.md](./07-integration-cleanup.md) | 6 | Not started |
