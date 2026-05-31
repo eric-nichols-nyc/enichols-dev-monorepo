@@ -12,6 +12,7 @@
 
 ## Completed
 
+- tech-stack-table — `TechStack` renders per-category tables (Technology, Proficiency, Experience) from `data/tech.json` ([08-tech-stack-table](../feature-specs/08-tech-stack-table.md))
 - concise-about-intro — Short rule-based intro variants (`data/about.ts`, `select-about-intro.ts`); all `candidate_overview` use about-stream; trimmed `candidate-profile.md`
 - knowledge-assistant-stage5 — Dynamic suggestions (`generate-suggestions.ts`, `suggestion-templates.ts`, wired in `run-chat-stream.ts`)
 - knowledge-assistant-stage2-3 — Context loader + intent router with unit tests

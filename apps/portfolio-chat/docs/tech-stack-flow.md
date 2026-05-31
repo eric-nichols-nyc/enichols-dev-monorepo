@@ -20,9 +20,9 @@ How the tech stack question works end-to-end, and how tool results become React 
    - One part: streamed text ("Here's the tech stack…").
    - Another part: `type: "tool-show_tech_stack"`, `state: "output-available"`, `output: { tech, related, ... }`.
 
-7. **MessagePartRenderer** sees the tool part. For `tool-show_tech_stack` + `output-available` it renders the React component `<TechStack tech={output.tech} />` (and Related). The table is **not** streamed character-by-character; it appears when the tool result is available, same as the projects grid.
+7. **MessagePartRenderer** sees the tool part. For `tool-show_tech_stack` + `output-available` it renders `<TechStack tech={output.tech} />` (and Related). Content lives in a **fixed-height scrollable card** (same pattern as Experience): per-category **three-column tables** (Technology, Proficiency, Experience). The UI is **not** streamed character-by-character; it appears when the tool result is available, same as the projects grid.
 
-**Summary:** The model chooses when to call the tool, the tool returns data, and the frontend decides how to display that data (table + related). The only streamed text is the short intro; the table is rendered once from the tool output.
+**Summary:** The model chooses when to call the tool, the tool returns data, and the frontend decides how to display that data (per-category tables + related). The only streamed text is the short intro; the tables render once from the tool output.
 
 ## Same pattern for other tools
 

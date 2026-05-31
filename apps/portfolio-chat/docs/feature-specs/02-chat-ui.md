@@ -42,7 +42,7 @@ As a visitor, I want streamed replies and portfolio sections embedded in the thr
 | | output-available | `<About />` (+ preliminary hint if `preliminary`) |
 | | output-error | Error text |
 | `tool-show_tech_stack` / `tool-showTechStack` | input-* | (loader at top of message only) |
-| | output-available | `<TechStack />` |
+| | output-available | `<TechStack />` — scrollable card (400px) with per-category tables |
 
 - [x] **R10** — Support **both** snake_case and camelCase tool part type strings (SDK/version tolerance)
 - [x] **R11** — After text exists in message, show `related` from projects/tech tool output at message bottom via `getRelatedForMessage` (experience/about related render inline in part handler)

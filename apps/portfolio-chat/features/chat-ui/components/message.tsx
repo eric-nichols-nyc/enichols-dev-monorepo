@@ -184,7 +184,7 @@ function MessagePartRenderer({
       const output = part.output as {
         tech: Record<
           string,
-          Array<{ name: string; icon?: string; level?: string; years?: string }>
+          Array<{ name: string; icon?: string; knows?: string }>
         >;
         related?: string[];
       };

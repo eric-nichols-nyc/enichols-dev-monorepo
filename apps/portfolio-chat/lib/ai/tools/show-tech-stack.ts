@@ -9,7 +9,7 @@ export const showTechStackTool = tool({
   execute: () => {
     const techData = tech as Record<
       string,
-      Array<{ name: string; icon?: string; level?: string; years?: string }>
+      Array<{ name: string; icon?: string; knows?: string }>
     >;
     const technologies = Object.values(techData)
       .flat()

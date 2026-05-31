@@ -1,35 +1,92 @@
 {
-
   "Frontend": [
-    { "name": "React", "icon": "⚛️", "level": "Expert", "years": "4 years exp" },
-    { "name": "Next.js", "icon": "▲", "level": "Expert", "years": "3 years exp" },
-    { "name": "TypeScript", "icon": "📘", "level": "Expert", "years": "4 years exp" },
-    { "name": "JavaScript", "icon": "📜", "level": "Expert", "years": "5 years exp" },
-    { "name": "Tailwind CSS", "icon": "🎨", "level": "Expert", "years": "3 years exp" }
+    {
+      "name": "React",
+      "icon": "⚛️",
+      "knows": "Custom hooks, Context, Server Components, performance tuning"
+    },
+    {
+      "name": "Next.js",
+      "icon": "▲",
+      "knows": "App Router, RSC, API routes, middleware, Vercel deploys"
+    },
+    {
+      "name": "TypeScript",
+      "icon": "📘",
+      "knows": "Strict mode, generics, utility types, Zod inference"
+    },
+    {
+      "name": "JavaScript",
+      "icon": "📜",
+      "knows": "ES modules, async patterns, DOM APIs, Node scripting"
+    },
+    {
+      "name": "Tailwind CSS",
+      "icon": "🎨",
+      "knows": "Design tokens, responsive layouts, dark mode, component variants"
+    }
   ],
   "Database": [
-    { "name": "PostgreSQL", "icon": "🐘", "level": "Expert", "years": "3 years exp" },
-    { "name": "MongoDB", "icon": "🍃", "level": "Expert", "years": "3 years exp" },
-    { "name": "MySQL", "icon": "🐬", "level": "Intermediate", "years": "3 years exp" },
-    { "name": "Redis", "icon": "🔴", "level": "Intermediate", "years": "2 years exp" },
-    { "name": "Prisma", "icon": "🔺", "level": "Expert", "years": "2 years exp" }
+    {
+      "name": "PostgreSQL",
+      "icon": "🐘",
+      "knows": "Schema design, indexes, migrations, JSON columns"
+    },
+    {
+      "name": "MongoDB",
+      "icon": "🍃",
+      "knows": "Document modeling, aggregation pipelines, Atlas hosting"
+    },
+    {
+      "name": "Prisma",
+      "icon": "🔺",
+      "knows": "Schema-first models, relations, seed scripts, type-safe queries"
+    }
   ],
   "Cloud & DevOps": [
-    { "name": "AWS", "icon": "☁️", "level": "Intermediate", "years": "2 years exp" },
-    { "name": "Firebase", "icon": "🔥", "level": "Expert", "years": "3 years exp" },
-    { "name": "Docker", "icon": "🐳", "level": "Intermediate", "years": "2 years exp" },
-    { "name": "Git", "icon": "📦", "level": "Expert", "years": "5 years exp" }
+    {
+      "name": "AWS",
+      "icon": "☁️",
+      "knows": "S3, Lambda basics, IAM, environment config"
+    },
+    {
+      "name": "Git",
+      "icon": "📦",
+      "knows": "Branching workflows, rebasing, PR hygiene, monorepos"
+    }
   ],
   "AI & Integration": [
-    { "name": "OpenAI", "icon": "🤖", "level": "Expert", "years": "2 years exp" },
-    { "name": "LangChain", "icon": "🔗", "level": "Expert", "years": "1 year exp" },
-    { "name": "Vercel AI SDK", "icon": "▲", "level": "Expert", "years": "1 year exp" },
-    { "name": "MCP", "icon": "💳", "level": "Intermediate", "years": "2 years exp" },
-    { "name": "Vector Database", "icon": "🔍", "level": "Intermediate", "years": "1 year exp" }
+    {
+      "name": "OpenAI",
+      "icon": "🤖",
+      "knows": "Chat completions, embeddings, prompt design, tool calling"
+    },
+    {
+      "name": "Vercel AI SDK",
+      "icon": "▲",
+      "knows": "streamText, useChat, tool UI parts, structured outputs"
+    },
+    {
+      "name": "MCP",
+      "icon": "💳",
+      "knows": "Server wiring, resource tools, agent-friendly APIs"
+    }
   ],
   "Backend": [
-    { "name": "Node.js", "icon": "🟢", "level": "Expert", "years": "4 years exp" },
-    { "name": "Express", "icon": "⚡", "level": "Expert", "years": "3 years exp" },
-    { "name": "APIs", "icon": "💎", "level": "Expert", "years": "7 years exp" }
+    {
+      "name": "Node.js",
+      "icon": "🟢",
+      "knows": "REST APIs, streaming, workers, npm workspaces"
+    },
+    {
+      "name": "Express",
+      "icon": "⚡",
+      "knows": "Middleware chains, auth hooks, error handling"
+    },
+    {
+      "name": "APIs",
+      "icon": "💎",
+      "knows": "REST design, webhooks, rate limits, OpenAPI docs"
+    }
   ]
-} 
+}
