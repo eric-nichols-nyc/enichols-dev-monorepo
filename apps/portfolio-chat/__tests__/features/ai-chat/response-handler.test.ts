@@ -30,12 +30,17 @@ describe("extractLatestUserText", () => {
 });
 
 describe("shouldUseAboutStreamLegacy", () => {
-  it("keeps about-stream only for the about pill phrase", () => {
-    const aboutRouting = routeIntent("Tell me about yourself");
-    expect(shouldUseAboutStreamLegacy(aboutRouting, "Tell me about yourself")).toBe(
+  it("enables about-stream for all candidate_overview intents", () => {
+    expect(
+      shouldUseAboutStreamLegacy(routeIntent("Tell me about yourself"))
+    ).toBe(true);
+    expect(shouldUseAboutStreamLegacy(routeIntent("Introduce yourself"))).toBe(
       true
     );
-    expect(shouldUseAboutStreamLegacy(aboutRouting, "Who is Eric?")).toBe(false);
+    expect(shouldUseAboutStreamLegacy(routeIntent("Who is Eric?"))).toBe(true);
+    expect(shouldUseAboutStreamLegacy(routeIntent("Show me your projects"))).toBe(
+      false
+    );
   });
 });
 
@@ -57,6 +62,14 @@ describe("buildGroundedSystemPrompt", () => {
     expect(prompt).toContain("Portfolio knowledge");
     expect(prompt).toContain("Artist analytics platform.");
     expect(prompt).toContain("I don't have that in my portfolio materials.");
+  });
+
+  it("adds brevity rules for candidate_overview", () => {
+    const prompt = buildGroundedSystemPrompt(
+      { files: [], truncated: false, missingPaths: [] },
+      "candidate_overview"
+    );
+    expect(prompt).toContain("at most 4 short sentences");
   });
 });
 

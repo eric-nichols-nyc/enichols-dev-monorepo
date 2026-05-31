@@ -18,7 +18,12 @@ export const NAV_ITEMS = [
     icon: FolderOpen,
     message: "Show projects",
   },
-  { id: "about", label: "About", icon: User, message: "About Me" },
+  {
+    id: "about",
+    label: "About",
+    icon: User,
+    message: "Tell me about yourself",
+  },
   {
     id: "experience",
     label: "Experience",

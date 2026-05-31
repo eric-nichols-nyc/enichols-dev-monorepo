@@ -13,6 +13,7 @@ Permanent map of features. Update **Status** when shipping; use **progress-track
 | Portfolio data | [07-portfolio-data.md](./07-portfolio-data.md) | `data/*` (stays at app root) | Tools read data | Shipped |
 | Agent documentation | — | `docs/**` | — | Shipped |
 | Knowledge Assistant | [knowledge-assistant/](./knowledge-assistant/00-implementation-stages.md) | — (uses existing chat UI) | Extends POST `/api/chat` | In progress |
+| Concise about intro | [knowledge-assistant/08-concise-about-intro.md](./knowledge-assistant/08-concise-about-intro.md) | `components/about.tsx`, `data/about.ts` | `candidate_overview` / `show_about` stream | Shipped |
 
 ### Status legend
 

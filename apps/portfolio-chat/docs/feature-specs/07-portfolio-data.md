@@ -25,7 +25,7 @@ As Eric, I update facts in one place so chat tools and components stay aligned; 
 - [x] **R1** — All imports use `@/data/*` paths
 - [x] **R2** — `Project` type includes artifact fields: `subtitle`, `problem`, `solution`, `tech`, `features`, `metrics`, `githubUrl`, etc.
 - [x] **R3** — `projects` default export: unpublished entries excluded from chat lists
-- [x] **R4** — `about.paragraphs` built from `resume` experience — update **resume** for facts, **about.ts** for voice/story
+- [x] **R4** — `about` intro copy derived from `resume` facts — update **resume** for facts, **`data/about.ts` variants** for chat intro voice; career timeline stays in `data/experience.ts` / `knowledge/candidate/experience.md`
 
 ### Tool / UI alignment
 
@@ -36,11 +36,12 @@ As Eric, I update facts in one place so chat tools and components stay aligned; 
 ### Editorial workflow (manual today)
 
 1. Edit `data/resume.ts` for employment facts and highlights
-2. Refresh `data/about.ts` paragraphs if narrative should change
-3. Add/update `data/projects.ts` entries (`published: true` to surface)
-4. Update `data/experience.ts` for chat timeline cards
-5. Edit `data/tech.json` for stack categories
-6. Smoke-test: nav presets + one tool per section in dev
+2. Refresh `data/about.ts` intro variants (`aboutIntroVariants`) for chat intro tone—keep each variant under ~150 words
+3. Align `knowledge/candidate/candidate-profile.md` summary with the same facts for grounded Q&A
+4. Add/update `data/projects.ts` entries (`published: true` to surface)
+5. Update `data/experience.ts` for chat timeline cards
+6. Edit `data/tech.json` for stack categories
+7. Smoke-test: nav presets + one tool per section in dev
 
 - [ ] **R8** — [TBD] JSON schema or Vitest snapshot tests for data shape
 - [ ] **R9** — [TBD] Script to validate broken image URLs / links

@@ -23,7 +23,8 @@ import {
   getPortfolioAssistantSystemPrompt,
 } from "@/lib/ai/prompts/portfolio-assistant";
 import { generateSuggestions } from "@/features/ai-chat/utils/generate-suggestions";
-import { aboutCopy, aboutRelated } from "@/lib/ai/tools/about";
+import { selectAboutIntro } from "@/features/ai-chat/utils/select-about-intro";
+import { aboutRelated } from "@/lib/ai/tools/about";
 import { portfolioChatTools } from "@/lib/ai/tools/portfolio-tools";
 
 const CLARIFICATION_COPY =
@@ -44,6 +45,7 @@ type RunChatStreamParams = {
   modelMessages: SimpleModelMessage[];
   routing: RoutingResult;
   knowledgeContext: LoadedKnowledgeContext;
+  userText: string;
   useLegacyAboutStream: boolean;
   dynamicSuggestionsEnabled?: boolean;
 };
@@ -90,7 +92,7 @@ function buildStreamTextOptions(
     return {
       model: models.chat as any,
       stopWhen: stepCountIs(1),
-      system: buildGroundedSystemPrompt(knowledgeContext),
+      system: buildGroundedSystemPrompt(knowledgeContext, routing.intent),
       messages: modelMessages,
     };
   }
@@ -109,9 +111,13 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
     writer,
     routing,
     knowledgeContext,
+    userText,
     useLegacyAboutStream,
     dynamicSuggestionsEnabled = false,
   } = params;
+  const aboutIntro = useLegacyAboutStream
+    ? selectAboutIntro(userText || routing.originalMessage)
+    : null;
   const writeChunk = params.writer;
 
   if (routing.clarificationNeeded) {
@@ -159,10 +165,10 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
       state: aboutStreamModeState,
     });
 
-    if (aboutDecision.shouldStreamAboutText) {
+    if (aboutDecision.shouldStreamAboutText && aboutIntro) {
       lastToolName = c.toolName ?? "show_about";
-      await streamCopy(writeChunk, textIdAbout, aboutCopy);
-      assistantText += aboutCopy;
+      await streamCopy(writeChunk, textIdAbout, aboutIntro.copy);
+      assistantText += aboutIntro.copy;
 
       if (!dynamicSuggestionsEnabled) {
         writeChunk.write({

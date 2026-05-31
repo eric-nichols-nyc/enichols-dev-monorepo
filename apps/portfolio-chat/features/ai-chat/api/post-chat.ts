@@ -7,8 +7,8 @@ import {
   createUIMessageStream,
   createUIMessageStreamResponse,
 } from "@repo/ai";
-import { about } from "@/data/about";
 import { runChatStream } from "@/features/ai-chat/api/run-chat-stream";
+import { selectAboutIntro } from "@/features/ai-chat/utils/select-about-intro";
 import { streamCopy } from "@/features/ai-chat/lib/stream-copy";
 import { toSimpleModelMessages } from "@/features/ai-chat/lib/to-simple-model-messages";
 import { extractLatestUserText } from "@/features/ai-chat/utils/extract-latest-user-text";
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
         originalMessages: messages,
         execute: async ({ writer }) => {
           const mockTextId = "mock-stream-response";
-          const mockCopy = about.paragraphs.join("\n\n");
+          const mockCopy = selectAboutIntro("Tell me about yourself").copy;
 
           await new Promise((resolve) => setTimeout(resolve, 3000));
           await streamCopy(
@@ -65,8 +65,7 @@ export async function POST(request: Request) {
     const routing = routeIntent(userText);
     const knowledgeContext = await loadKnowledgeContext(routing);
     const useLegacyAboutStream =
-      isKnowledgeAssistantEnabled() &&
-      shouldUseAboutStreamLegacy(routing, userText);
+      isKnowledgeAssistantEnabled() && shouldUseAboutStreamLegacy(routing);
 
     console.log("[chat:api] route", {
       intent: routing.intent,
@@ -90,6 +89,7 @@ export async function POST(request: Request) {
             modelMessages,
             routing,
             knowledgeContext,
+            userText,
             useLegacyAboutStream: true,
             dynamicSuggestionsEnabled: false,
           });
@@ -108,6 +108,7 @@ export async function POST(request: Request) {
           modelMessages,
           routing,
           knowledgeContext,
+          userText,
           useLegacyAboutStream,
           dynamicSuggestionsEnabled: true,
         });
