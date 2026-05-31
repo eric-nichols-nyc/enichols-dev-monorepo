@@ -1,9 +1,11 @@
 "use client";
 
 import { Skeleton } from "@repo/design-system/components/ui/skeleton";
+import { cn } from "@repo/design-system/lib/utils";
 import { ExternalLink, Github } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useCallback, useRef } from "react";
 import type { Project } from "@/data/projects";
 import { projectPreviewSentence } from "@/lib/project-preview-sentence";
 
@@ -14,13 +16,25 @@ export type BoundingBox = {
   height: number;
 };
 
+export function getElementBoundingBox(element: HTMLElement): BoundingBox {
+  const rect = element.getBoundingClientRect();
+  return {
+    top: rect.top,
+    left: rect.left,
+    width: rect.width,
+    height: rect.height,
+  };
+}
+
 type ProjectsProps = {
   copy?: string;
+  onProjectSelect?: (project: Project, boundingBox?: BoundingBox) => void;
   projectCount: number;
   projects: Project[];
 };
 
 type ProjectCardProps = {
+  onSelect?: (project: Project, boundingBox?: BoundingBox) => void;
   project: Project;
 };
 
@@ -58,12 +72,16 @@ export function ProjectsSkeleton() {
   );
 }
 
-export function Projects({ copy, projects }: ProjectsProps) {
+export function Projects({ copy, onProjectSelect, projects }: ProjectsProps) {
   return (
     <div className="space-y-4">
       <div className="-mx-4 flex flex-col gap-4 px-4 pb-2">
         {projects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
+          <ProjectCard
+            key={project.id}
+            onSelect={onProjectSelect}
+            project={project}
+          />
         ))}
       </div>
       {copy ? <p className="text-foreground text-sm">{copy}</p> : null}
@@ -71,14 +89,44 @@ export function Projects({ copy, projects }: ProjectsProps) {
   );
 }
 
-export function ProjectCard({ project }: ProjectCardProps) {
+export function ProjectCard({ onSelect, project }: ProjectCardProps) {
+  const cardRef = useRef<HTMLElement>(null);
   const sentence = projectPreviewSentence(project.description);
   const imageSrc =
     project.image ||
     `https://placehold.co/800x450/1a1a1a/ffffff?text=${encodeURIComponent(project.title)}`;
 
+  const handleOpenDetail = useCallback(() => {
+    if (!onSelect) {
+      return;
+    }
+    const element = cardRef.current;
+    const boundingBox = element ? getElementBoundingBox(element) : undefined;
+    onSelect(project, boundingBox);
+  }, [onSelect, project]);
+
   return (
-    <article className="flex w-full flex-col overflow-hidden border border-border/70 bg-muted/10 sm:flex-row sm:items-stretch">
+    <article
+      className={cn(
+        "flex w-full flex-col overflow-hidden border border-border/70 bg-muted/10 sm:flex-row sm:items-stretch",
+        onSelect &&
+          "cursor-pointer transition-colors hover:border-border hover:bg-muted/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      )}
+      onClick={onSelect ? handleOpenDetail : undefined}
+      onKeyDown={
+        onSelect
+          ? (event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                handleOpenDetail();
+              }
+            }
+          : undefined
+      }
+      ref={cardRef}
+      role={onSelect ? "button" : undefined}
+      tabIndex={onSelect ? 0 : undefined}
+    >
       {/* Column 1: preview */}
       <div className="relative aspect-video w-full shrink-0 bg-muted sm:aspect-auto sm:h-30 sm:w-44 lg:w-48">
         <Image
@@ -114,6 +162,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
             aria-label={`View ${project.title} on GitHub (new tab)`}
             className="inline-flex size-9 items-center justify-center text-muted-foreground"
             href={project.githubUrl}
+            onClick={(event) => event.stopPropagation()}
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -124,6 +173,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           aria-label={`Open ${project.title} live site (new tab)`}
           className="inline-flex size-9 shrink-0 items-center justify-center text-muted-foreground"
           href={project.url}
+          onClick={(event) => event.stopPropagation()}
           rel="noopener noreferrer"
           target="_blank"
         >

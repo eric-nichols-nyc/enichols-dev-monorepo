@@ -5,9 +5,10 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
 import type { UIMessage } from "ai";
 import { ArrowDownIcon } from "lucide-react";
-import { Fragment } from "react";
 import type { MutableRefObject } from "react";
 import type { ExperienceBoundingBox } from "@/components/experience";
+import type { BoundingBox } from "@/components/projects";
+import type { Project } from "@/data/projects";
 import { Greeting } from "@/features/chat-ui/components/greeting";
 import { ChatMessage } from "@/features/chat-ui/components/message";
 import { ThinkingMessage } from "@/features/chat-ui/components/thinking-message";
@@ -20,6 +21,7 @@ export type MessagesProps = {
     experience: import("@/data/experience").ExperienceEntry[],
     boundingBox?: ExperienceBoundingBox
   ) => void;
+  onProjectSelect?: (project: Project, boundingBox?: BoundingBox) => void;
   onSuggestionClick: (suggestion: string) => void;
   status: "streaming" | "submitted" | "ready" | "error";
   /** Latest turn wrapper element. Defaults to an internal ref if omitted. */
@@ -30,12 +32,11 @@ export function Messages({
   error,
   messages,
   onExperienceExpand,
+  onProjectSelect,
   onSuggestionClick,
   status,
   activeTurnRef: activeTurnRefProp,
 }: MessagesProps) {
-  const lastMessageIndex = messages.length - 1;
-
   const {
     scrollRef,
     isAtBottom,
@@ -65,6 +66,17 @@ export function Messages({
                 turnCount
               );
 
+              const isActiveTurn = turnIndex === turnCount - 1;
+              const lastTurnEntry = turn.at(-1);
+              const hasAssistantInTurn = turn.some(
+                ({ msg: turnMsg }) => turnMsg.role === "assistant"
+              );
+              const showPendingAssistantThinking =
+                isActiveTurn &&
+                status === "submitted" &&
+                !hasAssistantInTurn &&
+                lastTurnEntry?.msg.role === "user";
+
               return (
                 <div
                   className="flex flex-col gap-8"
@@ -73,31 +85,36 @@ export function Messages({
                   style={turnStyle}
                 >
                   {turn.map(({ globalIndex: i, msg }) => {
-                    const showInlineSubmittedLoader =
-                      status === "submitted" &&
-                      i === lastMessageIndex &&
-                      msg.role === "user";
+                    const isActiveAssistant =
+                      isActiveTurn &&
+                      msg.role === "assistant" &&
+                      lastTurnEntry?.msg.role === "assistant" &&
+                      lastTurnEntry.globalIndex === i;
 
                     return (
-                      <Fragment key={msg.id}>
-                        <div
-                          className={cn(
-                            "flex w-full gap-2",
-                            msg.role === "user" ? "ml-auto" : ""
-                          )}
-                        >
-                          <ChatMessage
-                            msg={msg}
-                            onExperienceExpand={onExperienceExpand}
-                            onSuggestionClick={onSuggestionClick}
-                          />
-                        </div>
-                        {showInlineSubmittedLoader ? (
-                          <ThinkingMessage />
-                        ) : null}
-                      </Fragment>
+                      <div
+                        className={cn(
+                          "flex w-full gap-2",
+                          msg.role === "user" ? "ml-auto" : ""
+                        )}
+                        key={msg.id}
+                      >
+                        <ChatMessage
+                          chatStatus={status}
+                          isActiveAssistant={isActiveAssistant}
+                          msg={msg}
+                          onExperienceExpand={onExperienceExpand}
+                          onProjectSelect={onProjectSelect}
+                          onSuggestionClick={onSuggestionClick}
+                        />
+                      </div>
                     );
                   })}
+                  {showPendingAssistantThinking ? (
+                    <div className="flex w-full gap-2">
+                      <ThinkingMessage variant="active" />
+                    </div>
+                  ) : null}
                 </div>
               );
             })

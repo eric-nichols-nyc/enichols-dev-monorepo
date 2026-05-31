@@ -23,7 +23,7 @@ As a visitor, I want streamed replies and portfolio sections embedded in the thr
 - [x] **R4** — Empty state: `ConversationEmptyState` + `Greeting`
 - [x] **R5** — Messages grouped into **turns** (user message + following assistant messages until next user) via `groupMessagesByUserTurn`
 - [x] **R6** — Active turn min-height from scroll container (`use-chat-messages-scroll`, `ACTIVE_TURN_MIN_HEIGHT_OFFSET_PX`) so streaming content appears below a stable viewport
-- [x] **R7** — `status === "submitted"` shows `ThinkingMessage` under the latest user message in the turn
+- [x] **R7** — Thinking header on active assistant turn: shimmer while waiting, **Thought** pinned at top once content starts (not inline per tool)
 - [x] **R8** — Scroll-to-bottom affordance when not near bottom (`NEAR_BOTTOM_THRESHOLD`)
 - [x] **R9** — Display `error.message` when present (destructive banner)
 
@@ -33,15 +33,15 @@ As a visitor, I want streamed replies and portfolio sections embedded in the thr
 |-----------|--------|-----|
 | `text` | — | `MessageResponse` |
 | `data-related` | — | `Related` suggestions from `data.suggestions` |
-| `tool-show_projects` / `tool-showProjects` | input-* | `ThinkingMessage` |
+| `tool-show_projects` / `tool-showProjects` | input-* | (loader at top of message only) |
 | | output-available | `<Projects />` |
 | | output-error | Error text |
-| `tool-show_experience` / `tool-showExperience` | input-* | `ThinkingMessage` |
+| `tool-show_experience` / `tool-showExperience` | input-* | (loader at top of message only) |
 | | output-available | `<Experience />` + optional `copy` + `Related` |
-| `tool-show_about` / `tool-showAbout` | input-* | `ThinkingMessage` |
+| `tool-show_about` / `tool-showAbout` | input-* | (loader at top of message only) |
 | | output-available | `<About />` (+ preliminary hint if `preliminary`) |
 | | output-error | Error text |
-| `tool-show_tech_stack` / `tool-showTechStack` | input-* | `ThinkingMessage` |
+| `tool-show_tech_stack` / `tool-showTechStack` | input-* | (loader at top of message only) |
 | | output-available | `<TechStack />` |
 
 - [x] **R10** — Support **both** snake_case and camelCase tool part type strings (SDK/version tolerance)

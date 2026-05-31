@@ -101,6 +101,13 @@ export function Chat({
     setArtifactOpen(true);
   };
 
+  const handleProjectSelect = (project: Project, box?: BoundingBox) => {
+    setSelectedProject(project);
+    setSelectedExperience(null);
+    setBoundingBox(box ?? null);
+    setArtifactOpen(true);
+  };
+
   return (
     <div
       className={`overscroll-behavior-contain flex h-full min-h-0 flex-1 flex-col overflow-hidden ${embedded ? "bg-transparent" : "bg-muted/20"}`}
@@ -111,7 +118,6 @@ export function Chat({
           content={artifactContent}
           isLoading={artifactLoading}
           onClose={handleClose}
-          onProjectSelect={setSelectedProject}
           open={artifactOpen}
         />
       )}
@@ -126,6 +132,7 @@ export function Chat({
           onExperienceExpand={
             onExperienceExpandProp ?? handleExperienceExpand
           }
+          onProjectSelect={handleProjectSelect}
           onSuggestionClick={handleSuggestionClick}
           status={status}
         />
