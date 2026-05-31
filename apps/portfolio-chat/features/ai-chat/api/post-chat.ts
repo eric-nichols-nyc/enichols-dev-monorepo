@@ -6,23 +6,21 @@ import type { UIMessage } from "@repo/ai";
 import {
   createUIMessageStream,
   createUIMessageStreamResponse,
-  stepCountIs,
-  streamText,
 } from "@repo/ai";
-import { models } from "@repo/ai/lib/models";
 import { about } from "@/data/about";
-import projects from "@/data/projects";
-import {
-  createAboutStreamModeState,
-  getAboutStreamModeDecision,
-} from "@/features/ai-chat/lib/about-stream-mode";
+import { runChatStream } from "@/features/ai-chat/api/run-chat-stream";
 import { streamCopy } from "@/features/ai-chat/lib/stream-copy";
 import { toSimpleModelMessages } from "@/features/ai-chat/lib/to-simple-model-messages";
-import { getPortfolioAssistantSystemPrompt } from "@/lib/ai/prompts/portfolio-assistant";
-import { aboutCopy, aboutRelated } from "@/lib/ai/tools/about";
-import { portfolioChatTools } from "@/lib/ai/tools/portfolio-tools";
+import { extractLatestUserText } from "@/features/ai-chat/utils/extract-latest-user-text";
+import { routeIntent } from "@/features/ai-chat/utils/intent-router";
+import { loadKnowledgeContext } from "@/features/ai-chat/utils/load-knowledge-context";
+import { shouldUseAboutStreamLegacy } from "@/features/ai-chat/utils/should-use-about-stream-legacy";
 
 const isMockStreamEnabled = process.env.CHAT_MOCK_STREAM === "true";
+
+function isKnowledgeAssistantEnabled(): boolean {
+  return process.env.KNOWLEDGE_ASSISTANT_ENABLED !== "false";
+}
 
 export async function POST(request: Request) {
   try {
@@ -63,85 +61,54 @@ export async function POST(request: Request) {
       return createUIMessageStreamResponse({ stream });
     }
 
-    const sampleTitles = projects
-      .slice(0, 3)
-      .map((p) => p.title)
-      .join(", ");
-    const projectsFollowUp = `From ${sampleTitles}—here are projects spanning AI and full-stack apps. Each has a live demo you can explore. Pick one and I'll dive in. Ask about tech stack, challenges, or anything else.`;
+    const userText = extractLatestUserText(messages) ?? "";
+    const routing = routeIntent(userText);
+    const knowledgeContext = await loadKnowledgeContext(routing);
+    const useLegacyAboutStream =
+      isKnowledgeAssistantEnabled() &&
+      shouldUseAboutStreamLegacy(routing, userText);
 
-    const techStackFollowUp =
-      "Here's the tech stack. Want to hear about a specific technology? Or how I've used it in a project?";
+    console.log("[chat:api] route", {
+      intent: routing.intent,
+      projectSlug: routing.entities.projectSlug,
+      responseType: routing.responseType,
+    });
 
     const stream = createUIMessageStream({
       originalMessages: messages,
-      // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: stream routing over tool chunks
       execute: async ({ writer }) => {
-        const result = streamText({
-          // biome-ignore lint/suspicious/noExplicitAny: ToolSet/Zod mismatch between app deps and @repo/ai
-          tools: portfolioChatTools as any,
-          // biome-ignore lint/suspicious/noExplicitAny: Provider model versions differ across SDK packages in this monorepo
-          model: models.chat as any,
-          stopWhen: stepCountIs(1),
-          system: getPortfolioAssistantSystemPrompt(),
-          messages: modelMessages,
-        });
-
-        const uiStream = result.toUIMessageStream();
-        const textIdAbout = "about-follow-up";
-        const textIdProjects = "projects-follow-up";
-        const textIdTechStack = "tech-stack-follow-up";
-        const aboutStreamModeState = createAboutStreamModeState();
-
-        const writeChunk = writer as {
-          write: (p: {
-            type: string;
-            id?: string;
-            delta?: string;
-            data?: unknown;
-          }) => void;
-        };
-
-        for await (const chunk of uiStream) {
-          const c = chunk as {
-            type?: string;
-            toolName?: string;
-            toolCallId?: string;
-            output?: unknown;
-          };
-
-          const aboutDecision = getAboutStreamModeDecision({
-            aboutRenderMode: "text",
-            chunk: c,
-            state: aboutStreamModeState,
+        if (!isKnowledgeAssistantEnabled()) {
+          await runChatStream({
+            writer: writer as {
+              write: (part: {
+                type: string;
+                id?: string;
+                delta?: string;
+                data?: unknown;
+              }) => void;
+            },
+            modelMessages,
+            routing,
+            knowledgeContext,
+            useLegacyAboutStream: true,
           });
-
-          if (aboutDecision.shouldStreamAboutText) {
-            await streamCopy(writeChunk, textIdAbout, aboutCopy);
-            writeChunk.write({
-              type: "data-related",
-              id: "about-related",
-              data: { suggestions: [...aboutRelated] },
-            });
-          }
-
-          if (aboutDecision.suppressChunk) {
-            continue;
-          }
-
-          writer.write(chunk);
-
-          if (
-            c.type === "tool-output-available" &&
-            c.output &&
-            typeof c.output === "object"
-          ) {
-            if ("projects" in c.output) {
-              await streamCopy(writeChunk, textIdProjects, projectsFollowUp);
-            } else if ("technologies" in c.output) {
-              await streamCopy(writeChunk, textIdTechStack, techStackFollowUp);
-            }
-          }
+          return;
         }
+
+        await runChatStream({
+          writer: writer as {
+            write: (part: {
+              type: string;
+              id?: string;
+              delta?: string;
+              data?: unknown;
+            }) => void;
+          },
+          modelMessages,
+          routing,
+          knowledgeContext,
+          useLegacyAboutStream,
+        });
       },
     });
 
