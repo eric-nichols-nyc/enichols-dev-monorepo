@@ -21,9 +21,9 @@
       "knows": "ES modules, async patterns, DOM APIs, Node scripting"
     },
     {
-      "name": "Tailwind CSS",
+      "name": "CSS",
       "icon": "🎨",
-      "knows": "Design tokens, responsive layouts, dark mode, component variants"
+      "knows": "Tailwind, design tokens, responsive layouts, themes, component variants"
     }
   ],
   "Database": [

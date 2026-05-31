@@ -14,7 +14,7 @@ import type { BoundingBox } from "@/components/projects";
 import { Projects } from "@/components/projects";
 import type { Project } from "@/data/projects";
 import { Related } from "@/components/related";
-import { TechStack } from "@/components/tech-stack";
+import { TechStack, TechStackSkeleton } from "@/components/tech-stack";
 import { ThinkingMessage } from "@/features/chat-ui/components/thinking-message";
 import { getAssistantThinkingVariant } from "@/features/chat-ui/lib/assistant-thinking";
 
@@ -178,7 +178,17 @@ function MessagePartRenderer({
     part.type === "tool-showTechStack"
   ) {
     if (part.state === "input-available" || part.state === "input-streaming") {
-      return null;
+      return (
+        <div
+          aria-busy="true"
+          aria-label="Loading tech stack"
+          className="w-full"
+          key={`${msgId}-${i}`}
+          role="status"
+        >
+          <TechStackSkeleton />
+        </div>
+      );
     }
     if (part.state === "output-available") {
       const output = part.output as {

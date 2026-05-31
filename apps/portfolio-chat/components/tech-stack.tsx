@@ -134,13 +134,17 @@ function TechStackCardHeader({ skeleton }: { skeleton?: boolean }) {
   );
 }
 
+/** Row counts mirror shipped `data/tech.json` category sizes. */
+const SKELETON_CATEGORY_ROWS = [5, 3, 2, 3, 3] as const;
+
 export function TechStackSkeleton() {
   return (
     <div className={TECH_STACK_CARD_CLASS}>
       <TechStackCardHeader skeleton />
       <div className="min-h-0 flex-1 space-y-4 overflow-y-auto bg-black p-3">
-        <TechCategoryTableSkeleton rowCount={4} />
-        <TechCategoryTableSkeleton rowCount={3} />
+        {SKELETON_CATEGORY_ROWS.map((rowCount, index) => (
+          <TechCategoryTableSkeleton key={`tech-skeleton-${index}`} rowCount={rowCount} />
+        ))}
       </div>
     </div>
   );
