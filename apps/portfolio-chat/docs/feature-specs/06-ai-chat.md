@@ -48,7 +48,7 @@ As a visitor, when I ask about Eric's work, the assistant declines off-topic req
 
 ### Not yet implemented
 
-- [ ] **R16** — Rate limiting / abuse protection
+- [ ] **R16** — Rate limiting / abuse protection (not implemented)
 - [ ] **R17** — Request body Zod validation (currently trusts shape)
 - [x] **R18** — Migrated to `features/ai-chat/` with thin `app/api/chat/route.ts`
 

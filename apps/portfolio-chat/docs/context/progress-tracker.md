@@ -4,15 +4,11 @@
 
 ## Current Phase
 
-**Phase 3 — Optional `features/` migration or product (P7/P8)**
+**Phase 3 — Optional `features/` migration or product (P7b)**
 
 ## Current Goal
 
 Migrate `sidebar-layout` / `chat-context` / `artifacts` **or** P7b deep links / P8 rate limiting.
-
-## In Progress
-
-- (empty)
 
 ## Completed
 
@@ -32,8 +28,8 @@ Migrate `sidebar-layout` / `chat-context` / `artifacts` **or** P7b deep links / 
 ## Next Up
 
 - PRD P7b — per-project routes / deep links
+- PRD P8 — rate limiting on `/api/chat` (not in app today)
 - Migrate sidebar, context, or artifacts into `features/`
-- PRD P8 — rate limiting on `/api/chat`
 - Data quality: R8 schema tests, R9 link checker (07-portfolio-data)
 
 ## Open Questions

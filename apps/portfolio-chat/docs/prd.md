@@ -28,7 +28,7 @@ Eric Nichols' AI portfolio: a single-page chat experience where visitors explore
 | P6 | E2E coverage for about streaming (`e2e/about-streaming.spec.ts`) | Shipped |
 | P7 | Project detail in artifact panel (click project card in chat) | Shipped |
 | P7b | Multi-route detail chats per project/role | [TBD] |
-| P8 | Rate limiting / abuse protection on `/api/chat` | [TBD] |
+| P8 | Rate limiting / abuse protection on `/api/chat` | Not implemented |
 
 ## Non-goals (current)
 
