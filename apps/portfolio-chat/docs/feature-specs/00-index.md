@@ -5,7 +5,7 @@ Permanent map of features. Update **Status** when shipping; use **progress-track
 | Feature | Spec | App UI (legacy → target) | API / BFF | Status |
 |---------|------|--------------------------|-----------|--------|
 | Design system (shared) | [01-design-system.md](./01-design-system.md) | `features/*` + `@repo/design-system` | — | Shipped (rules) |
-| Chat UI | [02-chat-ui.md](./02-chat-ui.md) | `components/chat.tsx`, `messages/`, `message.tsx` → `features/chat-ui/` | — | Shipped |
+| Chat UI | [02-chat-ui.md](./02-chat-ui.md) | `features/chat-ui/` (legacy shims: `components/chat`, `messages`, …) | — | Shipped |
 | Sidebar & layout | [03-sidebar-layout.md](./03-sidebar-layout.md) | `components/collapsible-sidebar-layout.tsx` → `features/sidebar-layout/` | — | Shipped |
 | Chat context | [04-chat-context.md](./04-chat-context.md) | `contexts/chat-context.tsx` → `features/chat-context/` | — | Shipped |
 | Artifacts | [05-artifacts.md](./05-artifacts.md) | `artifact.tsx`, `featured-*`, `about.tsx`, etc. → `features/artifacts/` | — | Shipped |

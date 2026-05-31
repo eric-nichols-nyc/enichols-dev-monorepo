@@ -62,14 +62,14 @@ As a visitor, I want streamed replies and portfolio sections embedded in the thr
 ### Not yet implemented
 
 - [ ] **R18** — Full WCAG audit (focus order, live regions for stream)
-- [ ] **R19** — Migrate to `features/chat-ui/` (components + `use-chat-messages-scroll`)
+- [x] **R19** — Migrated to `features/chat-ui/` (legacy re-exports under `components/`) (components + `use-chat-messages-scroll`)
 
 ## System boundaries
 
 | In scope | Out of scope |
 |----------|----------------|
-| `components/chat.tsx`, `messages/*`, `message.tsx`, `suggestions.tsx`, `thinking-message.tsx`, `greeting.tsx` | Route handler, tool execute, system prompt |
-| Target: `features/chat-ui/` | `@repo/design-system` source changes |
+| `features/chat-ui/components/*` | Route handler, tool execute, system prompt |
+| Legacy shims: `components/chat`, `messages`, `message`, … | `@repo/design-system` source changes |
 
 ## Component map
 

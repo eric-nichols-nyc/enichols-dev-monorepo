@@ -98,7 +98,8 @@ Read the tracker at task start.
 apps/portfolio-chat/
   app/                 # App Router (page, api/chat)
   features/            # NEW domain code (components/, hooks/, utils/)
-  components/          # Legacy shared UI (chat, messages, artifacts, layout)
+  features/chat-ui/    # Chat column, messages, message parts, suggestions
+  components/          # Legacy shims + artifacts, layout, tool section UI
   contexts/            # React context (chat session)
   lib/                 # AI helpers, tools (legacy → features/ai-chat)
   data/                # Portfolio content (projects, experience, about, resume)

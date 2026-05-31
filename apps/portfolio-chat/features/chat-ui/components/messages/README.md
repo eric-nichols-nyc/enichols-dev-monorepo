@@ -1,6 +1,6 @@
 # Messages list and scrolling
 
-Implementation: **`index.tsx`** (`Messages` + helpers). Import from `@/components/messages` or `./messages` (folder entry).
+Implementation: **`index.tsx`** (`Messages` + helpers). Import from `@/features/chat-ui/components/messages` or legacy `@/components/messages` (re-export shim).
 
 `Messages` renders the chat transcript inside the scroll region used by `Chat`. This note describes how scrolling, “near bottom” detection, and the active-turn min-height interact.
 

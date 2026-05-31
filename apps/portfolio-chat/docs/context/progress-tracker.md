@@ -8,7 +8,7 @@
 
 ## Current Goal
 
-Start first code migration (`features/chat-ui/`) **or** product work (per-project artifact/chat P7, rate limit P8).
+Product work (P7 project → artifact) **or** next migration (`features/ai-chat/` / `sidebar-layout/`).
 
 ## In Progress
 
@@ -16,6 +16,7 @@ Start first code migration (`features/chat-ui/`) **or** product work (per-projec
 
 ## Completed
 
+- chat-ui-migration — `features/chat-ui/` + legacy shims at `components/chat`, `messages`, etc.
 - specs-all — Full specs for 02–07 feature registry (all shipped areas documented)
 - specs-core — Full specs for [02-chat-ui](../feature-specs/02-chat-ui.md) and [06-ai-chat](../feature-specs/06-ai-chat.md) from codebase
 - ai-prompt — System prompt extracted to `lib/ai/prompts/portfolio-assistant.ts`
@@ -28,7 +29,7 @@ Start first code migration (`features/chat-ui/`) **or** product work (per-projec
 
 ## Next Up
 
-- Migrate `components/chat` + messages → `features/chat-ui/` (re-export shims at old paths)
+- Migrate `app/api/chat` + `lib/ai` → `features/ai-chat/`
 - PRD P7 — wire project cards → artifact (`onProjectSelect` / P7 in 05-artifacts)
 - PRD P8 — rate limiting on `/api/chat`
 - Data quality: R8 schema tests, R9 link checker (07-portfolio-data)
