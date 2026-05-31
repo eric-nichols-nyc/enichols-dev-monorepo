@@ -8,8 +8,6 @@
 
 ## Current Goal
 
-## Current Goal
-
 Sidebar nav visibility **P6** (brand accent on active nav) — P1–P5, P7–P8, P3 shipped on `feature/sidebar-nav-p1`.
 
 ## Completed
