@@ -1,8 +1,8 @@
 # Knowledge Assistant — Intent Router
 
 **Status:** Not started  
-**Depends on:** [Overview](./08-knowledge-assistant) · [01 — Current State](./current-state.md) · [02 — Knowledge Sources](./02-knowledge-sources.md)  
-**Feeds:** Context loader, response handler, and dynamic suggestions specs (future docs in this series)
+**Depends on:** [01 — Knowledge Assistant](./01-knowledge-assistant.md) · [current-state.md](./current-state.md) · [02 — Knowledge Sources](./02-knowledge-sources.md)  
+**Feeds:** [04 — Context Loader](./04-context-loader.md) · [05 — Response Handler](./05-response-handler.md) · [06 — Dynamic Suggestions](./06-dynamic-suggestions.md)
 
 ---
 
@@ -462,7 +462,7 @@ The chat API (`POST /api/chat`) receives this from the router **before** `stream
 
 | Constraint | Rationale |
 |------------|-----------|
-| Rule-based only | Testable, no embedding infra, matches [08 — Overview](./08-knowledge-assistant) Stage 1 |
+| Rule-based only | Testable, no embedding infra, matches [01 — Knowledge Assistant](./01-knowledge-assistant.md) Stage 1 |
 | Ordered keyword lists | One maintainable module; no ML, no LLM classifier |
 | Single primary intent | Avoid multi-intent fusion in Stage 1 |
 | Hand-maintained aliases | `manifest.yaml` for Trellix → `trellnode`, AI project lists |
@@ -526,7 +526,7 @@ The chat API (`POST /api/chat`) receives this from the router **before** `stream
 
 - [ ] All intents in §3 are documented with example messages (§4)
 - [ ] Context mapping table (§6) is implementable without ambiguity
-- [ ] Response types (§7) cover all example flows in [08 — Overview](./08-knowledge-assistant)
+- [ ] Response types (§7) cover all example flows in [01 — Knowledge Assistant](./01-knowledge-assistant.md)
 - [ ] Routing flow (§8) aligns with overview diagram and existing `POST /api/chat` pipeline
 - [ ] No dependency on embeddings, vector DB, semantic search, or agent frameworks
 - [ ] Downstream context-loader and response-handler specs can consume §8.1 without redefining intents
@@ -536,16 +536,19 @@ The chat API (`POST /api/chat`) receives this from the router **before** `stream
 
 ## Open questions
 
-- [ ] Should “What's your experience?” default to `show_experience` (display) or `candidate_overview` (prose)? Current recommendation: **display** if message contains `show`/`timeline`; otherwise **candidate overview** for narrative background questions.
-- [ ] For `show_tech_stack`, is Hybrid always default, or Static Display when message is an exact pill match (“What's your tech stack?”)?
-- [ ] Should router run on **every** message including mid-thread follow-ups, or cache last intent for ambiguous “tell me more”?
-- [ ] Export `routingResult` to client for debugging/analytics, or keep server-only in Stage 1?
+Resolved in [00 — Implementation Stages § Phase 0](./00-implementation-stages.md#phase-0--decisions--setup):
+
+- **“What's your experience?”** → `show_experience` if `show`/`timeline`; else `candidate_overview`.
+- **show_tech_stack Hybrid vs Static** → Static for exact pill phrases; Hybrid for explanatory questions.
+- **Router every message?** → Yes, re-route each user turn.
+- **Export routingResult?** → Server-only; log for debugging.
 
 ---
 
 ## Reference (not requirements)
 
-- [08 — Overview](./08-knowledge-assistant) — product goal and intent list
+- [01 — Knowledge Assistant](./01-knowledge-assistant.md) — product goal and intent list
+- [05 — Response Handler](./05-response-handler.md) — post-chat integration
 - [01 — Current State](./current-state.md) — today’s tools, suggestions, API shape
 - [02 — Knowledge Sources](./02-knowledge-sources.md) — file layout, section slices, loading rules
 - `features/ai-chat/api/post-chat.ts` — current stream handler

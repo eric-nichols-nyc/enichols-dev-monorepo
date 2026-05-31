@@ -1,8 +1,8 @@
 # Knowledge Assistant — Knowledge Sources
 
 **Status:** Not started  
-**Depends on:** [Overview](./08-knowledge-assistant) · [01 — Current State](./current-state.md)  
-**Feeds:** Intent router, context loader, and dynamic response specs (future docs in this series)
+**Depends on:** [01 — Knowledge Assistant](./01-knowledge-assistant.md) · [current-state.md](./current-state.md) · [00 — Implementation Stages](./00-implementation-stages.md)  
+**Feeds:** [03 — Intent Router](./03-intent-router.md) · [04 — Context Loader](./04-context-loader.md)
 
 ---
 
@@ -407,16 +407,19 @@ Documented for planning only—not Stage 1 work.
 
 ## Open questions
 
-- [ ] Should `show_about` stream text from `candidate-profile.md` instead of `data/about.ts` in the first implementation pass?
-- [ ] Include `audiograph` in `ai_experience` loads even though its `categories` array is `health`, not `ai`?
-- [ ] Is `manifest.yaml` required for Stage 1 or defer until `ai_experience` filtering is implemented?
+Resolved in [00 — Implementation Stages § Phase 0](./00-implementation-stages.md#phase-0--decisions--setup):
+
+- **show_about source:** Keep `data/about.ts` + about-stream; `candidate-profile.md` for Q&A only.
+- **audiograph in ai_experience:** Exclude unless named or tagged `ai`.
+- **manifest.yaml:** Defer; use `data/projects.ts` categories in code.
 
 ---
 
 ## Reference (not requirements)
 
 - [01 — Current State](./current-state.md) — today’s data paths and static suggestions
-- [Overview](./08-knowledge-assistant) — Dynamic Portfolio Assistant goals and intents
+- [01 — Knowledge Assistant](./01-knowledge-assistant.md) — goals and intents
+- [04 — Context Loader](./04-context-loader.md) — file I/O implementation
 - `data/projects.ts`, `data/about.ts`, `data/experience.ts`, `data/resume.ts`, `data/tech.json` — migration sources for initial authoring
 
 ---

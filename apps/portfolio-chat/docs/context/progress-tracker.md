@@ -4,14 +4,15 @@
 
 ## Current Phase
 
-**Phase 3 — Optional `features/` migration or product (P7b)**
+**Knowledge Assistant — Stage 1 (Knowledge Sources)**
 
 ## Current Goal
 
-Migrate `sidebar-layout` / `chat-context` / `artifacts` **or** P7b deep links / P8 rate limiting.
+**Knowledge Assistant Stage 0 → 1:** Phase 0 specs complete; next author `knowledge/` corpus per [02-knowledge-sources.md](../feature-specs/knowledge-assistant/02-knowledge-sources.md).
 
 ## Completed
 
+- knowledge-assistant-phase0 — Implementation stage specs (`00`–`07`) + resolved open questions
 - p7-project-artifact — Click project card in chat opens artifact with `FeaturedProject` + bounding-box animation
 - ai-chat-migration — `features/ai-chat/` + thin route + `@/lib/ai/*` shims
 - chat-ui-migration — `features/chat-ui/` + legacy shims at `components/chat`, `messages`, etc.
@@ -25,8 +26,14 @@ Migrate `sidebar-layout` / `chat-context` / `artifacts` **or** P7b deep links / 
 - layout — Collapsible sidebar + artifact panel for featured project/experience
 - data-layer — Typed portfolio content in `data/*`
 
+## In Progress
+
+- knowledge-assistant Stage 1 — author `knowledge/` markdown corpus
+
 ## Next Up
 
+- knowledge-assistant Stage 1 — `knowledge/` markdown corpus
+- knowledge-assistant Stage 2 — intent router + unit tests
 - PRD P7b — per-project routes / deep links
 - PRD P8 — rate limiting on `/api/chat` (not in app today)
 - Migrate sidebar, context, or artifacts into `features/`
@@ -48,6 +55,7 @@ Migrate `sidebar-layout` / `chat-context` / `artifacts` **or** P7b deep links / 
 
 ## Session Notes
 
+- **2026-05-31:** Knowledge Assistant Stage 0 specs: `00-implementation-stages` through `07-integration-cleanup`; merged `feature/ai-chat` into main; branch `feature/knowledge-assistant-phase0`.
 - **2026-05-30:** Completed feature specs 03, 04, 05, 07 — entire registry now Shipped-level documentation.
 - **2026-05-30 (later):** Completed 02 + 06 feature specs; extracted system prompt to `lib/ai/prompts/portfolio-assistant.ts`.
 - **2026-05-30:** Bootstrapped agent doc system from `AGENT-DOC-BOOTSTRAP-PROMPT.md`. Existing narrative docs (`chat-rendering.md`, etc.) linked from `reference/00-index.md` — not requirements.
