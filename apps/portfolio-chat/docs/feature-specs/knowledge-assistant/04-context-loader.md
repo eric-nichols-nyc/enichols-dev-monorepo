@@ -1,7 +1,7 @@
 # Knowledge Assistant — Context Loader
 
 **Status:** Not started  
-**Stage:** 3  
+**Stage:** 2  
 **Depends on:** [00 — Implementation Stages](./00-implementation-stages.md) · [02 — Knowledge Sources](./02-knowledge-sources.md) · [03 — Intent Router](./03-intent-router.md)  
 **Feeds:** [05 — Response Handler](./05-response-handler.md) · [06 — Dynamic Suggestions](./06-dynamic-suggestions.md)
 
