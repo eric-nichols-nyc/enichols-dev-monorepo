@@ -86,10 +86,10 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 
 ### P4 — Section group label
 
-- [ ] **R15** — Add a small label above the nav list (expanded sidebar + mobile drawer only; hidden when collapsed on desktop).
+- [x] **R15** — Add a small label above the nav list (expanded sidebar + mobile drawer only; hidden when collapsed on desktop).
   - Copy: **“Explore”** or **“Portfolio”** (pick one at implement time; prefer “Explore”).
-- [ ] **R16** — Style: `text-xs font-medium uppercase tracking-wide text-muted-foreground` (or equivalent token).
-- [ ] **R17** — Provides framing similar to Morphic’s “History” / Perplexity section headers.
+- [x] **R16** — Style: `text-xs font-medium uppercase tracking-wide text-muted-foreground` (or equivalent token).
+- [x] **R17** — Provides framing similar to Morphic’s “History” / Perplexity section headers.
 
 **Acceptance:** Nav list is grouped under a visible section heading.
 
@@ -97,10 +97,10 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 
 ### P5 — Text hierarchy (inactive vs active)
 
-- [ ] **R18** — **Inactive** nav items: `text-muted-foreground` (icons inherit or match).
-- [ ] **R19** — **Hover**: `text-foreground` + stronger pill (P2).
-- [ ] **R20** — **Active** (P3): `text-foreground` + strongest pill.
-- [ ] **R21** — Brand name (“Eric Nichols”) remains `text-foreground` / semibold — do not mute the brand row.
+- [x] **R18** — **Inactive** nav items: `text-muted-foreground` (icons inherit or match).
+- [x] **R19** — **Hover**: `text-foreground` + stronger pill (P2).
+- [x] **R20** — **Active** (P3): `text-foreground` + strongest pill.
+- [x] **R21** — Brand name (“Eric Nichols”) remains `text-foreground` / semibold — do not mute the brand row.
 
 **Acceptance:** Inactive links recede; hover and active states pop without changing theme globally.
 
@@ -121,11 +121,11 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 
 ### P7 — Sidebar edge separation
 
-- [ ] **R25** — Strengthen separation between sidebar and main column:
+- [x] **R25** — Strengthen separation between sidebar and main column:
   - Prefer slightly more visible `border-border` **or**
   - Subtle inset shadow on sidebar inner edge (`shadow-[inset_-1px_0_0_0_...]`) **or**
   - 1px divider with higher contrast token.
-- [ ] **R26** — Do not rely on border alone if P1 surface change is skipped (P1 + P7 together recommended).
+- [x] **R26** — Do not rely on border alone if P1 surface change is skipped (P1 + P7 together recommended).
 
 **Acceptance:** Panel boundary is visible even when nav text is muted.
 
@@ -215,6 +215,6 @@ When the user says **“implement sidebar nav visibility”** or **“implement 
 
 ## Open questions
 
-- [ ] **OQ1** — Section label copy: “Explore” vs “Portfolio”?
+- [x] **OQ1** — Section label copy: **“Explore”** (chosen at P4 ship).
 - [ ] **OQ2** — P6 accent: left border vs icon color vs both?
 - [ ] **OQ3** — Include P8 subtitle on first ship or defer?
