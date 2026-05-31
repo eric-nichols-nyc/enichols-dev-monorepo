@@ -1,6 +1,6 @@
 # Knowledge Assistant — Response Handler
 
-**Status:** Not started  
+**Status:** Shipped  
 **Stage:** 4  
 **Depends on:** [03 — Intent Router](./03-intent-router.md) · [04 — Context Loader](./04-context-loader.md) · [06-ai-chat.md](../06-ai-chat.md)  
 **Feeds:** [06 — Dynamic Suggestions](./06-dynamic-suggestions.md)

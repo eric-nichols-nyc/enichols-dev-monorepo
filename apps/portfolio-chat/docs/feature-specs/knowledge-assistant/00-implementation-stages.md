@@ -159,7 +159,7 @@ From [01 — Knowledge Assistant](./01-knowledge-assistant.md):
 | [02-knowledge-sources.md](./02-knowledge-sources.md) | 1 | Shipped |
 | [04-context-loader.md](./04-context-loader.md) | 2 | Shipped |
 | [03-intent-router.md](./03-intent-router.md) | 3 | Shipped |
-| [05-response-handler.md](./05-response-handler.md) | 4 | Not started |
+| [05-response-handler.md](./05-response-handler.md) | 4 | Shipped |
 | [06-dynamic-suggestions.md](./06-dynamic-suggestions.md) | 5 | Not started |
 | [07-integration-cleanup.md](./07-integration-cleanup.md) | 6 | Not started |
 

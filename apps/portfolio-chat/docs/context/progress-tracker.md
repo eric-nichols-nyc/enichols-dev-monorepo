@@ -8,10 +8,11 @@
 
 ## Current Goal
 
-**Knowledge Assistant Stage 4:** Wire response handler in `post-chat.ts` (M1: project Q&A) per [05-response-handler.md](../feature-specs/knowledge-assistant/05-response-handler.md).
+**Knowledge Assistant Stage 5:** Dynamic suggestions per [06-dynamic-suggestions.md](../feature-specs/knowledge-assistant/06-dynamic-suggestions.md).
 
 ## Completed
 
+- knowledge-assistant-stage4 — Response handler wired in `post-chat.ts` (route → load → stream)
 - knowledge-assistant-stage2-3 — Context loader + intent router with unit tests
 - knowledge-assistant-stage1 — `knowledge/` markdown corpus (candidate + projects)
 - p7-project-artifact — Click project card in chat opens artifact with `FeaturedProject` + bounding-box animation
@@ -29,7 +30,7 @@
 
 ## In Progress
 
-- knowledge-assistant Stage 4 — response handler / `post-chat.ts` integration
+- (idle — pick Stage 5 dynamic suggestions or manual QA of Stage 4 in browser)
 
 ## Next Up
 
