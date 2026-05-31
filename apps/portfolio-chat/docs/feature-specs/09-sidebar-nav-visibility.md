@@ -1,6 +1,6 @@
 # Feature spec — Sidebar navigation visibility & contrast
 
-**Status:** In progress (P1 shipped on branch)
+**Status:** In progress (P6 open)
 
 **Extends:** [03-sidebar-layout.md](./03-sidebar-layout.md) (R20 active nav state)
 
@@ -60,14 +60,14 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 
 ### P3 — Active section highlight
 
-- [ ] **R9** — Track **active nav id** (`projects` | `about` | `experience` | `tech`) in layout or a small hook (e.g. `useActiveNavSection`).
-- [ ] **R10** — Set active id when user triggers a nav preset **or** when chat content clearly maps to a section (see mapping table below).
-- [ ] **R11** — Active item styling is **always visible** while that section is active:
+- [x] **R9** — Track **active nav id** (`projects` | `about` | `experience` | `tech`) in layout or a small hook (e.g. `useActiveNavSection`).
+- [x] **R10** — Set active id when user triggers a nav preset **or** when chat content clearly maps to a section (see mapping table below).
+- [x] **R11** — Active item styling is **always visible** while that section is active:
   - Stronger pill background than rest state.
   - `text-foreground` (if P5 uses muted default for inactive items).
   - Optional left border or icon accent (see P6).
-- [ ] **R12** — Clearing chat (`SidebarBrand` → `clearMessages`) resets active nav to **none** (no highlight).
-- [ ] **R13** — `aria-current="page"` (or `true`) on the active nav button for accessibility.
+- [x] **R12** — Clearing chat (`SidebarBrand` → `clearMessages`) resets active nav to **none** (no highlight).
+- [x] **R13** — `aria-current="page"` (or `true`) on the active nav button for accessibility.
 
 **Section → nav id mapping (initial heuristic)**
 
@@ -78,7 +78,7 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 | User message closely matches preset | Match `NAV_ITEMS[].message` (case-insensitive trim) |
 | Ambiguous / general chat | No active highlight |
 
-- [ ] **R14** — Document mapping logic in code comment or hook JSDoc; refine in follow-up if false positives occur.
+- [x] **R14** — Document mapping logic in code comment or hook JSDoc; refine in follow-up if false positives occur.
 
 **Acceptance:** After “Tech stack” (nav or typed), **Tech** stays highlighted until clear or another section is selected. Resolves [03-sidebar-layout.md](./03-sidebar-layout.md) **R20**.
 
@@ -133,10 +133,10 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 
 ### P8 — Optional brand subtitle (lowest priority)
 
-- [ ] **R27** — Under “Eric Nichols” (expanded + mobile only), optional one-line subtitle:
+- [x] **R27** — Under “Eric Nichols” (expanded + mobile only), optional one-line subtitle:
   - Example: **“Ask about my work”**
-- [ ] **R28** — `text-xs text-muted-foreground`, truncated on narrow widths.
-- [ ] **R29** — **Skip by default** unless user requests P8 when saying “implement” — reinforces primary IA without adding clutter.
+- [x] **R28** — `text-xs text-muted-foreground`, truncated on narrow widths.
+- [x] **R29** — **Skip by default** unless user requests P8 when saying “implement” — reinforces primary IA without adding clutter.
 
 **Acceptance:** Subtitle supports discoverability; hidden when sidebar collapsed.
 
@@ -217,4 +217,4 @@ When the user says **“implement sidebar nav visibility”** or **“implement 
 
 - [x] **OQ1** — Section label copy: **“Explore”** (chosen at P4 ship).
 - [ ] **OQ2** — P6 accent: left border vs icon color vs both?
-- [ ] **OQ3** — Include P8 subtitle on first ship or defer?
+- [x] **OQ3** — Include P8 subtitle on first ship — **yes**, copy: “Ask about my work”.

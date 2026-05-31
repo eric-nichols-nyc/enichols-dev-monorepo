@@ -10,10 +10,13 @@
 
 ## Current Goal
 
-Sidebar nav visibility **P3** (active section highlight) — P1, P2, P4, P5, P7 shipped on `feature/sidebar-nav-p1`.
+Sidebar nav visibility **P6** (brand accent on active nav) — P1–P5, P7–P8, P3 shipped on `feature/sidebar-nav-p1`.
 
 ## Completed
 
+- sidebar-nav-p3 — Active section highlight via `useActiveNavSection` + optimistic nav clicks ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P3)
+- sidebar-nav-shell — Matched header heights (`h-[4.5rem]`), social icons right + 10% smaller
+- sidebar-nav-p8 — Brand subtitle “Ask about my work” under name (expanded + mobile) ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P8)
 - sidebar-nav-p5-p7 — Muted inactive nav text + hover pop; `--sidebar-border` + `border-sidebar-r` edge ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P5, P7)
 - sidebar-nav-p4 — “Explore” section label above nav (expanded + mobile; hidden collapsed) ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P4)
 - sidebar-nav-p2 — Nav pill affordance at rest: `bg-muted/30` + `hover:bg-muted` on desktop + mobile ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P2)

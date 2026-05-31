@@ -3,16 +3,18 @@
 import { ChevronLeft, ChevronRight, Menu } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@repo/design-system/lib/utils";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePortfolioChat } from "@/contexts/chat-context";
+import { useActiveNavSection } from "@/hooks/use-active-nav-section";
 import {
   NAV_ITEMS,
+  type NavItemId,
   SIDEBAR_WIDTH_COLLAPSED,
   SIDEBAR_WIDTH_EXPANDED,
   socialLinks,
 } from "./constants";
 import { Chat } from "./chat";
-import { SidebarBrand } from "./sidebar-brand";
+import { SidebarBrand, SidebarBrandText } from "./sidebar-brand";
 import { SidebarLogo } from "./sidebar-logo";
 
 const NAV_ITEM_BUTTON_BASE =
@@ -30,8 +32,14 @@ const NAV_SECTION_LABEL_CLASS =
 const SIDEBAR_ASIDE_CLASS =
   "bg-sidebar border-sidebar-r flex shrink-0 flex-col transition-[width] duration-200 ease-in-out";
 
+/** Shared shell header height — sidebar brand row and main header align */
+const SHELL_HEADER_CLASS =
+  "flex h-[4.5rem] shrink-0 items-center border-border border-b px-3";
+
+const SOCIAL_ICON_CLASS = "size-[1.125rem]";
+
 type SidebarNavListProps = {
-  activeNavId?: string | null;
+  activeNavId?: NavItemId | null;
   collapsed?: boolean;
   onNavClick: (message: string) => void;
 };
@@ -77,14 +85,33 @@ function SidebarNavList({
 export function CollapsibleSidebarLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { clearMessages, sendMessage } = usePortfolioChat();
+  const [pendingNavId, setPendingNavId] = useState<NavItemId | null>(null);
+  const { clearMessages, messages, sendMessage } = usePortfolioChat();
+  const activeNavFromMessages = useActiveNavSection(messages);
+  const activeNavId = pendingNavId ?? activeNavFromMessages;
+
+  useEffect(() => {
+    if (activeNavFromMessages) {
+      setPendingNavId(null);
+    }
+  }, [activeNavFromMessages]);
 
   const toggle = useCallback(() => setCollapsed((c) => !c), []);
   const sidebarWidth = collapsed
     ? SIDEBAR_WIDTH_COLLAPSED
     : SIDEBAR_WIDTH_EXPANDED;
+
+  const handleClear = useCallback(() => {
+    setPendingNavId(null);
+    clearMessages();
+  }, [clearMessages]);
+
   const handleNavClick = useCallback(
     (message: string) => {
+      const item = NAV_ITEMS.find((navItem) => navItem.message === message);
+      if (item) {
+        setPendingNavId(item.id);
+      }
       sendMessage({ text: message, files: [] });
       setMobileOpen(false);
     },
@@ -100,14 +127,15 @@ export function CollapsibleSidebarLayout() {
       >
         <div className="flex h-full flex-col overflow-hidden">
           <div
-            className={`flex shrink-0 items-center border-border border-b p-3 ${
-              collapsed ? "flex-col gap-2" : "justify-between gap-2"
-            }`}
+            className={cn(
+              SHELL_HEADER_CLASS,
+              collapsed ? "flex-col justify-center gap-2" : "justify-between gap-2"
+            )}
           >
             <SidebarBrand
               collapsed={collapsed}
               name="Eric Nichols"
-              onClear={clearMessages}
+              onClear={handleClear}
             />
             <button
               aria-expanded={!collapsed}
@@ -124,7 +152,11 @@ export function CollapsibleSidebarLayout() {
             </button>
           </div>
 
-          <SidebarNavList collapsed={collapsed} onNavClick={handleNavClick} />
+          <SidebarNavList
+            activeNavId={activeNavId}
+            collapsed={collapsed}
+            onNavClick={handleNavClick}
+          />
         </div>
       </aside>
 
@@ -147,10 +179,10 @@ export function CollapsibleSidebarLayout() {
         }}
       >
         <div className="flex h-full flex-col">
-          <div className="flex shrink-0 items-center justify-between border-border border-b p-3">
-            <div className="flex items-center gap-2">
+          <div className={cn(SHELL_HEADER_CLASS, "justify-between gap-2")}>
+            <div className="flex min-w-0 items-center gap-2">
               <SidebarLogo />
-              <span className="font-semibold text-lg">Eric Nichols</span>
+              <SidebarBrandText name="Eric Nichols" />
             </div>
             <button
               aria-label="Close menu"
@@ -161,38 +193,47 @@ export function CollapsibleSidebarLayout() {
               <ChevronLeft className="size-4" />
             </button>
           </div>
-          <SidebarNavList onNavClick={handleNavClick} />
+          <SidebarNavList
+            activeNavId={activeNavId}
+            onNavClick={handleNavClick}
+          />
         </div>
       </aside>
 
       {/* Main content */}
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-border border-b bg-background px-4 py-3">
-          <div className="flex items-center gap-3">
-            <button
-              aria-expanded={mobileOpen}
-              aria-label="Open menu"
-              className="rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground md:hidden"
-              onClick={() => setMobileOpen(true)}
-              type="button"
-            >
-              <Menu className="size-5" />
-            </button>
-            <nav aria-label="Social links" className="flex items-center gap-2">
-              {socialLinks.map(({ href, icon: Icon, label }) => (
-                <Link
-                  aria-label={label}
-                  className="text-muted-foreground transition-colors hover:text-foreground"
-                  href={href}
-                  key={label}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  <Icon className="size-5" />
-                </Link>
-              ))}
-            </nav>
-          </div>
+        <header
+          className={cn(
+            SHELL_HEADER_CLASS,
+            "sticky top-0 z-10 justify-between bg-background px-4 md:justify-end"
+          )}
+        >
+          <button
+            aria-expanded={mobileOpen}
+            aria-label="Open menu"
+            className="rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground md:hidden"
+            onClick={() => setMobileOpen(true)}
+            type="button"
+          >
+            <Menu className="size-5" />
+          </button>
+          <nav
+            aria-label="Social links"
+            className="flex items-center gap-2 md:ml-0"
+          >
+            {socialLinks.map(({ href, icon: Icon, label }) => (
+              <Link
+                aria-label={label}
+                className="text-muted-foreground transition-colors hover:text-foreground"
+                href={href}
+                key={label}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <Icon className={SOCIAL_ICON_CLASS} />
+              </Link>
+            ))}
+          </nav>
         </header>
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
           <Chat />
