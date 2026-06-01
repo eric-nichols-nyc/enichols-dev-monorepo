@@ -4,6 +4,7 @@ import "./styles.css";
 import { TooltipProvider } from "@repo/design-system/components/ui/tooltip";
 import { ThemeProvider } from "@repo/design-system/providers/theme";
 import type { ReactNode } from "react";
+import { ThemeFavicon } from "@/components/theme-favicon";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
@@ -33,6 +34,20 @@ export const metadata: Metadata = {
     description:
       "Interactive AI portfolio: ask about projects, experience, tech stack, and more.",
   },
+  icons: {
+    icon: [
+      {
+        url: "/icon-light-theme.svg",
+        type: "image/svg+xml",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/icon-dark-theme.svg",
+        type: "image/svg+xml",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
+  },
 };
 
 const inter = Inter({
@@ -53,6 +68,7 @@ const RootLayout = ({ children }: RootLayoutProperties) => (
   >
     <body>
       <ThemeProvider>
+        <ThemeFavicon />
         <TooltipProvider>{children}</TooltipProvider>
       </ThemeProvider>
     </body>
