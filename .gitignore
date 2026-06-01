@@ -279,4 +279,4 @@ packages/database/generated
 .source
 
 # Obsidian (local editor state)
-**/.obsidian/workspace.json
+**/.obsidian/
