@@ -16,6 +16,7 @@ Permanent map of features. Update **Status** when shipping; use **progress-track
 | Agent documentation | — | `docs/**` | — | Shipped |
 | Knowledge Assistant | [knowledge-assistant/](./knowledge-assistant/00-implementation-stages.md) | — (uses existing chat UI) | Extends POST `/api/chat` | In progress |
 | Concise about intro | [knowledge-assistant/08-concise-about-intro.md](./knowledge-assistant/08-concise-about-intro.md) | `components/about.tsx`, `data/about.ts` | `candidate_overview` / `show_about` stream | Shipped |
+| Project Publisher | [project-publisher/](./project-publisher/00-index.md) | `app/admin/projects/new` → `features/project-publisher/` | POST `/api/admin/projects/generate`, `/publish` | In progress |
 
 ### Status legend
 

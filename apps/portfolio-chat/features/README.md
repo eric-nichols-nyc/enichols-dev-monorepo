@@ -8,6 +8,7 @@ New domain code goes here: `features/<name>/` with `components/`, `hooks/`, and 
 |---------|------|----------------|
 | Chat UI | [`chat-ui/`](./chat-ui/) | `@/components/chat`, `message`, `messages`, `suggestions`, `greeting`, `thinking-message` |
 | AI chat API | [`ai-chat/`](./ai-chat/) | `app/api/chat/route.ts`, `@/lib/ai/*` |
+| Project Publisher | [`project-publisher/`](./project-publisher/) | Admin routes not wired yet (Stage 2+) |
 
 Before creating a new folder:
 
