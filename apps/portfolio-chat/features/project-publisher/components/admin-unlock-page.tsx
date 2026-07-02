@@ -9,7 +9,7 @@ export function AdminUnlockPage() {
   const { unlock, error, isLoading, isUnlocked } = useAdminAuth();
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col justify-center px-6 py-12">
+    <main className="mx-auto flex w-full max-w-3xl flex-col justify-center px-6 py-12">
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-semibold">Project Publisher</h1>
         <p className="text-muted-foreground text-sm">

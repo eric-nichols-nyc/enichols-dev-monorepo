@@ -12,6 +12,8 @@ Project Publisher Stage 5 — generate endpoint: `POST /api/admin/projects/gener
 
 ## Completed
 
+- project-publisher-admin-layout — Shared `AppSidebarShell` on all `/admin/*` routes via `app/admin/layout.tsx` ([architecture](../feature-specs/project-publisher/architecture.md#authentication))
+- project-publisher-stage4b — Admin sidebar nav: `isAdminSessionActive()`, pinned Admin / New project link when unlocked ([implementation](../feature-specs/project-publisher/implementation.md#stage-4b--admin-sidebar-nav))
 - project-publisher-stage4 — Admin page skeleton: thin `app/admin/projects/new/page.tsx`, form with gallery field, preview UI, `use-generate-draft` wired with loading/error states ([implementation](../feature-specs/project-publisher/implementation.md#stage-4--admin-page-skeleton))
 
 - project-publisher-stage3 — Zod `projectSchema` + `projectMetricSchema` mirroring `Project` / `ProjectMetric`; `ValidatedProject` types; `publishRequestBodySchema` uses `projectSchema` ([implementation](../feature-specs/project-publisher/implementation.md#stage-3--project-schema))

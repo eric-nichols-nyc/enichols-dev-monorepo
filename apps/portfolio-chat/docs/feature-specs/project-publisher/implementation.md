@@ -1,4 +1,4 @@
-# Implementation Plan
+z# Implementation Plan
 
 **Feature:** Project Publisher MVP
 **Status:** Draft
@@ -126,6 +126,24 @@ Generated project objects can be validated before publishing.
 ## Deliverable
 
 Admin page exists and can collect input (only reachable after unlock).
+
+---
+
+# Stage 4b — Admin Sidebar Nav
+
+## Tasks
+
+- [x] Server-detect admin session via httpOnly cookie (`isAdminSessionActive()`)
+- [x] Pass `showAdminNav` from `app/page.tsx` into `CollapsibleSidebarLayout`
+- [x] When authenticated, show pinned **Admin** section at bottom of sidebar (desktop + mobile)
+- [x] Link **New project** → `/admin/projects/new` (icon-only when sidebar collapsed)
+- [x] Hidden when `ADMIN_SECRET` unset or cookie invalid
+- [x] Shared sidebar shell for admin routes via `app/admin/layout.tsx` (`AppSidebarShell` + `AdminSidebarLayout`)
+- [x] Explore nav links home from admin pages; **New project** highlights on `/admin/projects/new`
+
+## Deliverable
+
+Unlocked admins see a sidebar shortcut to the publisher from the main chat page without typing `/admin/...`.
 
 ---
 

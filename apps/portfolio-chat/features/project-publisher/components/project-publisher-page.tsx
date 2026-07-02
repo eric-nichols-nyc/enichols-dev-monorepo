@@ -13,7 +13,7 @@ export function ProjectPublisherPage() {
     usePublishProject();
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-8 px-6 py-12">
+    <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-6 py-12">
       <header className="flex flex-col gap-2">
         <h1 className="text-2xl font-semibold">New project</h1>
         <p className="text-muted-foreground text-sm">

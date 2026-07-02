@@ -159,10 +159,13 @@ Generate and publish never run without a valid secret.
 2. Client POSTs to `/api/admin/unlock`; server sets httpOnly cookie (e.g. `portfolio-admin-auth`).
 3. Middleware allows `/admin/projects/new` when cookie matches.
 4. Client hooks also send `Authorization: Bearer` on fetch to generate/publish (defense in depth).
+5. Main chat page (`app/page.tsx`) calls `isAdminSessionActive()` server-side; when true, sidebar shows a pinned **Admin → New project** link (Stage 4b). Hidden for all other visitors.
+6. All `/admin/*` pages use `app/admin/layout.tsx` — same `AppSidebarShell` as the chat home page, with explore items linking back to `/`.
 
 ## Security rules
 
-- Do not link `/admin` from public portfolio UI.
+- Do not link `/admin` from public portfolio UI for unauthenticated visitors.
+- Sidebar admin nav appears only when the httpOnly unlock cookie is valid on the server render.
 - Do not log or return the secret in error messages.
 - Do not embed `ADMIN_SECRET` in client-side env (`NEXT_PUBLIC_*`).
 - Rotate secret if leaked; update `.env.local` and Vercel env separately.

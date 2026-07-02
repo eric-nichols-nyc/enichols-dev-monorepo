@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 
 export type UseAdminAuthResult = {
@@ -11,6 +12,7 @@ export type UseAdminAuthResult = {
 };
 
 export function useAdminAuth(): UseAdminAuthResult {
+  const router = useRouter();
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,6 +45,7 @@ export function useAdminAuth(): UseAdminAuthResult {
 
       secretRef.current = secret;
       setIsUnlocked(true);
+      router.refresh();
     } catch (caught) {
       secretRef.current = null;
       setError(caught instanceof Error ? caught.message : "Unlock failed");
@@ -50,7 +53,7 @@ export function useAdminAuth(): UseAdminAuthResult {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [router]);
 
   const getAuthHeaders = useCallback((): HeadersInit => {
     const secret = secretRef.current;
