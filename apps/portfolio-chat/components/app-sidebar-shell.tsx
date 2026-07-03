@@ -14,6 +14,7 @@ import {
 } from "./constants";
 import { SidebarBrand, SidebarBrandText } from "./sidebar-brand";
 import { GreetingButton } from "./greeting-button";
+import type { AdminNavLink } from "@/features/project-publisher/lib/get-admin-nav-link";
 
 const NAV_ITEM_BUTTON_BASE =
   "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors";
@@ -42,7 +43,7 @@ type SidebarNavListProps = {
   collapsed?: boolean;
   navMode: AppSidebarNavMode;
   onExploreNavClick: (message: string) => void;
-  showAdminNav?: boolean;
+  adminNavLink?: AdminNavLink | null;
 };
 
 function SidebarNavList({
@@ -51,9 +52,10 @@ function SidebarNavList({
   collapsed = false,
   navMode,
   onExploreNavClick,
-  showAdminNav = false,
+  adminNavLink = null,
 }: SidebarNavListProps) {
-  const isAdminNewProjectActive = activeAdminPath === "/admin/projects/new";
+  const isAdminLinkActive =
+    adminNavLink !== null && activeAdminPath === adminNavLink.href;
 
   return (
     <nav aria-label="Navigation" className="flex flex-1 flex-col overflow-y-auto p-2">
@@ -100,7 +102,7 @@ function SidebarNavList({
         </ul>
       </div>
 
-      {showAdminNav ? (
+      {adminNavLink ? (
         <div className="border-border mt-2 border-t pt-2">
           {!collapsed ? (
             <p className={NAV_SECTION_LABEL_CLASS}>Admin</p>
@@ -108,20 +110,20 @@ function SidebarNavList({
           <ul className="flex flex-col gap-1">
             <li>
               <Link
-                aria-current={isAdminNewProjectActive ? "page" : undefined}
-                aria-label={collapsed ? "New project" : undefined}
+                aria-current={isAdminLinkActive ? "page" : undefined}
+                aria-label={collapsed ? adminNavLink.label : undefined}
                 className={cn(
                   NAV_ITEM_BUTTON_BASE,
-                  isAdminNewProjectActive
+                  isAdminLinkActive
                     ? NAV_ITEM_ACTIVE_CLASS
                     : NAV_ITEM_INACTIVE_CLASS
                 )}
-                href="/admin/projects/new"
-                title={collapsed ? "New project" : undefined}
+                href={adminNavLink.href}
+                title={collapsed ? adminNavLink.label : undefined}
               >
                 <Plus className="size-4 shrink-0" />
                 {!collapsed ? (
-                  <span className="truncate">New project</span>
+                  <span className="truncate">{adminNavLink.label}</span>
                 ) : null}
               </Link>
             </li>
@@ -139,17 +141,17 @@ type AppSidebarShellProps = {
   navMode: AppSidebarNavMode;
   onBrandClick: () => void;
   onExploreNavClick: (message: string) => void;
-  showAdminNav?: boolean;
+  adminNavLink?: AdminNavLink | null;
 };
 
 export function AppSidebarShell({
   activeAdminPath = null,
   activeNavId = null,
+  adminNavLink = null,
   children,
   navMode,
   onBrandClick,
   onExploreNavClick,
-  showAdminNav = false,
 }: AppSidebarShellProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -219,8 +221,8 @@ export function AppSidebarShell({
             activeNavId={activeNavId}
             collapsed={collapsed}
             navMode={navMode}
+            adminNavLink={adminNavLink}
             onExploreNavClick={handleExploreNavClick}
-            showAdminNav={showAdminNav}
           />
         </div>
       </aside>
@@ -264,9 +266,9 @@ export function AppSidebarShell({
           <SidebarNavList
             activeAdminPath={activeAdminPath}
             activeNavId={activeNavId}
+            adminNavLink={adminNavLink}
             navMode={navMode}
             onExploreNavClick={handleExploreNavClick}
-            showAdminNav={showAdminNav}
           />
         </div>
       </aside>

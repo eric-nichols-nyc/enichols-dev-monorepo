@@ -1,13 +1,15 @@
 import { CollapsibleSidebarLayout } from "@/components/collapsible-sidebar-layout";
 import { PortfolioChatProvider } from "@/contexts/chat-context";
-import { isAdminSessionActive } from "@/features/project-publisher/lib/is-admin-session-active";
+import { getAdminNavLink } from "@/features/project-publisher/lib/get-admin-nav-link";
+
+export const dynamic = "force-dynamic";
 
 const HomePage = async () => {
-  const showAdminNav = await isAdminSessionActive();
+  const adminNavLink = await getAdminNavLink();
 
   return (
     <PortfolioChatProvider>
-      <CollapsibleSidebarLayout showAdminNav={showAdminNav} />
+      <CollapsibleSidebarLayout adminNavLink={adminNavLink} />
     </PortfolioChatProvider>
   );
 };

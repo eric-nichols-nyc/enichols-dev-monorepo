@@ -1,17 +1,17 @@
 import type { ReactNode } from "react";
 import { AdminSidebarLayout } from "@/components/admin-sidebar-layout";
-import { isAdminSessionActive } from "@/features/project-publisher/lib/is-admin-session-active";
+import { getAdminNavLink } from "@/features/project-publisher/lib/get-admin-nav-link";
+
+export const dynamic = "force-dynamic";
 
 type AdminLayoutProps = {
   children: ReactNode;
 };
 
 export default async function AdminLayout({ children }: AdminLayoutProps) {
-  const showAdminNav = await isAdminSessionActive();
+  const adminNavLink = await getAdminNavLink();
 
   return (
-    <AdminSidebarLayout showAdminNav={showAdminNav}>
-      {children}
-    </AdminSidebarLayout>
+    <AdminSidebarLayout adminNavLink={adminNavLink}>{children}</AdminSidebarLayout>
   );
 }

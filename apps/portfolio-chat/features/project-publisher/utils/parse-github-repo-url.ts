@@ -19,7 +19,7 @@ export function parseGithubRepoUrl(url: string): ParsedGithubRepo {
     throw new InvalidGithubRepoUrlError();
   }
 
-  if (parsed.hostname !== "github.com") {
+  if (parsed.hostname.toLowerCase() !== "github.com") {
     throw new InvalidGithubRepoUrlError();
   }
 

@@ -6,13 +6,14 @@ import { Chat } from "@/components/chat";
 import { NAV_ITEMS, type NavItemId } from "@/components/constants";
 import { usePortfolioChat } from "@/contexts/chat-context";
 import { useActiveNavSection } from "@/hooks/use-active-nav-section";
+import type { AdminNavLink } from "@/features/project-publisher/lib/get-admin-nav-link";
 
 type CollapsibleSidebarLayoutProps = {
-  showAdminNav?: boolean;
+  adminNavLink?: AdminNavLink | null;
 };
 
 export function CollapsibleSidebarLayout({
-  showAdminNav = false,
+  adminNavLink = null,
 }: CollapsibleSidebarLayoutProps) {
   const [pendingNavId, setPendingNavId] = useState<NavItemId | null>(null);
   const { clearMessages, messages, sendMessage } = usePortfolioChat();
@@ -44,10 +45,10 @@ export function CollapsibleSidebarLayout({
   return (
     <AppSidebarShell
       activeNavId={activeNavId}
+      adminNavLink={adminNavLink}
       navMode="chat"
       onBrandClick={handleClear}
       onExploreNavClick={handleExploreNavClick}
-      showAdminNav={showAdminNav}
     >
       <Chat />
     </AppSidebarShell>

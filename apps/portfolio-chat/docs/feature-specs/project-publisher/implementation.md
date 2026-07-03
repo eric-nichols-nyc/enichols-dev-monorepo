@@ -151,20 +151,20 @@ Unlocked admins see a sidebar shortcut to the publisher from the main chat page 
 
 ## Tasks
 
-- [ ] Create route:
-  - [ ] `app/api/admin/projects/generate/route.ts`
-- [ ] Accept POST body:
-  - [ ] `repoUrl`
-  - [ ] `image`
-  - [ ] `gallery`
-  - [ ] `liveUrl`
-  - [ ] `position`
-  - [ ] `published`
-- [ ] Validate request body
-- [ ] Call `verifyAdminSecret(request)` first
-- [ ] Call `runGeneratePipeline()`
-- [ ] Return generated draft
-- [ ] Return errors cleanly
+- [x] Create route:
+  - [x] `app/api/admin/projects/generate/route.ts`
+- [x] Accept POST body:
+  - [x] `repoUrl`
+  - [x] `image`
+  - [x] `gallery`
+  - [x] `liveUrl`
+  - [x] `position`
+  - [x] `published`
+- [x] Validate request body
+- [x] Call `verifyAdminSecret(request)` first
+- [x] Call `runGeneratePipeline()`
+- [x] Return generated draft
+- [x] Return errors cleanly
 
 ## Deliverable
 
@@ -176,17 +176,17 @@ Admin page can call generate endpoint and receive a placeholder response.
 
 ## Tasks
 
-- [ ] Implement `utils/parse-github-repo-url.ts`
-  - [ ] Accept `https://github.com/{owner}/{repo}` (+ optional trailing path)
-  - [ ] Reject non-GitHub URLs with clear error
-- [ ] Implement `lib/read-github-readme.ts`
-  - [ ] `GET https://api.github.com/repos/{owner}/{repo}/readme`
-  - [ ] Header: `Accept: application/vnd.github.raw+json`
-  - [ ] Header: `Authorization: Bearer` when `GITHUB_TOKEN` set
-  - [ ] Header: `User-Agent: portfolio-chat-project-publisher`
-- [ ] Map GitHub status codes to user-facing errors (see architecture)
-- [ ] Unit test URL parser (valid URLs, tree paths, invalid hosts)
-- [ ] Unit test error mapping with mocked `fetch`
+- [x] Implement `utils/parse-github-repo-url.ts`
+  - [x] Accept `https://github.com/{owner}/{repo}` (+ optional trailing path)
+  - [x] Reject non-GitHub URLs with clear error
+- [x] Implement `lib/read-github-readme.ts`
+  - [x] `GET https://api.github.com/repos/{owner}/{repo}/readme`
+  - [x] Header: `Accept: application/vnd.github.raw+json`
+  - [x] Header: `Authorization: Bearer` when `GITHUB_TOKEN` set
+  - [x] Header: `User-Agent: portfolio-chat-project-publisher`
+- [x] Map GitHub status codes to user-facing errors (see architecture)
+- [x] Unit test URL parser (valid URLs, tree paths, invalid hosts)
+- [x] Unit test error mapping with mocked `fetch`
 
 ## Deliverable
 
@@ -198,14 +198,14 @@ Given a repo URL, the pipeline retrieves README contents via GitHub REST API (no
 
 ## Tasks
 
-- [ ] Define `GeneratePipelineInput` / `GeneratePipelineResult` types
-- [ ] Implement `runGeneratePipeline()` orchestrating:
-  - [ ] `readGithubReadme`
-  - [ ] `generateKnowledgeMarkdown` (placeholder)
-  - [ ] `generateProjectObject` (placeholder)
-  - [ ] Zod validation
-- [ ] Early exit on README / GitHub errors
-- [ ] Return final draft result
+- [x] Define `GeneratePipelineInput` / `GeneratePipelineResult` types
+- [x] Implement `runGeneratePipeline()` orchestrating:
+  - [x] `readGithubReadme`
+  - [x] `generateKnowledgeMarkdown` (placeholder)
+  - [x] `generateProjectObject` (placeholder)
+  - [x] Zod validation
+- [x] Early exit on README / GitHub errors
+- [x] Return final draft result
 
 ## Deliverable
 

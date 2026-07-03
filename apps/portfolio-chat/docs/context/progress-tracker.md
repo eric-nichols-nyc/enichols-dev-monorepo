@@ -4,14 +4,17 @@
 
 ## Current Phase
 
-**Project Publisher — implementation (Stage 5)**
+**Project Publisher — implementation (Stage 8)**
 
 ## Current Goal
 
-Project Publisher Stage 5 — generate endpoint: `POST /api/admin/projects/generate` ([implementation](../feature-specs/project-publisher/implementation.md#stage-5--generate-endpoint)).
+Project Publisher Stage 8 — markdown generation prompt + real LLM output ([implementation](../feature-specs/project-publisher/implementation.md#stage-8--markdown-generation)).
 
 ## Completed
 
+- project-publisher-stage7 — Generate pipeline skeleton: `runGeneratePipeline()` orchestrates README fetch, placeholder markdown/project generation, Zod validation, early exit on errors ([implementation](../feature-specs/project-publisher/implementation.md#stage-7--generate-pipeline-skeleton))
+- project-publisher-stage6 — README retrieval: `parse-github-repo-url.ts`, `read-github-readme.ts` with GitHub API headers + error mapping; unit tests for parser and mocked fetch ([implementation](../feature-specs/project-publisher/implementation.md#stage-6--readme-retrieval))
+- project-publisher-stage5 — Generate endpoint: `POST /api/admin/projects/generate`; validates body, verifies admin secret, calls `runGeneratePipeline()`; `use-generate-draft` wired to API ([implementation](../feature-specs/project-publisher/implementation.md#stage-5--generate-endpoint))
 - project-publisher-admin-layout — Shared `AppSidebarShell` on all `/admin/*` routes via `app/admin/layout.tsx` ([architecture](../feature-specs/project-publisher/architecture.md#authentication))
 - project-publisher-stage4b — Admin sidebar nav: `isAdminSessionActive()`, pinned Admin / New project link when unlocked ([implementation](../feature-specs/project-publisher/implementation.md#stage-4b--admin-sidebar-nav))
 - project-publisher-stage4 — Admin page skeleton: thin `app/admin/projects/new/page.tsx`, form with gallery field, preview UI, `use-generate-draft` wired with loading/error states ([implementation](../feature-specs/project-publisher/implementation.md#stage-4--admin-page-skeleton))
@@ -54,7 +57,7 @@ Project Publisher Stage 5 — generate endpoint: `POST /api/admin/projects/gener
 
 ## In Progress
 
-- _(none — start Stage 5 when ready)_
+- _(none — start Stage 8 when ready)_
 
 ## Next Up
 
