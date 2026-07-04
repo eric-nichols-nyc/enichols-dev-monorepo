@@ -1,4 +1,7 @@
-import { generateKnowledgeMarkdown } from "@/features/project-publisher/lib/generate-knowledge-markdown";
+import {
+  GenerateKnowledgeMarkdownError,
+  generateKnowledgeMarkdown,
+} from "@/features/project-publisher/lib/generate-knowledge-markdown";
 import { generateProjectObject } from "@/features/project-publisher/lib/generate-project-object";
 import {
   ReadGithubReadmeError,
@@ -13,6 +16,7 @@ import {
   InvalidGithubRepoUrlError,
   parseGithubRepoUrl,
 } from "@/features/project-publisher/utils/parse-github-repo-url";
+import { repoNameToProjectId } from "@/features/project-publisher/utils/repo-name-to-project-id";
 
 function formatValidationErrors(
   issues: { path: PropertyKey[]; message: string }[]
@@ -38,6 +42,8 @@ export async function runGeneratePipeline(
       readme,
       repoUrl: input.repoUrl,
       liveUrl: input.liveUrl,
+      projectId: repoNameToProjectId(parsedRepo.repo),
+      repoName: parsedRepo.repo,
     });
     const project = await generateProjectObject({
       readme,
@@ -66,6 +72,10 @@ export async function runGeneratePipeline(
     }
 
     if (error instanceof ReadGithubReadmeError) {
+      return { errors: [error.message] };
+    }
+
+    if (error instanceof GenerateKnowledgeMarkdownError) {
       return { errors: [error.message] };
     }
 

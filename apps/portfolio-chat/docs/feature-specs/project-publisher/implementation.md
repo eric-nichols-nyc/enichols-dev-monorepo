@@ -217,22 +217,22 @@ Pipeline runs end-to-end with placeholder generation. **LangGraph deferred to Ph
 
 ## Tasks
 
-- [ ] Create markdown generation prompt
-- [ ] Include required markdown format
-- [ ] Include frontmatter format
-- [ ] Include repo URL and live URL
-- [ ] Generate:
-  - [ ] Overview
-  - [ ] Problem
-  - [ ] Solution
-  - [ ] Tech Stack
-  - [ ] Architecture
-  - [ ] Features
-  - [ ] Challenges
-  - [ ] Lessons Learned
-  - [ ] Links
-  - [ ] Metrics
-- [ ] Return markdown as a string
+- [x] Create markdown generation prompt
+- [x] Include required markdown format
+- [x] Include frontmatter format
+- [x] Include repo URL and live URL
+- [x] Generate:
+  - [x] Overview
+  - [x] Problem
+  - [x] Solution
+  - [x] Tech Stack
+  - [x] Architecture
+  - [x] Features
+  - [x] Challenges
+  - [x] Lessons Learned
+  - [x] Links
+  - [x] Metrics
+- [x] Return markdown as a string
 
 ## Deliverable
 

@@ -10,6 +10,20 @@ const pipelineInput = {
   published: true,
 };
 
+const generatedMarkdown = [
+  "---",
+  "id: sample-app",
+  "title: Sample App",
+  "tags: [demo]",
+  "categories: [web]",
+  "---",
+  "",
+  "# Sample App",
+  "",
+  "## Overview",
+  "Demo project overview.",
+].join("\n");
+
 function getRequestUrl(input: RequestInfo | URL): string {
   if (typeof input === "string") {
     return input;
@@ -21,6 +35,13 @@ function getRequestUrl(input: RequestInfo | URL): string {
 
   return input.url;
 }
+
+vi.mock("@/features/project-publisher/lib/generate-knowledge-markdown", () => ({
+  GenerateKnowledgeMarkdownError: class GenerateKnowledgeMarkdownError extends Error {
+    name = "GenerateKnowledgeMarkdownError";
+  },
+  generateKnowledgeMarkdown: vi.fn(async () => generatedMarkdown),
+}));
 
 describe("runGeneratePipeline", () => {
   beforeEach(() => {
@@ -49,7 +70,7 @@ describe("runGeneratePipeline", () => {
 
     expect(result.errors).toEqual([]);
     expect(result.readme).toContain("Sample App");
-    expect(result.markdown).toContain("Project knowledge (placeholder)");
+    expect(result.markdown).toContain("id: sample-app");
     expect(result.project).toMatchObject({
       id: "sample-app",
       image: pipelineInput.image,

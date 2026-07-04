@@ -1,6 +1,7 @@
 import type { Project } from "@/data/projects";
 import type { GeneratePipelineInput } from "@/features/project-publisher/lib/schema";
 import { parseGithubRepoUrl } from "@/features/project-publisher/utils/parse-github-repo-url";
+import { repoNameToProjectId } from "@/features/project-publisher/utils/repo-name-to-project-id";
 
 export type GenerateProjectObjectInput = {
   readme: string;
@@ -8,19 +9,8 @@ export type GenerateProjectObjectInput = {
   input: GeneratePipelineInput;
 };
 
-const NON_SLUG_CHARS = /[^a-z0-9]+/g;
-const TRIM_HYPHENS = /^-+|-+$/g;
 const HEADING_PREFIX = /^#+\s*/;
 const PARAGRAPH_BREAK = /\n\s*\n/;
-
-function repoNameToProjectId(repoName: string): string {
-  const normalized = repoName
-    .toLowerCase()
-    .replace(NON_SLUG_CHARS, "-")
-    .replace(TRIM_HYPHENS, "");
-
-  return normalized || "project";
-}
 
 function buildPlaceholderDescription(readme: string): string {
   const firstParagraph = readme

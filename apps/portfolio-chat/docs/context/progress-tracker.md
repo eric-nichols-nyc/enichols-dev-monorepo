@@ -4,14 +4,15 @@
 
 ## Current Phase
 
-**Project Publisher — implementation (Stage 8)**
+**Project Publisher — implementation (Stage 9)**
 
 ## Current Goal
 
-Project Publisher Stage 8 — markdown generation prompt + real LLM output ([implementation](../feature-specs/project-publisher/implementation.md#stage-8--markdown-generation)).
+Project Publisher Stage 9 — project object generation with structured LLM output ([implementation](../feature-specs/project-publisher/implementation.md#stage-9--project-object-generation)).
 
 ## Completed
 
+- project-publisher-stage8 — Markdown generation: OpenAI via `generateText`, portfolio-aligned prompt in `prompts.ts`, frontmatter + required sections, code-fence stripping ([implementation](../feature-specs/project-publisher/implementation.md#stage-8--markdown-generation))
 - project-publisher-stage7 — Generate pipeline skeleton: `runGeneratePipeline()` orchestrates README fetch, placeholder markdown/project generation, Zod validation, early exit on errors ([implementation](../feature-specs/project-publisher/implementation.md#stage-7--generate-pipeline-skeleton))
 - project-publisher-stage6 — README retrieval: `parse-github-repo-url.ts`, `read-github-readme.ts` with GitHub API headers + error mapping; unit tests for parser and mocked fetch ([implementation](../feature-specs/project-publisher/implementation.md#stage-6--readme-retrieval))
 - project-publisher-stage5 — Generate endpoint: `POST /api/admin/projects/generate`; validates body, verifies admin secret, calls `runGeneratePipeline()`; `use-generate-draft` wired to API ([implementation](../feature-specs/project-publisher/implementation.md#stage-5--generate-endpoint))
@@ -57,7 +58,7 @@ Project Publisher Stage 8 — markdown generation prompt + real LLM output ([imp
 
 ## In Progress
 
-- _(none — start Stage 8 when ready)_
+- _(none — start Stage 9 when ready)_
 
 ## Next Up
 
