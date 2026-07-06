@@ -1,5 +1,15 @@
 import type { Project } from "@/data/projects";
-import type { GeneratePipelineInput } from "@/features/project-publisher/lib/schema";
+import { generateObject } from "@repo/ai";
+import { models } from "@repo/ai/lib/models";
+import {
+  buildProjectObjectUserPrompt,
+  getProjectObjectSystemPrompt,
+} from "@/features/project-publisher/lib/prompts";
+import type {
+  GeneratePipelineInput,
+  ProjectGenerationFields,
+} from "@/features/project-publisher/lib/schema";
+import { projectGenerationSchema } from "@/features/project-publisher/lib/schema";
 import { parseGithubRepoUrl } from "@/features/project-publisher/utils/parse-github-repo-url";
 import { repoNameToProjectId } from "@/features/project-publisher/utils/repo-name-to-project-id";
 
@@ -9,46 +19,70 @@ export type GenerateProjectObjectInput = {
   input: GeneratePipelineInput;
 };
 
-const HEADING_PREFIX = /^#+\s*/;
-const PARAGRAPH_BREAK = /\n\s*\n/;
-
-function buildPlaceholderDescription(readme: string): string {
-  const firstParagraph = readme
-    .split(PARAGRAPH_BREAK)
-    .map((block) => block.replace(HEADING_PREFIX, "").trim())
-    .find(Boolean);
-
-  if (!firstParagraph) {
-    return "Placeholder project description.";
+export class GenerateProjectObjectError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "GenerateProjectObjectError";
   }
-
-  return firstParagraph.slice(0, 280);
 }
 
-export function generateProjectObject({
-  readme,
-  input,
-}: GenerateProjectObjectInput): Project {
-  const parsed = parseGithubRepoUrl(input.repoUrl);
-  const id = repoNameToProjectId(parsed.repo);
-  const title = parsed.repo;
-  const description = buildPlaceholderDescription(readme);
+function assertOpenAiConfigured(): void {
+  if (!process.env.OPENAI_API_KEY) {
+    throw new GenerateProjectObjectError("OPENAI_API_KEY is not configured.");
+  }
+}
+
+export function mergeAdminProjectFields(
+  generated: ProjectGenerationFields,
+  input: GeneratePipelineInput
+): Project {
   const githubUrl = input.repoUrl.trim();
+  const liveUrl = input.liveUrl?.trim();
 
   return {
-    id,
-    position: input.position ?? 99,
-    title,
-    tags: ["placeholder"],
-    categories: ["web"],
-    description,
-    shortDescription: description.slice(0, 120),
-    date: new Date().toISOString().slice(0, 10),
-    url: input.liveUrl ?? githubUrl,
-    published: input.published ?? false,
+    ...generated,
+    githubUrl: generated.githubUrl ?? githubUrl,
+    url: liveUrl && liveUrl.length > 0 ? liveUrl : githubUrl,
     image: input.image,
     gallery: input.gallery,
-    githubUrl,
-    subtitle: `${title} (placeholder)`,
+    position: input.position ?? 99,
+    published: input.published ?? false,
   };
+}
+
+export async function generateProjectObject({
+  readme,
+  markdown,
+  input,
+}: GenerateProjectObjectInput): Promise<Project> {
+  assertOpenAiConfigured();
+
+  const parsed = parseGithubRepoUrl(input.repoUrl);
+  const projectId = repoNameToProjectId(parsed.repo);
+
+  try {
+    const result = await generateObject({
+      // biome-ignore lint/suspicious/noExplicitAny: Provider model versions differ across SDK packages in this monorepo
+      model: models.chat as any,
+      schema: projectGenerationSchema,
+      system: getProjectObjectSystemPrompt(),
+      prompt: buildProjectObjectUserPrompt({
+        readme,
+        markdown,
+        repoUrl: input.repoUrl,
+        liveUrl: input.liveUrl,
+        projectId,
+        repoName: parsed.repo,
+      }),
+    });
+
+    return mergeAdminProjectFields(result.object, input);
+  } catch (error) {
+    if (error instanceof GenerateProjectObjectError) {
+      throw error;
+    }
+
+    console.error("[generateProjectObject]:", error);
+    throw new GenerateProjectObjectError("Failed to generate project object.");
+  }
 }

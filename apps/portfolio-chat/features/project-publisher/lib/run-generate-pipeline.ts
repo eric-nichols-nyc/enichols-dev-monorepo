@@ -2,7 +2,10 @@ import {
   GenerateKnowledgeMarkdownError,
   generateKnowledgeMarkdown,
 } from "@/features/project-publisher/lib/generate-knowledge-markdown";
-import { generateProjectObject } from "@/features/project-publisher/lib/generate-project-object";
+import {
+  GenerateProjectObjectError,
+  generateProjectObject,
+} from "@/features/project-publisher/lib/generate-project-object";
 import {
   ReadGithubReadmeError,
   readGithubReadme,
@@ -76,6 +79,10 @@ export async function runGeneratePipeline(
     }
 
     if (error instanceof GenerateKnowledgeMarkdownError) {
+      return { errors: [error.message] };
+    }
+
+    if (error instanceof GenerateProjectObjectError) {
       return { errors: [error.message] };
     }
 

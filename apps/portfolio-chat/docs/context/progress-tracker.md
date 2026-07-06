@@ -4,14 +4,15 @@
 
 ## Current Phase
 
-**Project Publisher — implementation (Stage 9)**
+**Project Publisher — implementation (Stage 10)**
 
 ## Current Goal
 
-Project Publisher Stage 9 — project object generation with structured LLM output ([implementation](../feature-specs/project-publisher/implementation.md#stage-9--project-object-generation)).
+Project Publisher Stage 10 — validation polish: helpful errors, block preview/publish on invalid drafts ([implementation](../feature-specs/project-publisher/implementation.md#stage-10--validation)).
 
 ## Completed
 
+- project-publisher-stage9 — Project object generation: `generateObject` + `projectGenerationSchema`, prompts, admin field merge (`image`, `gallery`, `liveUrl`, `position`, `published`) ([implementation](../feature-specs/project-publisher/implementation.md#stage-9--project-object-generation))
 - project-publisher-stage8 — Markdown generation: OpenAI via `generateText`, portfolio-aligned prompt in `prompts.ts`, frontmatter + required sections, code-fence stripping ([implementation](../feature-specs/project-publisher/implementation.md#stage-8--markdown-generation))
 - project-publisher-stage7 — Generate pipeline skeleton: `runGeneratePipeline()` orchestrates README fetch, placeholder markdown/project generation, Zod validation, early exit on errors ([implementation](../feature-specs/project-publisher/implementation.md#stage-7--generate-pipeline-skeleton))
 - project-publisher-stage6 — README retrieval: `parse-github-repo-url.ts`, `read-github-readme.ts` with GitHub API headers + error mapping; unit tests for parser and mocked fetch ([implementation](../feature-specs/project-publisher/implementation.md#stage-6--readme-retrieval))
@@ -58,7 +59,7 @@ Project Publisher Stage 9 — project object generation with structured LLM outp
 
 ## In Progress
 
-- _(none — start Stage 9 when ready)_
+- _(none — start Stage 10 when ready)_
 
 ## Next Up
 

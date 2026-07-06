@@ -244,32 +244,32 @@ Pipeline generates `knowledge/projects/{id}.md` content.
 
 ## Tasks
 
-- [ ] Create Project object generation prompt
-- [ ] Use structured output
-- [ ] Include admin-provided values:
-  - [ ] image
-  - [ ] gallery
-  - [ ] liveUrl
-  - [ ] position
-  - [ ] published
-- [ ] Generate fields:
-  - [ ] id
-  - [ ] title
-  - [ ] tags
-  - [ ] categories
-  - [ ] description
-  - [ ] shortDescription
-  - [ ] date
-  - [ ] url
-  - [ ] subtitle
-  - [ ] problem
-  - [ ] solution
-  - [ ] tech
-  - [ ] features
-  - [ ] metrics
-  - [ ] githubUrl
-  - [ ] badges
-  - [ ] highlights
+- [x] Create Project object generation prompt
+- [x] Use structured output
+- [x] Include admin-provided values:
+  - [x] image
+  - [x] gallery
+  - [x] liveUrl
+  - [x] position
+  - [x] published
+- [x] Generate fields:
+  - [x] id
+  - [x] title
+  - [x] tags
+  - [x] categories
+  - [x] description
+  - [x] shortDescription
+  - [x] date
+  - [x] url
+  - [x] subtitle
+  - [x] problem
+  - [x] solution
+  - [x] tech
+  - [x] features
+  - [x] metrics
+  - [x] githubUrl
+  - [x] badges
+  - [x] highlights
 
 ## Deliverable
 

@@ -43,6 +43,29 @@ vi.mock("@/features/project-publisher/lib/generate-knowledge-markdown", () => ({
   generateKnowledgeMarkdown: vi.fn(async () => generatedMarkdown),
 }));
 
+const generatedProject = {
+  id: "sample-app",
+  title: "Sample App",
+  tags: ["demo"],
+  categories: ["web"],
+  description: "Demo project description for the portfolio.",
+  shortDescription: "Demo project.",
+  date: "2024-01-01",
+  url: pipelineInput.liveUrl,
+  published: pipelineInput.published,
+  image: pipelineInput.image,
+  gallery: pipelineInput.gallery,
+  position: pipelineInput.position,
+  githubUrl: pipelineInput.repoUrl,
+};
+
+vi.mock("@/features/project-publisher/lib/generate-project-object", () => ({
+  GenerateProjectObjectError: class GenerateProjectObjectError extends Error {
+    name = "GenerateProjectObjectError";
+  },
+  generateProjectObject: vi.fn(async () => generatedProject),
+}));
+
 describe("runGeneratePipeline", () => {
   beforeEach(() => {
     vi.stubGlobal(

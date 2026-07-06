@@ -2,91 +2,82 @@
 
 Location: `apps/portfolio-chat/memory.md` (app-scoped — not repo root)
 
-Last updated: 2026-07-01
+Last updated: 2026-07-06
 
 ## What was built
 
-**Stages 1–3 complete. Stage 4 next. All changes uncommitted.**
+**Stages 5–9 complete this session. Generate draft works end-to-end. Publish not implemented.**
 
-### Stage 1 — Feature foundation (complete)
+### Stage 5 — Generate endpoint
 
-- `features/project-publisher/{components,hooks,utils,lib}` — 20 files with typed stubs
-- `utils/parse-github-repo-url.ts` — working GitHub URL parser
-- `lib/verify-admin-secret.ts`, `lib/ensure-local-publish.ts`, pipeline stubs
-- UI skeletons: `project-publisher-page.tsx`, `project-publish-form.tsx`, `draft-preview.tsx`, `publish-success.tsx`, `admin-unlock-page.tsx`, `admin-secret-gate.tsx`
-- Hook stubs: `use-generate-draft.ts`, `use-publish-project.ts`
+- `app/api/admin/projects/generate/route.ts` — POST; validates body, `verifyAdminSecret`, calls `runGeneratePipeline()`
+- `hooks/use-generate-draft.ts` — POSTs to generate API with error handling
 
-### Stage 2 — Admin auth (complete)
+### Stage 6 — README retrieval
 
-- `middleware.ts` — guards `/admin/*` and `/api/admin/*`; 404 when `ADMIN_SECRET` unset; 401 on bad token for APIs; redirects to `/admin/unlock?next=…`
-- `app/api/admin/unlock/route.ts` — POST unlock; sets httpOnly cookie via `buildAdminAuthCookieHeader`
-- `app/admin/unlock/page.tsx` — thin shell → `AdminUnlockPage`
-- `hooks/use-admin-auth.ts` — real unlock flow: POST to unlock API, stores secret in ref, `getAuthHeaders()` for Bearer
+- `utils/parse-github-repo-url.ts` — owner/repo from GitHub URLs (tree paths ignored)
+- `lib/read-github-readme.ts` — GitHub REST `/repos/{owner}/{repo}/readme`; error mapping; optional `GITHUB_TOKEN`
+- Unit tests: `parse-github-repo-url.test.ts`, `read-github-readme.test.ts`
 
-### Stage 3 — Project schema (complete)
+### Stage 7 — Generate pipeline skeleton
 
-- `lib/schema.ts` — `projectSchema` + `projectMetricSchema` mirroring `Project` / `ProjectMetric` from `data/projects`
-- `ValidatedProject` / `ValidatedProjectMetric` types
-- `publishRequestBodySchema` uses `projectSchema`
-- Request schemas: `generateRequestBodySchema`, `unlockRequestBodySchema`
+- `lib/run-generate-pipeline.ts` — orchestrates README → markdown → project → Zod validation; early exit on errors
+- Placeholder generators replaced in Stages 8–9
 
-### Stage 4 — partial (not started on route)
+### Stage 8 — Markdown generation
 
-Components exist from Stage 1 but Stage 4 deliverable incomplete:
+- `lib/prompts.ts` — `getKnowledgeMarkdownSystemPrompt()`, `buildKnowledgeMarkdownUserPrompt()`, `stripMarkdownCodeFence()`
+- `lib/generate-knowledge-markdown.ts` — OpenAI via `generateText` + `models.chat` from `@repo/ai`
+- Requires `OPENAI_API_KEY`
 
-- **Missing:** `app/admin/projects/new/page.tsx` (thin shell → `ProjectPublisherPage`)
-- **Partial:** `project-publish-form.tsx` has repo URL, image, live URL, position, published — **gallery field not yet in form**
-- **Stub:** `use-generate-draft.ts` returns `{ errors: ["Not implemented"] }` — wired in page but no API call yet (Stage 5)
+### Stage 9 — Project object generation
 
-### Docs updated
+- `lib/schema.ts` — `projectGenerationSchema` (LLM fields only)
+- `lib/prompts.ts` — `getProjectObjectSystemPrompt()`, `buildProjectObjectUserPrompt()`
+- `lib/generate-project-object.ts` — `generateObject` + `mergeAdminProjectFields()` for admin overrides
+- `utils/repo-name-to-project-id.ts` — shared slug helper
+- Unit tests: `generate-knowledge-markdown.test.ts`, `generate-project-object.test.ts`, `run-generate-pipeline.test.ts` (37 project-publisher tests passing)
 
-- `docs/context/progress-tracker.md` — Stage 3 → Completed; Stage 4 current goal
-- `docs/feature-specs/project-publisher/implementation.md` — Stages 1–3 checkboxes marked done
+### Prior sessions (still in place)
+
+- Stages 1–4, 4b: feature foundation, admin auth, schema, admin page + sidebar nav
+- `app/admin/projects/new/page.tsx`, form with gallery, draft preview, approve button (publish stub)
 
 ## Decisions made
 
 | Decision | Choice |
 |----------|--------|
-| Feature name | **Project Publisher** (was `project-agent`) |
-| Scope | `apps/portfolio-chat/` only |
-| MVP orchestration | AI SDK typed pipeline — **not LangGraph** (Phase 2) |
-| Model | **OpenAI only** (`AI_PROVIDER=openai`) — no Google/Gemini |
-| Admin auth | `ADMIN_SECRET` — Bearer + httpOnly unlock cookie; 404 if unset |
-| Publish | Local only (`PROJECT_PUBLISHER_ENABLE_WRITES=true`); block `VERCEL=1`; manual git commit |
-| GitHub README | REST API — not Cursor MCP; optional `GITHUB_TOKEN` |
-| Admin UI location | `features/project-publisher/components/` only |
-| Admin routes | `app/admin/**/page.tsx` are **thin shells** |
-| Code layout | `features/project-publisher/{components,hooks,utils,lib}` — no `src/`, no barrel indexes |
-| memory.md | **`apps/portfolio-chat/memory.md`** |
-| Agent workflow | One implementation **stage** per session + `/remember restore/save` |
+| GitHub README | Root default-branch README only via `/readme` API — **no subfolder README paths** (user deferred; e.g. monorepo `apps/app/README.md` not supported) |
+| Markdown generation | `generateText` — OpenAI only |
+| Project object | `generateObject` + `projectGenerationSchema`; admin fields merged after LLM (never LLM-overwritten) |
+| Admin overrides | `image`, `gallery`, `liveUrl` → `url`, `position`, `published` applied in `mergeAdminProjectFields()` |
+| Publish | Still local-only model; **not built yet** — `use-publish-project` throws "Not implemented" |
+| memory.md | `apps/portfolio-chat/memory.md` |
 
 ## Problems solved
 
-- Stage 2 middleware allows POST to `/api/admin/unlock` without prior auth; all other admin paths require cookie or Bearer
-- Stage 3 schema uses `.strict()` and `satisfies z.ZodType<Project>` to stay aligned with `data/projects` types
+- GitHub 404 on readme: secondary repo-exists check distinguishes "README not found" vs "unable to access repository"
+- Pipeline test isolation: mock `generate-knowledge-markdown` and `generate-project-object` in `run-generate-pipeline.test.ts`
+- URL parser ignores `/blob/main/apps/app/README.md` path segments — only `owner/repo` used
 
 ## Current state
 
-- **Project Publisher:** Stages 1–3 **shipped**; Stage 4 **next**
-- **Tracker goal:** Stage 4 — admin page skeleton at `/admin/projects/new`
-- **Visitor-facing app:** Unchanged; admin unlock works when `ADMIN_SECRET` is set in `.env.local`
+- **Generate draft:** Works — unlock admin → `/admin/projects/new` → GitHub repo URL + image path → preview shows LLM markdown + structured Project JSON
+- **Publish:** Not implemented (Stages 12–13)
+- **Validation:** Basic Zod in pipeline; Stage 10 polish not done
+- **Tests:** 37 project-publisher unit tests pass; `pnpm typecheck` passes
 - **Env (names only):** `OPENAI_API_KEY`, `ADMIN_SECRET`, `PROJECT_PUBLISHER_ENABLE_WRITES`, `GITHUB_TOKEN`, `AI_PROVIDER=openai`
-- **`pnpm typecheck`:** passes (last verified after Stage 3)
 
 ## Next session starts with
 
 1. `/remember restore` — read `apps/portfolio-chat/memory.md`
-2. Read `docs/context/progress-tracker.md`
-3. Implement **Stage 4:** `docs/feature-specs/project-publisher/implementation.md#stage-4--admin-page-skeleton`
-   - Create thin route `app/admin/projects/new/page.tsx` → `ProjectPublisherPage`
-   - Finish `project-publish-form.tsx` — add gallery field per spec
-   - Ensure `project-publisher-page.tsx` composes form + preview + actions
-   - Wire `use-generate-draft` for Generate button (stub OK until Stage 5 — shows loading/error states)
-   - Verify page reachable only after unlock (`/admin/unlock` → redirect back)
-4. `pnpm typecheck`; update tracker + implementation checkboxes; `/remember save`
+2. Read `docs/context/progress-tracker.md` (goal: Stage 10)
+3. Either **Stage 10** (validation polish) or skip to **Stage 12** (`POST /api/admin/projects/publish`) if publish path is priority
+4. Stage 12 needs: `ensureLocalPublish()`, `write-knowledge-file.ts`, `update-projects-file.ts`, wire `use-publish-project`
+5. `pnpm typecheck` + project-publisher tests after changes; `/remember save`
 
 ## Open questions
 
+- Stage 10 vs jump to publish — user preference
+- Optional README subfolder path field — explicitly **not now** (monorepo apps)
 - Hosting URL and analytics (portfolio-wide TBD)
-- Legacy → `features/` migration priority
-- Optional per-stage `session-log.md` (not created)

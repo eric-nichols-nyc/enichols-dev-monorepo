@@ -83,6 +83,77 @@ export function buildKnowledgeMarkdownUserPrompt(
   ].join("\n");
 }
 
+export function getProjectObjectSystemPrompt(): string {
+  return `You are preparing structured portfolio project metadata for Eric Nichols' developer portfolio.
+
+Generate JSON matching the schema for a Project entry used in data/projects.ts and featured project artifacts.
+
+## Field guidance
+
+- id: lowercase slug with hyphens only (letters and numbers). Prefer the suggested project id when it fits the repo.
+- title: human-readable product name.
+- tags: 3–6 lowercase technology or domain tags (e.g. nextjs, typescript, ai).
+- categories: 1–3 portfolio categories such as ai, fullstack, web, health.
+- description: 2–4 sentences for project cards and detail views.
+- shortDescription: one concise sentence under 120 characters.
+- date: ISO date YYYY-MM-DD — use README release hints or a reasonable estimate.
+- subtitle, problem, solution: concise artifact copy grounded in the knowledge document.
+- tech: major frameworks, languages, and services.
+- features: user-facing capabilities as short phrases.
+- metrics: optional label/value pairs when scale is implied; omit if unknown.
+- githubUrl: repository URL when known.
+- badges: 2–4 short skill/theme labels (e.g. Full Stack, API Integration).
+- highlights: 2–4 accomplishment bullets for recruiters.
+
+## Rules
+
+- Ground content in the README and generated knowledge markdown.
+- Do not invent live demo URLs.
+- Write in professional third person about Eric's work when describing solutions.
+- Do not output image paths, gallery paths, position, published flag, or live site url — the admin supplies those separately.`;
+}
+
+export type BuildProjectObjectUserPromptInput = {
+  readme: string;
+  markdown: string;
+  repoUrl: string;
+  liveUrl?: string;
+  projectId: string;
+  repoName: string;
+};
+
+export function buildProjectObjectUserPrompt(
+  input: BuildProjectObjectUserPromptInput
+): string {
+  const trimmedReadme = input.readme.trim();
+  const readmeForPrompt =
+    trimmedReadme.length > MAX_README_CHARS
+      ? `${trimmedReadme.slice(0, MAX_README_CHARS)}\n\n[README truncated for length]`
+      : trimmedReadme;
+  const trimmedMarkdown = input.markdown.trim();
+  const markdownForPrompt =
+    trimmedMarkdown.length > MAX_README_CHARS
+      ? `${trimmedMarkdown.slice(0, MAX_README_CHARS)}\n\n[Markdown truncated for length]`
+      : trimmedMarkdown;
+
+  return [
+    "Generate the portfolio Project object for this repository.",
+    "",
+    `Suggested project id: ${input.projectId}`,
+    `Repository name: ${input.repoName}`,
+    `GitHub URL: ${input.repoUrl}`,
+    input.liveUrl
+      ? `Live URL (admin-provided — do not emit url field): ${input.liveUrl}`
+      : "Live URL: (not provided — url will default to GitHub)",
+    "",
+    "Generated knowledge markdown:",
+    markdownForPrompt,
+    "",
+    "README:",
+    readmeForPrompt,
+  ].join("\n");
+}
+
 const MARKDOWN_FENCE_PATTERN = /^```(?:markdown|md)?\s*\n([\s\S]*?)\n```$/;
 
 export function stripMarkdownCodeFence(text: string): string {
