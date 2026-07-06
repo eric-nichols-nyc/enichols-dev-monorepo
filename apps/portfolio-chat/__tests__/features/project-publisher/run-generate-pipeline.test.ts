@@ -130,4 +130,24 @@ describe("runGeneratePipeline", () => {
     ]);
     expect(result.project).toBeUndefined();
   });
+
+  it("returns validation errors when the generated project is invalid", async () => {
+    const { generateProjectObject } = await import(
+      "@/features/project-publisher/lib/generate-project-object"
+    );
+
+    vi.mocked(generateProjectObject).mockResolvedValueOnce({
+      ...generatedProject,
+      id: "Invalid ID",
+    });
+
+    const result = await runGeneratePipeline(pipelineInput);
+
+    expect(result.errors.length).toBeGreaterThan(0);
+    expect(result.errors[0]).toContain(
+      "Project ID must be lowercase letters, numbers, and hyphens only"
+    );
+    expect(result.markdown).toBeUndefined();
+    expect(result.project).toBeUndefined();
+  });
 });

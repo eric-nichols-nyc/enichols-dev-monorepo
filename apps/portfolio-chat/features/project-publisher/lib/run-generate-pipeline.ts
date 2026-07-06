@@ -14,26 +14,12 @@ import type {
   GeneratePipelineInput,
   GeneratePipelineResult,
 } from "@/features/project-publisher/lib/schema";
-import { projectSchema } from "@/features/project-publisher/lib/schema";
+import { validateProject } from "@/features/project-publisher/lib/validate-project";
 import {
   InvalidGithubRepoUrlError,
   parseGithubRepoUrl,
 } from "@/features/project-publisher/utils/parse-github-repo-url";
 import { repoNameToProjectId } from "@/features/project-publisher/utils/repo-name-to-project-id";
-
-function formatValidationErrors(
-  issues: { path: PropertyKey[]; message: string }[]
-): string[] {
-  return issues.map((issue) => {
-    const path = issue.path.map(String).join(".");
-
-    if (!path) {
-      return issue.message;
-    }
-
-    return `${path}: ${issue.message}`;
-  });
-}
 
 export async function runGeneratePipeline(
   input: GeneratePipelineInput
@@ -53,13 +39,11 @@ export async function runGeneratePipeline(
       markdown,
       input,
     });
-    const validated = projectSchema.safeParse(project);
+    const validated = validateProject(project);
 
     if (!validated.success) {
       return {
-        readme,
-        markdown,
-        errors: formatValidationErrors(validated.error.issues),
+        errors: validated.errors,
       };
     }
 

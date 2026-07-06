@@ -4,13 +4,20 @@
 
 ## Current Phase
 
-**Project Publisher — implementation (Stage 10)**
+**Project Publisher — implementation (Stage 14)**
 
 ## Current Goal
 
-Project Publisher Stage 10 — validation polish: helpful errors, block preview/publish on invalid drafts ([implementation](../feature-specs/project-publisher/implementation.md#stage-10--validation)).
+Project Publisher Stage 14 — error handling & safety polish ([implementation](../feature-specs/project-publisher/implementation.md#stage-14--error-handling--safety)).
 
 ## Completed
+
+- project-publisher-stage13 — File writers: `writeKnowledgeFile`, `updateProjectsFile`, duplicate ID guard, rollback on partial failure ([implementation](../feature-specs/project-publisher/implementation.md#stage-13--file-writers))
+- project-publisher-stage12 — Publish endpoint: `POST /api/admin/projects/publish`, local write guard, server-side re-validation, wired `use-publish-project` ([implementation](../feature-specs/project-publisher/implementation.md#stage-12--publish-endpoint))
+
+- project-publisher-stage11 — Admin preview: structured markdown + project summary, Approve & publish + Cancel/reset actions, publish disabled when draft invalid ([implementation](../feature-specs/project-publisher/implementation.md#stage-11--admin-preview))
+
+- project-publisher-stage10 — Validation polish: `validate-project.ts` with readable Zod errors, pipeline blocks invalid drafts, preview/publish gated via `isValidDraft()` ([implementation](../feature-specs/project-publisher/implementation.md#stage-10--validation))
 
 - project-publisher-stage9 — Project object generation: `generateObject` + `projectGenerationSchema`, prompts, admin field merge (`image`, `gallery`, `liveUrl`, `position`, `published`) ([implementation](../feature-specs/project-publisher/implementation.md#stage-9--project-object-generation))
 - project-publisher-stage8 — Markdown generation: OpenAI via `generateText`, portfolio-aligned prompt in `prompts.ts`, frontmatter + required sections, code-fence stripping ([implementation](../feature-specs/project-publisher/implementation.md#stage-8--markdown-generation))
@@ -59,7 +66,7 @@ Project Publisher Stage 10 — validation polish: helpful errors, block preview/
 
 ## In Progress
 
-- _(none — start Stage 10 when ready)_
+- _(none — start Stage 14 when ready)_
 
 ## Next Up
 

@@ -281,10 +281,10 @@ Pipeline generates a valid Project object.
 
 ## Tasks
 
-- [ ] Validate generated Project object with Zod
-- [ ] Return validation errors if invalid
-- [ ] Prevent preview/publish if validation fails
-- [ ] Add helpful error messages
+- [x] Validate generated Project object with Zod
+- [x] Return validation errors if invalid
+- [x] Prevent preview/publish if validation fails
+- [x] Add helpful error messages
 
 ## Deliverable
 
@@ -296,11 +296,11 @@ Only valid Project objects reach the preview step.
 
 ## Tasks
 
-- [ ] Display generated markdown preview
-- [ ] Display generated Project object preview
-- [ ] Add Approve & Publish button
-- [ ] Add Cancel/Reset button
-- [ ] Disable publish if validation failed
+- [x] Display generated markdown preview
+- [x] Display generated Project object preview
+- [x] Add Approve & Publish button
+- [x] Add Cancel/Reset button
+- [x] Disable publish if validation failed
 
 ## Deliverable
 
@@ -312,18 +312,18 @@ Admin can review generated output before writing files.
 
 ## Tasks
 
-- [ ] Create route:
-  - [ ] `app/api/admin/projects/publish/route.ts`
-- [ ] Accept approved draft
-- [ ] Call `verifyAdminSecret(request)` first
-- [ ] Call `ensureLocalPublish()` — **403** if not local + enabled
-- [ ] Validate draft again server-side
-- [ ] Write markdown file:
-  - [ ] `knowledge/projects/{id}.md`
-- [ ] Update:
-  - [ ] `data/projects.ts`
-- [ ] Return success response
-- [ ] Return write errors cleanly
+- [x] Create route:
+  - [x] `app/api/admin/projects/publish/route.ts`
+- [x] Accept approved draft
+- [x] Call `verifyAdminSecret(request)` first
+- [x] Call `ensureLocalPublish()` — **403** if not local + enabled
+- [x] Validate draft again server-side
+- [x] Write markdown file:
+  - [x] `knowledge/projects/{id}.md`
+- [x] Update:
+  - [x] `data/projects.ts`
+- [x] Return success response
+- [x] Return write errors cleanly
 
 ## Deliverable
 
@@ -335,15 +335,15 @@ Approved drafts can be published.
 
 ## Tasks
 
-- [ ] Implement `writeKnowledgeFile`
-- [ ] Implement `updateProjectsFile`
-- [ ] Implement `ensureLocalPublish()` (block when `VERCEL=1` or enable flag unset)
-- [ ] Roll back markdown if `projects.ts` update fails
-- [ ] Prevent duplicate project IDs
-- [ ] Preserve existing `projects.ts` exports
-- [ ] Insert new object into `projectsUnsorted`
-- [ ] Preserve sorting behavior
-- [ ] Format updated file
+- [x] Implement `writeKnowledgeFile`
+- [x] Implement `updateProjectsFile`
+- [x] Implement `ensureLocalPublish()` (block when `VERCEL=1` or enable flag unset)
+- [x] Roll back markdown if `projects.ts` update fails
+- [x] Prevent duplicate project IDs
+- [x] Preserve existing `projects.ts` exports
+- [x] Insert new object into `projectsUnsorted`
+- [x] Preserve sorting behavior
+- [x] Format updated file
 
 ## Deliverable
 

@@ -8,6 +8,7 @@ import { useCallback, useState } from "react";
 
 export type UseGenerateDraftResult = {
   generate: (body: GenerateRequestBody) => Promise<GeneratePipelineResult>;
+  reset: () => void;
   isLoading: boolean;
   error: string | null;
   result: GeneratePipelineResult | null;
@@ -82,8 +83,15 @@ export function useGenerateDraft(): UseGenerateDraftResult {
     }
   }, []);
 
+  const reset = useCallback(() => {
+    setIsLoading(false);
+    setError(null);
+    setResult(null);
+  }, []);
+
   return {
     generate,
+    reset,
     isLoading,
     error,
     result,
