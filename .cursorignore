@@ -2,7 +2,6 @@
 # See apps/portfolio-chat/docs/AGENTS.md and .cursor/rules/project-scope.mdc
 
 # Other apps in the monorepo
-apps/ai-chatbots/
 apps/app/
 apps/api/
 apps/docs/
