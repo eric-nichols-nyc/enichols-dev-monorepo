@@ -223,7 +223,7 @@ const projectsUnsorted: Project[] = [
       "Integrated GitHub context for portfolio storytelling",
       "Deployed production app on Vercel",
     ],
-  },,
+  },
   {
     id: "codedrill",
     position: 99,
