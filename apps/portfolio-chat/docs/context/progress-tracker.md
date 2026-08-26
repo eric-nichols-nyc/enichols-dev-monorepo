@@ -4,14 +4,41 @@
 
 ## Current Phase
 
-**Knowledge Assistant — Stage 1 (Knowledge Sources)**
+**Project Publisher — implementation (Stage 14)**
 
 ## Current Goal
 
-Sidebar nav visibility **P6** (brand accent on active nav) — P1–P5, P7–P8, P3 shipped on `feature/sidebar-nav-p1`.
+Project Publisher Stage 14 — error handling & safety polish ([implementation](../feature-specs/project-publisher/implementation.md#stage-14--error-handling--safety)).
 
 ## Completed
 
+- project-publisher-stage13 — File writers: `writeKnowledgeFile`, `updateProjectsFile`, duplicate ID guard, rollback on partial failure ([implementation](../feature-specs/project-publisher/implementation.md#stage-13--file-writers))
+- project-publisher-stage12 — Publish endpoint: `POST /api/admin/projects/publish`, local write guard, server-side re-validation, wired `use-publish-project` ([implementation](../feature-specs/project-publisher/implementation.md#stage-12--publish-endpoint))
+
+- project-publisher-stage11 — Admin preview: structured markdown + project summary, Approve & publish + Cancel/reset actions, publish disabled when draft invalid ([implementation](../feature-specs/project-publisher/implementation.md#stage-11--admin-preview))
+
+- project-publisher-stage10 — Validation polish: `validate-project.ts` with readable Zod errors, pipeline blocks invalid drafts, preview/publish gated via `isValidDraft()` ([implementation](../feature-specs/project-publisher/implementation.md#stage-10--validation))
+
+- project-publisher-stage9 — Project object generation: `generateObject` + `projectGenerationSchema`, prompts, admin field merge (`image`, `gallery`, `liveUrl`, `position`, `published`) ([implementation](../feature-specs/project-publisher/implementation.md#stage-9--project-object-generation))
+- project-publisher-stage8 — Markdown generation: OpenAI via `generateText`, portfolio-aligned prompt in `prompts.ts`, frontmatter + required sections, code-fence stripping ([implementation](../feature-specs/project-publisher/implementation.md#stage-8--markdown-generation))
+- project-publisher-stage7 — Generate pipeline skeleton: `runGeneratePipeline()` orchestrates README fetch, placeholder markdown/project generation, Zod validation, early exit on errors ([implementation](../feature-specs/project-publisher/implementation.md#stage-7--generate-pipeline-skeleton))
+- project-publisher-stage6 — README retrieval: `parse-github-repo-url.ts`, `read-github-readme.ts` with GitHub API headers + error mapping; unit tests for parser and mocked fetch ([implementation](../feature-specs/project-publisher/implementation.md#stage-6--readme-retrieval))
+- project-publisher-stage5 — Generate endpoint: `POST /api/admin/projects/generate`; validates body, verifies admin secret, calls `runGeneratePipeline()`; `use-generate-draft` wired to API ([implementation](../feature-specs/project-publisher/implementation.md#stage-5--generate-endpoint))
+- project-publisher-admin-layout — Shared `AppSidebarShell` on all `/admin/*` routes via `app/admin/layout.tsx` ([architecture](../feature-specs/project-publisher/architecture.md#authentication))
+- project-publisher-stage4b — Admin sidebar nav: `isAdminSessionActive()`, pinned Admin / New project link when unlocked ([implementation](../feature-specs/project-publisher/implementation.md#stage-4b--admin-sidebar-nav))
+- project-publisher-stage4 — Admin page skeleton: thin `app/admin/projects/new/page.tsx`, form with gallery field, preview UI, `use-generate-draft` wired with loading/error states ([implementation](../feature-specs/project-publisher/implementation.md#stage-4--admin-page-skeleton))
+
+- project-publisher-stage3 — Zod `projectSchema` + `projectMetricSchema` mirroring `Project` / `ProjectMetric`; `ValidatedProject` types; `publishRequestBodySchema` uses `projectSchema` ([implementation](../feature-specs/project-publisher/implementation.md#stage-3--project-schema))
+- project-publisher-stage2 — Admin auth: `POST /api/admin/unlock`, `middleware.ts`, thin `app/admin/unlock/page.tsx`, real `use-admin-auth` ([implementation](../feature-specs/project-publisher/implementation.md#stage-2--admin-auth))
+- project-publisher-stage1 — Feature foundation: `features/project-publisher/{components,hooks,utils,lib}` with typed stubs; `pnpm typecheck` passes ([implementation](../feature-specs/project-publisher/implementation.md#stage-1--feature-foundation))
+- project-publisher-alignment — All 8 pre-implementation steps complete ([00-index](../feature-specs/project-publisher/00-index.md#pre-implementation-alignment-checklist))
+- project-publisher-github — README via GitHub REST API (`read-github-readme.ts`); optional `GITHUB_TOKEN`; not Cursor MCP ([architecture](../feature-specs/project-publisher/architecture.md#github-readme-fetch))
+- project-publisher-publish-model — Local writes only (`PROJECT_PUBLISHER_ENABLE_WRITES`); blocked on Vercel; manual git commit ([architecture](../feature-specs/project-publisher/architecture.md#publish-model))
+- project-publisher-auth — `ADMIN_SECRET` + Bearer header; unlock cookie; middleware on `/admin/*` ([architecture](../feature-specs/project-publisher/architecture.md#authentication))
+- project-publisher-model — OpenAI only (`OPENAI_API_KEY`, `AI_PROVIDER=openai`); no Google/Gemini in app docs
+- project-publisher-orchestration — MVP uses AI SDK typed pipeline; LangGraph deferred to Phase 2 ([architecture](../feature-specs/project-publisher/architecture.md))
+- project-publisher-prd — Updated [docs/prd.md](../prd.md): P9 Project Publisher in scope; internal admin constraints; knowledge layer in content model
+- project-publisher-registry — Registered in [00-index](../feature-specs/00-index.md); specs under [project-publisher/](../feature-specs/project-publisher/00-index.md) (canonical name; was `project-agent/`)
 - sidebar-nav-p3 — Active section highlight via `useActiveNavSection` + optimistic nav clicks ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P3)
 - sidebar-nav-shell — Matched header heights (`h-[4.5rem]`), social icons right + 10% smaller
 - sidebar-nav-p8 — Brand subtitle “Ask about my work” under name (expanded + mobile) ([09-sidebar-nav-visibility](../feature-specs/09-sidebar-nav-visibility.md) P8)
@@ -39,10 +66,11 @@ Sidebar nav visibility **P6** (brand accent on active nav) — P1–P5, P7–P8,
 
 ## In Progress
 
-- (idle — Stage 7 integration cleanup or manual QA of dynamic suggestions)
+- _(none — start Stage 14 when ready)_
 
 ## Next Up
 
+- Project Publisher Stages 3–16 — schema → admin UI → pipeline → publish ([implementation](../feature-specs/project-publisher/implementation.md))
 - knowledge-assistant Stage 7 — integration cleanup (remove static tool `related`, guardrails)
 - PRD P7b — per-project routes / deep links
 - PRD P8 — rate limiting on `/api/chat` (not in app today)
@@ -61,6 +89,13 @@ Sidebar nav visibility **P6** (brand accent on active nav) — P1–P5, P7–P8,
 | 2026-05-30 | Agent scope = `apps/portfolio-chat/` only | User choice; packages require explicit approval |
 | 2026-05-30 | New code under `features/<name>/` | User choice; gradual migration from flat `components/` |
 | 2026-05-30 | Specs live in `docs/feature-specs/` | User choice (not under `context/`) |
+| 2026-07-01 | Admin UI in `features/project-publisher/components/` | `app/admin/**/page.tsx` thin shells only — no root `components/` |
+| 2026-07-01 | Code layout: `features/project-publisher/{components,hooks,utils,lib}` | No `src/`; specs in docs only; no barrel indexes |
+| 2026-07-01 | GitHub README: REST API, not MCP | `GET /repos/{owner}/{repo}/readme`; optional `GITHUB_TOKEN` |
+| 2026-07-01 | Publish: local FS writes + manual git | `PROJECT_PUBLISHER_ENABLE_WRITES=true`; block on `VERCEL=1`; no auto-commit |
+| 2026-07-01 | Admin auth via `ADMIN_SECRET` | Bearer on APIs; httpOnly cookie + unlock page; 404 if unset |
+| 2026-07-01 | OpenAI only — no Google/Gemini | Owner preference; `AI_PROVIDER=openai`, `OPENAI_API_KEY` |
+| 2026-07-01 | Project Publisher MVP: AI SDK pipeline, not LangGraph | Linear workflow; matches `features/ai-chat/`; LangGraph in Phase 2 for branching/retries |
 | 2026-05-30 | Repo root `AGENTS.md` points here | Portfolio Chat primary entry for this repo |
 
 ## Session Notes

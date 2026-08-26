@@ -8,7 +8,7 @@
 | UI | React 19, Tailwind CSS 4 |
 | Chat client | `@ai-sdk/react` (`useChat`), `DefaultChatTransport` from `@repo/ai` |
 | Chat server | `streamText`, tools, `createUIMessageStream` in `app/api/chat/route.ts` |
-| Models | `@repo/ai` / Google (see route and env) |
+| Models | OpenAI via `@repo/ai/lib/models` (`AI_PROVIDER=openai`, `OPENAI_API_KEY`) |
 | Validation | Zod 4 |
 | Tests | Vitest (unit), Playwright (e2e) |
 | Shared UI | `@repo/design-system` (ai-elements, shadcn primitives) |

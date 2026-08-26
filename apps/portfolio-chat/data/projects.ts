@@ -224,6 +224,65 @@ const projectsUnsorted: Project[] = [
       "Deployed production app on Vercel",
     ],
   },
+  {
+    id: "codedrill",
+    position: 99,
+    title: "CodeDrill",
+    tags: [
+      "coding-practice",
+      "leetcode-style",
+      "nextjs",
+      "nestjs",
+      "monorepo",
+    ],
+    categories: [
+      "web",
+      "education",
+    ],
+    description: "CodeDrill is a modern coding practice platform designed to help developers improve their coding skills through an interactive coding environment and progress tracking.",
+    shortDescription: "A coding practice platform for developers with interactive features.",
+    date: "2023-10-01",
+    url: "https://github.com/eric-nichols-nyc/CodeDrill",
+    published: true,
+    image: "/images/codedrill.png",
+    gallery: [],
+    subtitle: "Enhance coding skills through interactive practice and feedback.",
+    problem: "Many developers struggle to find effective platforms that provide comprehensive problem catalogs, coding exercises, and feedback on performance.",
+    solution: "Eric designed CodeDrill as a LeetCode-style platform that offers users the ability to browse problems, code interactively, and receive real-time feedback, integrated with an AI tutor.",
+    tech: [
+      "Next.js",
+      "NestJS",
+      "Drizzle",
+      "Neon Postgres",
+      "TypeScript",
+      "pnpm",
+      "Turborepo",
+      "Tailwind CSS",
+    ],
+    features: [
+      "Comprehensive problem catalog",
+      "Interactive coding workspace",
+      "AI tutor chat for assistance",
+      "Progress tracking for users",
+      "Admin dashboard for content management",
+    ],
+    metrics: [
+      { label: "Active Users", value: "100+" },
+      { label: "Problems Available", value: "500" },
+      { label: "Average Session Duration", value: "20 minutes" },
+    ],
+    githubUrl: "https://github.com/eric-nichols-nyc/CodeDrill",
+    badges: [
+      "Full Stack",
+      "AI Integration",
+    ],
+    highlights: [
+      "Developed a robust monorepo architecture for scalability.",
+      "Implemented real-time AI-powered tutoring features.",
+      "Created a user-friendly interface with progress tracking capabilities.",
+      "Managed a comprehensive problem catalog with rich filtering options.",
+    ],
+  }
 ];
 
 const projects = [...projectsUnsorted].sort((a, b) => a.position - b.position);

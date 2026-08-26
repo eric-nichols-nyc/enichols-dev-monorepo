@@ -4,7 +4,7 @@
 
 ## Goal
 
-Stream model responses from Google (via `@repo/ai`) and execute portfolio tools. Server controls follow-up narration (word-streamed text) and about-specific rendering so the client shows one coherent experience.
+Stream model responses from OpenAI (via `@repo/ai/lib/models`, `AI_PROVIDER=openai`) and execute portfolio tools. Server controls follow-up narration (word-streamed text) and about-specific rendering so the client shows one coherent experience.
 
 ## User story
 
