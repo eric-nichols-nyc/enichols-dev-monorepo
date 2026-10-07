@@ -11,7 +11,8 @@ Do **not** copy shadcn components into `apps/portfolio-chat`. Request package ch
 
 ## Theme
 
-- Dark-first portfolio aesthetic (`app/styles.css`, layout backgrounds)
+- Always-dark portfolio aesthetic in `app/styles.css` (oklch semantic tokens, including `--signal`)
+- Fonts: Geist + Geist Mono via `next/font/google` (`--font-geist-sans`, `--font-geist-mono`)
 - Use **semantic Tailwind tokens** and design-system variables — avoid ad-hoc hex in feature code
 - `next-themes` available via design-system providers if extended
 
@@ -19,7 +20,7 @@ Do **not** copy shadcn components into `apps/portfolio-chat`. Request package ch
 
 | Pattern | Location | Notes |
 |---------|----------|-------|
-| Collapsible sidebar | `components/collapsible-sidebar-layout.tsx` | Desktop collapse + mobile drawer |
+| Collapsible sidebar | `components/collapsible-sidebar-layout.tsx` | Desktop icon rail (label under icon) + mobile drawer |
 | Chat column | `components/chat.tsx` | Input, messages, artifact slot |
 | Message stream | `components/messages/`, `components/message.tsx` | Tool vs text parts |
 | Artifact panel | `components/artifact.tsx` | Featured project/experience detail |

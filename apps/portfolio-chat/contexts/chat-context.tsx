@@ -16,13 +16,14 @@ type ChatContextValue = {
 const ChatContext = createContext<ChatContextValue | null>(null);
 
 export function PortfolioChatProvider({ children }: { children: ReactNode }) {
-  const { error, messages, sendMessage, setMessages, status } = useChat({
+  const { error, messages, sendMessage, setMessages, status, clearError } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
   });
 
   const clearMessages = useCallback(() => {
     setMessages([]);
-  }, [setMessages]);
+    clearError();
+  }, [setMessages, clearError]);
 
   const handleSendMessage = useCallback(
     (message: { text: string; files?: unknown[] }) => {

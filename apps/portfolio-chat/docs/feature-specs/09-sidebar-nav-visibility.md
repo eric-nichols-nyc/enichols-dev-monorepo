@@ -51,7 +51,7 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 - [x] **R5** — Each nav item has a **visible resting state** — subtle rounded background at all times (not only on `:hover`).
   - Suggested: `bg-muted/30` or `bg-secondary/50` at rest; stronger on hover.
 - [x] **R6** — Resting pills make items look **clickable** before any mouse interaction (addresses “won’t be seen” feedback).
-- [x] **R7** — Collapsed desktop mode: pill wraps icon only; expanded mode: icon + label.
+- [x] **R7** — Desktop rail: pill wraps stacked icon + label; mobile drawer: icon + label in a row.
 - [x] **R8** — Preserve existing behavior: click sends preset via `sendMessage({ text: message, files: [] })`.
 
 **Acceptance:** Nav items are scannable as buttons on first paint; hover still provides feedback.
@@ -86,7 +86,7 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 
 ### P4 — Section group label
 
-- [x] **R15** — Add a small label above the nav list (expanded sidebar + mobile drawer only; hidden when collapsed on desktop).
+- [x] **R15** — Add a small label above the nav list (mobile drawer only; omitted on the desktop rail).
   - Copy: **“Explore”** or **“Portfolio”** (pick one at implement time; prefer “Explore”).
 - [x] **R16** — Style: `text-xs font-medium uppercase tracking-wide text-muted-foreground` (or equivalent token).
 - [x] **R17** — Provides framing similar to Morphic’s “History” / Perplexity section headers.
@@ -133,12 +133,12 @@ Implement in order unless the user specifies a subset (e.g. “implement P1–P3
 
 ### P8 — Optional brand subtitle (lowest priority)
 
-- [x] **R27** — Under “Eric Nichols” (expanded + mobile only), optional one-line subtitle:
+- [x] **R27** — Under “Eric Nichols” (mobile drawer only), optional one-line subtitle:
   - Example: **“Ask about my work”**
 - [x] **R28** — `text-xs text-muted-foreground`, truncated on narrow widths.
 - [x] **R29** — **Skip by default** unless user requests P8 when saying “implement” — reinforces primary IA without adding clutter.
 
-**Acceptance:** Subtitle supports discoverability; hidden when sidebar collapsed.
+**Acceptance:** Subtitle supports discoverability; omitted on the desktop rail.
 
 ---
 
@@ -197,9 +197,9 @@ app/
 ## Acceptance criteria (full feature)
 
 - [ ] P1–P7 implemented (P8 only if requested)
-- [ ] Desktop collapsed/expanded and mobile drawer all consistent
+- [ ] Desktop rail (icon + stacked label) and mobile drawer all consistent
 - [ ] Active nav resets on clear chat
-- [ ] No regression: nav presets, collapse, mobile drawer, social links
+- [ ] No regression: nav presets, mobile drawer, social links
 - [ ] `pnpm typecheck` passes from `apps/portfolio-chat`
 - [ ] [03-sidebar-layout.md](./03-sidebar-layout.md) **R20** checked off; index Status updated
 

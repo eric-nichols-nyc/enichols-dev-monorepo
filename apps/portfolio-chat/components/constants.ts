@@ -8,8 +8,7 @@ import {
   User,
 } from "lucide-react";
 
-export const SIDEBAR_WIDTH_EXPANDED = "16rem";
-export const SIDEBAR_WIDTH_COLLAPSED = "4rem";
+export const SIDEBAR_WIDTH = "5.5rem";
 
 export const SIDEBAR_BRAND_SUBTITLE = "Ask about my work";
 

@@ -135,7 +135,9 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
     buildStreamTextOptions({ ...params, forcedTool })
   );
 
-  const uiStream = result.toUIMessageStream();
+  const uiStream = result.toUIMessageStream({
+    onError: () => "The chat assistant is temporarily unavailable. Please try again later.",
+  });
   const textIdAbout = "about-follow-up";
   const textIdProjects = "projects-follow-up";
   const textIdTechStack = "tech-stack-follow-up";
@@ -152,6 +154,11 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
       delta?: string;
       text?: string;
     };
+
+    if (c.type === "error") {
+      writer.write(chunk);
+      return;
+    }
 
     if (typeof c.text === "string") {
       assistantText += c.text;

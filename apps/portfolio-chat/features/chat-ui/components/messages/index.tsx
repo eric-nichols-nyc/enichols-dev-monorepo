@@ -119,16 +119,17 @@ export function Messages({
               );
             })
           )}
-          {typeof error === "object" &&
-            error !== null &&
-            "message" in error &&
-            typeof (error as { message: unknown }).message === "string" && (
-              <div className="rounded-md border border-destructive/50 bg-destructive/10 px-3 py-2 text-destructive text-sm">
-                {(error as { message: string }).message}
-              </div>
-            )}
+
         </div>
       </div>
+      {(error != null || status === "error") && (
+        <div className="mx-auto w-full max-w-[720px] px-4 pb-3" role="alert">
+          <div className="rounded-md border border-destructive/50 bg-destructive/10 px-3 py-2 text-destructive text-sm">
+            <p className="font-medium">The chat assistant couldn’t respond.</p>
+            <p>Please try again later. You can still explore the portfolio using the sidebar.</p>
+          </div>
+        </div>
+      )}
       {!isAtBottom && (
         <Button
           aria-label="Scroll to bottom"

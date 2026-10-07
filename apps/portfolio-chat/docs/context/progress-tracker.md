@@ -8,10 +8,14 @@
 
 ## Current Goal
 
-Project Publisher Stage 14 — error handling & safety polish ([implementation](../feature-specs/project-publisher/implementation.md#stage-14--error-handling--safety)).
+_(idle)_
 
 ## Completed
 
+- chat-error-alert — Visible accessible failure message above the input; sanitized stream errors, no suggestions after failures, clear error when resetting chat.
+
+- sidebar-icon-rail — Desktop sidebar is a fixed icon rail: expand toggle removed; nav labels sit under icons (`AppSidebarShell`)
+- theme-geist-oklch — Geist + Geist Mono via `next/font/google`; always-dark oklch tokens + `--signal` in `app/styles.css` (v0 theme overlay on design-system globals)
 - project-publisher-stage13 — File writers: `writeKnowledgeFile`, `updateProjectsFile`, duplicate ID guard, rollback on partial failure ([implementation](../feature-specs/project-publisher/implementation.md#stage-13--file-writers))
 - project-publisher-stage12 — Publish endpoint: `POST /api/admin/projects/publish`, local write guard, server-side re-validation, wired `use-publish-project` ([implementation](../feature-specs/project-publisher/implementation.md#stage-12--publish-endpoint))
 
@@ -100,6 +104,10 @@ Project Publisher Stage 14 — error handling & safety polish ([implementation](
 
 ## Session Notes
 
+- **2026-10-07:** Chat failure alert verified with 2 browser tests (HTTP and streamed failure, visibility, safe copy, recovery); all 99 unit tests passed. Typecheck blocked by missing `radix-ui` in the shared design system (out of scope). Production build failed on the same missing dependency and blocked Google Fonts fetches.
+
+- **2026-08-26:** Desktop sidebar is a fixed 5.5rem icon rail (no expand). Labels stack under icons; name/subtitle stay in the mobile drawer.
+- **2026-08-26:** Theme refresh — replaced Inter with Geist/Geist Mono; app-level always-dark oklch palette (gold `--primary` / `--signal`) overlays `@repo/design-system` globals. Sidebar utilities now use `--sidebar` / `--background`.
 - **2026-05-31:** Concise about intro — `selectAboutIntro()` variants by phrase cluster; sidebar “About” sends “Tell me about yourself”; stream path for all `candidate_overview`.
 - **2026-05-31:** Stage 5 dynamic suggestions — rule-based `generateSuggestions()` per intent; emits `data-related` at end of turn; strips static tool `related` when KA enabled.
 - **2026-05-31:** Knowledge Assistant Stage 0 specs: `00-implementation-stages` through `07-integration-cleanup`; merged `feature/ai-chat` into main; branch `feature/knowledge-assistant-phase0`.

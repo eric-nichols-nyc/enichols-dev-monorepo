@@ -25,7 +25,7 @@ As a visitor, I want streamed replies and portfolio sections embedded in the thr
 - [x] **R6** — Active turn min-height from scroll container (`use-chat-messages-scroll`, `ACTIVE_TURN_MIN_HEIGHT_OFFSET_PX`) so streaming content appears below a stable viewport
 - [x] **R7** — Thinking header on active assistant turn: shimmer while waiting, **Thought** pinned at top once content starts (not inline per tool)
 - [x] **R8** — Scroll-to-bottom affordance when not near bottom (`NEAR_BOTTOM_THRESHOLD`)
-- [x] **R9** — Display `error.message` when present (destructive banner)
+- [x] **R9** — Display an accessible, generic failure alert above the input when an error occurs; keep it visible outside the message scroll area and avoid exposing provider details
 
 ### Part rendering (`components/message.tsx`)
 

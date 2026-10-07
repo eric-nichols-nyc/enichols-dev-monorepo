@@ -75,6 +75,10 @@ export async function POST(request: Request) {
 
     const stream = createUIMessageStream({
       originalMessages: messages,
+      onError: (error) => {
+        console.error("[chat:api] stream error:", error);
+        return "The chat assistant is temporarily unavailable. Please try again later.";
+      },
       execute: async ({ writer }) => {
         if (!isKnowledgeAssistantEnabled()) {
           await runChatStream({

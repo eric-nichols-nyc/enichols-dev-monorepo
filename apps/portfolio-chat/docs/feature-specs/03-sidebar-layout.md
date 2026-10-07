@@ -4,7 +4,7 @@
 
 ## Goal
 
-Provide the app shell: collapsible desktop sidebar, mobile drawer, header social links, and main chat column—wired to chat actions (nav presets, clear session).
+Provide the app shell: desktop icon-rail sidebar, mobile drawer, header social links, and main chat column—wired to chat actions (nav presets, clear session).
 
 ## User story
 
@@ -20,9 +20,9 @@ As a visitor, I want quick section prompts from the sidebar and social links in 
 
 ### Desktop sidebar (`md:flex`)
 
-- [x] **R4** — Width toggles: `16rem` expanded / `4rem` collapsed (`SIDEBAR_WIDTH_*` in `constants.ts`)
-- [x] **R5** — Collapse control with `aria-expanded` and label "Expand/Collapse sidebar"
-- [x] **R6** — `transition-[width] duration-200` on sidebar
+- [x] **R4** — Fixed rail width `5.5rem` (`SIDEBAR_WIDTH` in `constants.ts`); no expand/collapse toggle
+- [x] **R5** — Nav items show icon with label text stacked below
+- [x] **R6** — Brand row is logo-only (name + subtitle remain in the mobile drawer)
 - [x] **R7** — Nav list from `NAV_ITEMS` — each item sends a preset via `sendMessage({ text: message, files: [] })`
 
 | id | Label | Preset message |
@@ -32,7 +32,6 @@ As a visitor, I want quick section prompts from the sidebar and social links in 
 | experience | Experience | "Show my work experience" |
 | tech | Tech | "Tech stack" |
 
-- [x] **R8** — Collapsed nav: icon only + `title` / `aria-label` for label text
 - [x] **R9** — `nav` with `aria-label="Navigation"`
 
 ### Mobile (`md:hidden`)
@@ -43,7 +42,7 @@ As a visitor, I want quick section prompts from the sidebar and social links in 
 
 ### Brand & clear chat
 
-- [x] **R13** — `SidebarBrand`: logo (`GreetingButton`) + name; click/keyboard triggers `onClear` → `clearMessages()`
+- [x] **R13** — `SidebarBrand`: logo (`GreetingButton`); desktop rail is logo-only; click/keyboard triggers `onClear` → `clearMessages()`
 - [x] **R14** — `aria-label="Clear chat and start fresh"`
 - [x] **R15** — Mobile drawer header uses `SidebarLogo` + "Eric Nichols" (clear via brand only on desktop sidebar)
 
@@ -81,7 +80,7 @@ app/page.tsx                       # Provider + layout mount
 
 ## Acceptance criteria
 
-- [x] Desktop collapse/expand works; nav sends correct presets
+- [x] Desktop rail shows icon + label stacked; nav sends correct presets
 - [x] Mobile menu opens/closes; nav closes drawer after click
 - [x] Brand control clears chat session
 - [x] Social links open correct external profiles

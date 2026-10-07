@@ -41,6 +41,8 @@ As a visitor, when I ask about Eric's work, the assistant declines off-topic req
 - [x] **R12** — Experience follow-up copy lives in tool result `copy` field (not server `streamCopy` injection)
 - [x] **R13** — `streamCopy` splits on words/spaces, ~20ms per token, emits `text-start` / `text-delta` / `text-end`
 
+- Stream failures send a generic error to the client and stop follow-up suggestions. Provider details remain server-side.
+
 ### Dev / test
 
 - [x] **R14** — `CHAT_MOCK_STREAM=true` bypasses LLM; after 3s streams `about.paragraphs` (for e2e/dev)

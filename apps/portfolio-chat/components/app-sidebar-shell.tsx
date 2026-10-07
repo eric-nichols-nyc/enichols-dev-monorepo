@@ -1,23 +1,27 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Menu, Plus } from "lucide-react";
 import Link from "next/link";
-import { cn } from "@repo/design-system/lib/utils";
 import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
+import { ChevronLeft, Menu, Plus, type LucideIcon } from "lucide-react";
+import { cn } from "@repo/design-system/lib/utils";
+import type { AdminNavLink } from "@/features/project-publisher/lib/get-admin-nav-link";
+import { GreetingButton } from "./greeting-button";
 import {
   NAV_ITEMS,
   type NavItemId,
-  SIDEBAR_WIDTH_COLLAPSED,
-  SIDEBAR_WIDTH_EXPANDED,
+  SIDEBAR_WIDTH,
   socialLinks,
 } from "./constants";
 import { SidebarBrand, SidebarBrandText } from "./sidebar-brand";
-import { GreetingButton } from "./greeting-button";
-import type { AdminNavLink } from "@/features/project-publisher/lib/get-admin-nav-link";
 
-const NAV_ITEM_BUTTON_BASE =
+type SidebarNavLayout = "rail" | "drawer";
+
+const NAV_ITEM_DRAWER_BASE =
   "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors";
+
+const NAV_ITEM_RAIL_BASE =
+  "flex w-full flex-col items-center gap-1 rounded-lg px-1 py-2 text-center transition-colors";
 
 const NAV_ITEM_INACTIVE_CLASS =
   "bg-muted/30 text-muted-foreground hover:bg-muted hover:text-foreground";
@@ -28,7 +32,7 @@ const NAV_SECTION_LABEL_CLASS =
   "mb-2 px-3 font-medium text-muted-foreground text-xs uppercase tracking-wide";
 
 const SIDEBAR_ASIDE_CLASS =
-  "bg-sidebar border-sidebar-r flex shrink-0 flex-col transition-[width] duration-200 ease-in-out";
+  "bg-sidebar border-sidebar-r flex shrink-0 flex-col";
 
 const SHELL_HEADER_CLASS =
   "flex h-[4.5rem] shrink-0 items-center border-border border-b px-3";
@@ -37,10 +41,35 @@ const SOCIAL_ICON_CLASS = "size-[1.125rem]";
 
 export type AppSidebarNavMode = "chat" | "link";
 
+function SidebarNavItemVisual({
+  icon: Icon,
+  label,
+  layout,
+}: {
+  icon: LucideIcon;
+  label: string;
+  layout: SidebarNavLayout;
+}) {
+  return (
+    <>
+      <Icon className="size-4 shrink-0" />
+      <span
+        className={
+          layout === "rail"
+            ? "w-full text-center text-[10px] leading-tight"
+            : "truncate"
+        }
+      >
+        {label}
+      </span>
+    </>
+  );
+}
+
 type SidebarNavListProps = {
   activeNavId?: NavItemId | null;
   activeAdminPath?: string | null;
-  collapsed?: boolean;
+  layout: SidebarNavLayout;
   navMode: AppSidebarNavMode;
   onExploreNavClick: (message: string) => void;
   adminNavLink?: AdminNavLink | null;
@@ -49,51 +78,52 @@ type SidebarNavListProps = {
 function SidebarNavList({
   activeNavId = null,
   activeAdminPath = null,
-  collapsed = false,
+  layout,
   navMode,
   onExploreNavClick,
   adminNavLink = null,
 }: SidebarNavListProps) {
   const isAdminLinkActive =
     adminNavLink !== null && activeAdminPath === adminNavLink.href;
+  const itemBaseClass =
+    layout === "rail" ? NAV_ITEM_RAIL_BASE : NAV_ITEM_DRAWER_BASE;
 
   return (
     <nav aria-label="Navigation" className="flex flex-1 flex-col overflow-y-auto p-2">
       <div className="flex-1">
-        {!collapsed ? (
+        {layout === "drawer" ? (
           <p className={NAV_SECTION_LABEL_CLASS}>Explore</p>
         ) : null}
         <ul className="flex flex-col gap-1">
-          {NAV_ITEMS.map(({ id, label, icon: Icon, message }) => {
+          {NAV_ITEMS.map(({ id, label, icon, message }) => {
             const isActive = navMode === "chat" && activeNavId === id;
             const itemClassName = cn(
-              NAV_ITEM_BUTTON_BASE,
+              itemBaseClass,
               isActive ? NAV_ITEM_ACTIVE_CLASS : NAV_ITEM_INACTIVE_CLASS
             );
 
             return (
               <li key={id}>
                 {navMode === "link" ? (
-                  <Link
-                    aria-label={collapsed ? label : undefined}
-                    className={itemClassName}
-                    href="/"
-                    title={collapsed ? label : undefined}
-                  >
-                    <Icon className="size-4 shrink-0" />
-                    {!collapsed ? <span className="truncate">{label}</span> : null}
+                  <Link className={itemClassName} href="/">
+                    <SidebarNavItemVisual
+                      icon={icon}
+                      label={label}
+                      layout={layout}
+                    />
                   </Link>
                 ) : (
                   <button
                     aria-current={isActive ? "page" : undefined}
-                    aria-label={collapsed ? label : undefined}
                     className={itemClassName}
                     onClick={() => onExploreNavClick(message)}
-                    title={collapsed ? label : undefined}
                     type="button"
                   >
-                    <Icon className="size-4 shrink-0" />
-                    {!collapsed ? <span className="truncate">{label}</span> : null}
+                    <SidebarNavItemVisual
+                      icon={icon}
+                      label={label}
+                      layout={layout}
+                    />
                   </button>
                 )}
               </li>
@@ -104,27 +134,26 @@ function SidebarNavList({
 
       {adminNavLink ? (
         <div className="border-border mt-2 border-t pt-2">
-          {!collapsed ? (
+          {layout === "drawer" ? (
             <p className={NAV_SECTION_LABEL_CLASS}>Admin</p>
           ) : null}
           <ul className="flex flex-col gap-1">
             <li>
               <Link
                 aria-current={isAdminLinkActive ? "page" : undefined}
-                aria-label={collapsed ? adminNavLink.label : undefined}
                 className={cn(
-                  NAV_ITEM_BUTTON_BASE,
+                  itemBaseClass,
                   isAdminLinkActive
                     ? NAV_ITEM_ACTIVE_CLASS
                     : NAV_ITEM_INACTIVE_CLASS
                 )}
                 href={adminNavLink.href}
-                title={collapsed ? adminNavLink.label : undefined}
               >
-                <Plus className="size-4 shrink-0" />
-                {!collapsed ? (
-                  <span className="truncate">{adminNavLink.label}</span>
-                ) : null}
+                <SidebarNavItemVisual
+                  icon={Plus}
+                  label={adminNavLink.label}
+                  layout={layout}
+                />
               </Link>
             </li>
           </ul>
@@ -153,13 +182,7 @@ export function AppSidebarShell({
   onBrandClick,
   onExploreNavClick,
 }: AppSidebarShellProps) {
-  const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  const toggle = useCallback(() => setCollapsed((current) => !current), []);
-  const sidebarWidth = collapsed
-    ? SIDEBAR_WIDTH_COLLAPSED
-    : SIDEBAR_WIDTH_EXPANDED;
 
   const handleExploreNavClick = useCallback(
     (message: string) => {
@@ -172,54 +195,32 @@ export function AppSidebarShell({
   const sidebarHeaderBrand =
     navMode === "link" ? (
       <Link
-        className="flex min-w-0 flex-1 items-center gap-2"
+        aria-label="Eric Nichols — home"
+        className="flex items-center justify-center"
         href="/"
         onClick={() => setMobileOpen(false)}
       >
         <GreetingButton as="div" className="h-8 w-8 shrink-0" />
-        {!collapsed ? <SidebarBrandText name="Eric Nichols" /> : null}
       </Link>
     ) : (
-      <SidebarBrand
-        collapsed={collapsed}
-        name="Eric Nichols"
-        onClear={onBrandClick}
-      />
+      <SidebarBrand name="Eric Nichols" onClear={onBrandClick} showText={false} />
     );
 
   return (
     <div className="flex h-dvh">
       <aside
         className={cn(SIDEBAR_ASIDE_CLASS, "hidden md:flex")}
-        style={{ width: sidebarWidth }}
+        style={{ width: SIDEBAR_WIDTH }}
       >
         <div className="flex h-full flex-col overflow-hidden">
-          <div
-            className={cn(
-              SHELL_HEADER_CLASS,
-              collapsed ? "flex-col justify-center gap-2" : "justify-between gap-2"
-            )}
-          >
+          <div className={cn(SHELL_HEADER_CLASS, "justify-center")}>
             {sidebarHeaderBrand}
-            <button
-              aria-expanded={!collapsed}
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-              className="shrink-0 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              onClick={toggle}
-              type="button"
-            >
-              {collapsed ? (
-                <ChevronRight className="size-4" />
-              ) : (
-                <ChevronLeft className="size-4" />
-              )}
-            </button>
           </div>
 
           <SidebarNavList
             activeAdminPath={activeAdminPath}
             activeNavId={activeNavId}
-            collapsed={collapsed}
+            layout="rail"
             navMode={navMode}
             adminNavLink={adminNavLink}
             onExploreNavClick={handleExploreNavClick}
@@ -267,6 +268,7 @@ export function AppSidebarShell({
             activeAdminPath={activeAdminPath}
             activeNavId={activeNavId}
             adminNavLink={adminNavLink}
+            layout="drawer"
             navMode={navMode}
             onExploreNavClick={handleExploreNavClick}
           />

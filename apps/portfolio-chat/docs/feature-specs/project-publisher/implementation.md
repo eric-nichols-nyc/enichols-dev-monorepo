@@ -136,7 +136,7 @@ Admin page exists and can collect input (only reachable after unlock).
 - [x] Server-detect admin session via httpOnly cookie (`isAdminSessionActive()`)
 - [x] Pass `showAdminNav` from `app/page.tsx` into `CollapsibleSidebarLayout`
 - [x] When authenticated, show pinned **Admin** section at bottom of sidebar (desktop + mobile)
-- [x] Link **New project** → `/admin/projects/new` (icon-only when sidebar collapsed)
+- [x] Link **New project** → `/admin/projects/new` (stacked icon + label on desktop rail)
 - [x] Hidden when `ADMIN_SECRET` unset or cookie invalid
 - [x] Shared sidebar shell for admin routes via `app/admin/layout.tsx` (`AppSidebarShell` + `AdminSidebarLayout`)
 - [x] Explore nav links home from admin pages; **New project** highlights on `/admin/projects/new`
