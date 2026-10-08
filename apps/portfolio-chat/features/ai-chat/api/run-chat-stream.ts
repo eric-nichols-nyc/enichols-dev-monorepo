@@ -2,6 +2,7 @@ import type { UIMessage } from "@repo/ai";
 import { stepCountIs, streamText } from "@repo/ai";
 import { models } from "@repo/ai/lib/models";
 import projects from "@/data/projects";
+import { getProjectsDisplayOutput } from "@/features/ai-chat/utils/get-projects-display-output";
 import {
   createAboutStreamModeState,
   getAboutStreamModeDecision,
@@ -37,6 +38,9 @@ type StreamWriter = {
     delta?: string;
     data?: unknown;
     output?: unknown;
+    input?: unknown;
+    toolCallId?: string;
+    toolName?: string;
   }) => void;
 };
 
@@ -115,6 +119,38 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
     useLegacyAboutStream,
     dynamicSuggestionsEnabled = false,
   } = params;
+  if (routing.intent === "show_projects") {
+    const toolCallId = crypto.randomUUID();
+    const output = getProjectsDisplayOutput();
+    writer.write({ type: "start" });
+    writer.write({
+      type: "tool-input-available",
+      toolCallId,
+      toolName: "show_projects",
+      input: {},
+    });
+    writer.write({
+      type: "tool-output-available",
+      toolCallId,
+      output: stripStaticRelated(output),
+    });
+    writer.write({
+      type: "data-related",
+      id: "projects-related",
+      data: {
+        suggestions: dynamicSuggestionsEnabled
+          ? generateSuggestions({
+              routingResult: routing,
+              loadedContext: knowledgeContext,
+              toolName: "show_projects",
+            })
+          : output.related,
+      },
+    });
+    writer.write({ type: "finish" });
+    return;
+  }
+
   const aboutIntro = useLegacyAboutStream
     ? selectAboutIntro(userText || routing.originalMessage)
     : null;

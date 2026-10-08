@@ -41,6 +41,18 @@ describe("routeIntent", () => {
     });
   });
 
+  it.each(["Show projects", "Show me some projects", "Show me your projects", "  SHOW   PROJECTS!  "])(
+    "routes the project navigation and chat action %s to the same display",
+    (message) => {
+      expect(routeIntent(message)).toMatchObject({
+        intent: "show_projects",
+        responseType: "static_display",
+        tool: "show_projects",
+        knowledgePaths: [],
+      });
+    }
+  );
+
   it("routes candidate overview separately from experience display", () => {
     expect(routeIntent("Tell me about yourself")).toMatchObject({
       intent: "candidate_overview",
@@ -55,36 +67,36 @@ describe("routeIntent", () => {
   });
 
   it("routes named project intents with section slices", () => {
-    const overview = routeIntent("Tell me about AudioGraph");
+    const overview = routeIntent("Tell me about CodeDrill");
     expect(overview).toMatchObject({
       intent: "project_overview",
-      entities: { projectSlug: "audiograph" },
-      knowledgePaths: ["projects/audiograph.md"],
+      entities: { projectSlug: "codedrill" },
+      knowledgePaths: ["projects/codedrill.md"],
     });
-    expect(overview.sectionSlices["projects/audiograph.md"]).toEqual([
+    expect(overview.sectionSlices["projects/codedrill.md"]).toEqual([
       "Overview",
       "Problem",
       "Solution",
       "Links",
     ]);
 
-    const architecture = routeIntent("How does AudioGraph collect data?");
+    const architecture = routeIntent("How does CodeDrill collect data?");
     expect(architecture).toMatchObject({
       intent: "project_architecture",
-      entities: { projectSlug: "audiograph" },
+      entities: { projectSlug: "codedrill" },
     });
-    expect(architecture.sectionSlices["projects/audiograph.md"]).toEqual([
+    expect(architecture.sectionSlices["projects/codedrill.md"]).toEqual([
       "Overview",
       "Architecture",
       "Tech Stack",
     ]);
 
-    const challenges = routeIntent("What was the hardest part of AudioGraph?");
+    const challenges = routeIntent("What was the hardest part of CodeDrill?");
     expect(challenges).toMatchObject({
       intent: "project_challenges",
-      entities: { projectSlug: "audiograph" },
+      entities: { projectSlug: "codedrill" },
     });
-    expect(challenges.sectionSlices["projects/audiograph.md"]).toEqual([
+    expect(challenges.sectionSlices["projects/codedrill.md"]).toEqual([
       "Overview",
       "Challenges",
       "Lessons Learned",
@@ -118,9 +130,9 @@ describe("routeIntent", () => {
   });
 
   it("prefers project intent over ai experience when a project is named", () => {
-    expect(routeIntent("Tell me about the AI work on AI-TaskWizard")).toMatchObject({
+    expect(routeIntent("Tell me about the AI work on CodeDrill")).toMatchObject({
       intent: "project_overview",
-      entities: { projectSlug: "ai-taskwizard" },
+      entities: { projectSlug: "codedrill" },
     });
   });
 });

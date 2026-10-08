@@ -1,6 +1,6 @@
 import { tool } from "@repo/ai";
 import { z } from "zod";
-import projects from "@/data/projects";
+import { getProjectsDisplayOutput } from "@/features/ai-chat/utils/get-projects-display-output";
 
 export const showProjectsTool = tool({
   description: "Display portfolio projects",
@@ -8,14 +8,6 @@ export const showProjectsTool = tool({
   inputSchema: z.object({}) as any,
   execute: async () => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
-    return {
-      projectCount: projects.length,
-      projects,
-      related: [
-        "Tell me about a specific project",
-        "What technologies do you use?",
-        "Show me your experience",
-      ],
-    };
+    return getProjectsDisplayOutput();
   },
 });

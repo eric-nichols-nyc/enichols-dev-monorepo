@@ -43,7 +43,7 @@ const projectsUnsorted: Project[] = [
       "Artist analytics platform with automated data collection.",
     date: "2023-06-10",
     url: "https://audiograph.vercel.app/",
-    published: true,
+    published: false,
     image: "/images/audiograph.png",
     gallery: [],
     subtitle: "Artist Analytics Platform",
@@ -95,7 +95,7 @@ const projectsUnsorted: Project[] = [
       "Microfrontend productivity suite with shared design system.",
     date: "2023-07-22",
     url: "https://ai-taskwizard-host.vercel.app/",
-    published: true,
+    published: false,
     image: "/images/taskwizard.png",
     gallery: [],
     subtitle: "Microfrontend Productivity Suite",
@@ -196,7 +196,7 @@ const projectsUnsorted: Project[] = [
       "GitHub-aware dashboard for exploring repos and codebase context.",
     date: "2026-05-03",
     url: "https://github-codebase-copilot-app.vercel.app/",
-    published: true,
+    published: false,
     image: "/images/github-codebase-copilot.png",
     gallery: [],
     subtitle: "GitHub Repository & Codebase Explorer",
@@ -285,6 +285,6 @@ const projectsUnsorted: Project[] = [
   }
 ];
 
-const projects = [...projectsUnsorted].sort((a, b) => a.position - b.position);
+const projects = [...projectsUnsorted].filter((project) => project.published).sort((a, b) => a.position - b.position);
 
 export default projects;

@@ -213,7 +213,7 @@ Apply to every user message before matching:
 
 | Intent | Match when message contains (any) |
 |--------|-----------------------------------|
-| `show_projects` | `show me your projects`, `show me some projects`, `show your projects`, `list your projects`, `what projects` |
+| `show_projects` | `show projects`, `show me your projects`, `show me some projects`, `show your projects`, `list your projects`, `what projects` |
 | `show_tech_stack` | `tech stack`, `show me your tech stack`, `what's your tech stack`, `what technologies do you use` |
 | `show_experience` | `show my work experience`, `show me your experience`, `work experience`, `career timeline` |
 

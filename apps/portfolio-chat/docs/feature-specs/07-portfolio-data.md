@@ -33,6 +33,8 @@ As Eric, I update facts in one place so chat tools and components stay aligned; 
 - [x] **R6** — `about` social links in tool (`lib/ai/tools/about.ts`) should match `socialLinks` in `components/constants.ts` when profiles change
 - [x] **R7** — `lib/project-preview-sentence.ts` derives card blurbs from `project.description`
 
+Current published portfolio: **Trellix** and **CodeDrill**. Other entries are unpublished and excluded from cards, project routing, and suggestions.
+
 ### Editorial workflow (manual today)
 
 1. Edit `data/resume.ts` for employment facts and highlights

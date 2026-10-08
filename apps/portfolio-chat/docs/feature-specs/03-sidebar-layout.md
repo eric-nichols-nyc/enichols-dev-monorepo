@@ -32,6 +32,8 @@ As a visitor, I want quick section prompts from the sidebar and social links in 
 | experience | Experience | "Show my work experience" |
 | tech | Tech | "Tech stack" |
 
+- [x] **R8** — Projects uses the same direct project-list response as the chat suggestion, including clickable detail cards and external links; API billing failures do not block this local content.
+
 - [x] **R9** — `nav` with `aria-label="Navigation"`
 
 ### Mobile (`md:hidden`)

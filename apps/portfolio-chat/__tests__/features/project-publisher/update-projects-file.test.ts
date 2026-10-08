@@ -42,7 +42,7 @@ describe("insertProjectIntoProjectsFile", () => {
 
     expect(updated).toContain('id: "insert-test-project"');
     expect(updated).toContain(
-      "const projects = [...projectsUnsorted].sort((a, b) => a.position - b.position);"
+      "const projects = [...projectsUnsorted].filter((project) => project.published).sort((a, b) => a.position - b.position);"
     );
     expect(updated).toContain("export default projects;");
   });

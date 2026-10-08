@@ -21,7 +21,7 @@ As a visitor, when I ask about Eric's work, the assistant declines off-topic req
 
 ### Model & steps
 
-- [x] **R5** — `streamText` with `models.chat` from `@repo/ai`
+- [x] **R5** — AI responses use `streamText` with `models.chat` from `@repo/ai`; project-list display bypasses the model
 - [x] **R6** — `stopWhen: stepCountIs(1)` — single model step; server injects extra text after tools
 - [x] **R7** — System prompt in `lib/ai/prompts/portfolio-assistant.ts` (decline off-topic; tool routing rules)
 - [x] **R8** — Incoming UI messages converted to simple `{ role, content }` from text parts only (tool parts omitted from model history)
@@ -36,10 +36,12 @@ As a visitor, when I ask about Eric's work, the assistant declines off-topic req
 | `show_tech_stack` | none | `technologies`, `tech`, `related` | `tool-show_tech_stack` / `tool-showTechStack` |
 
 - [x] **R9** — **About text mode** (`aboutRenderMode: "text"` in route): on first `show_about` tool chunk, suppress tool UI stream and inject word-streamed `aboutCopy` + `data-related` with `aboutRelated` suggestions (`lib/ai/about-stream-mode.ts`)
-- [x] **R10** — After `tool-output-available` with `projects` key → stream `projectsFollowUp` (sample titles from first 3 projects)
+- [x] **R10** — Model-driven project tool results in the legacy path may stream `projectsFollowUp`; direct project-list display emits cards + related suggestions without extra narration
 - [x] **R11** — After `tool-output-available` with `technologies` key → stream `techStackFollowUp`
 - [x] **R12** — Experience follow-up copy lives in tool result `copy` field (not server `streamCopy` injection)
 - [x] **R13** — `streamCopy` splits on words/spaces, ~20ms per token, emits `text-start` / `text-delta` / `text-end`
+
+- **Project list display:** `show_projects` requests (including sidebar “Show projects” and chat “Show me some projects”) emit the existing project tool payload directly from local data, without an LLM request. Cards, links, detail expansion, and related suggestions retain the existing UI behavior. Other intents keep the AI path.
 
 - Stream failures send a generic error to the client and stop follow-up suggestions. Provider details remain server-side.
 

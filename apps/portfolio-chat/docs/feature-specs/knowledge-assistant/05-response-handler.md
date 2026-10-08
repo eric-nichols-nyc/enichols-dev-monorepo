@@ -32,6 +32,8 @@ As a visitor, when I ask “Tell me about AudioGraph” or “Show me your proje
 
 ### Response type: `static_display`
 
+**Current project-list behavior:** `show_projects` uses option B below: emit the shared local project tool payload directly, then related suggestions. Sidebar and chat display requests share this path and never call OpenAI. Other display intents retain their existing handler.
+
 - [ ] **RH7** — Force execution of mapped tool (`show_projects`, `show_experience`, `show_tech_stack`) without relying on model tool choice
 - [ ] **RH8** — Implementation options (pick one, document in tracker):
   - **A:** `streamText` with `toolChoice: { type: 'tool', toolName }` if supported by `@repo/ai`

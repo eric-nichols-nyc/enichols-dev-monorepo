@@ -18,6 +18,7 @@ const PROJECT_ALIASES: Record<string, string> = {
 };
 
 const DISPLAY_PROJECT_PHRASES = [
+  "show projects",
   "show me your projects",
   "show me some projects",
   "show your projects",

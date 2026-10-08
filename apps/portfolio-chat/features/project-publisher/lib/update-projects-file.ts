@@ -12,7 +12,7 @@ import {
 import { serializeProjectObject } from "@/features/project-publisher/lib/serialize-project-object";
 
 const PROJECTS_ARRAY_FOOTER =
-  "\n];\n\nconst projects = [...projectsUnsorted].sort((a, b) => a.position - b.position);\n\nexport default projects;\n";
+  "\n];\n\nconst projects = [...projectsUnsorted].filter((project) => project.published).sort((a, b) => a.position - b.position);\n\nexport default projects;\n";
 
 export async function assertProjectIdAvailable(
   projectId: string

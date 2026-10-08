@@ -37,19 +37,19 @@ describe("generateSuggestions", () => {
       suggestions.some(
         (suggestion) =>
           suggestion.includes("Trellix") ||
-          suggestion.includes("GitHub Codebase Copilot")
+          suggestion.includes("CodeDrill")
       )
     ).toBe(true);
     expect(suggestions).not.toContain("Tell me about a specific project");
   });
 
   it("suggests architecture and challenges after project overview", async () => {
-    const suggestions = await suggestionsFor("Tell me about AudioGraph");
+    const suggestions = await suggestionsFor("Tell me about CodeDrill");
 
     expect(suggestions).toEqual(
       expect.arrayContaining([
-        "How does AudioGraph collect data?",
-        "What was the hardest part of AudioGraph?",
+        "How does CodeDrill collect data?",
+        "What was the hardest part of CodeDrill?",
         "Show me your other projects",
       ])
     );
@@ -57,22 +57,22 @@ describe("generateSuggestions", () => {
 
   it("suggests architecture follow-ups after project architecture intent", async () => {
     const suggestions = await suggestionsFor(
-      "How does AudioGraph collect data?"
+      "How does CodeDrill collect data?"
     );
 
-    expect(suggestions.some((s) => s.includes("hardest part of AudioGraph"))).toBe(
+    expect(suggestions.some((s) => s.includes("hardest part of CodeDrill"))).toBe(
       true
     );
-    expect(suggestions.some((s) => s.includes("What is AudioGraph"))).toBe(true);
+    expect(suggestions.some((s) => s.includes("What is CodeDrill"))).toBe(true);
   });
 
   it("suggests architecture after project challenges intent", async () => {
     const suggestions = await suggestionsFor(
-      "What was the hardest part of AudioGraph?"
+      "What was the hardest part of CodeDrill?"
     );
 
     expect(suggestions.some((s) => s.includes("collect data"))).toBe(true);
-    expect(suggestions.some((s) => s.includes("What is AudioGraph"))).toBe(true);
+    expect(suggestions.some((s) => s.includes("What is CodeDrill"))).toBe(true);
   });
 
   it("suggests tech usage after show_tech_stack", async () => {

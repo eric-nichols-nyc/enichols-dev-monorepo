@@ -6,18 +6,18 @@ Eric chooses stack pragmatically: React/TypeScript for UI consistency, Next.js f
 
 ## Frontend
 
-- **React** — Expert; primary UI library across client work, IBM internal platforms, agency SPAs, and portfolio apps (e.g. AudioGraph, Trellix).
-- **Next.js** — Expert; App Router, server components, API routes; used in portfolio projects including GitHub Codebase Copilot and this portfolio chat app.
+- **React** — Expert; primary UI library across client work, IBM internal platforms, agency SPAs, and portfolio apps (e.g. Trellix, CodeDrill).
+- **Next.js** — Expert; App Router, server components, API routes; used in portfolio projects including CodeDrill and this portfolio chat app.
 - **TypeScript** — Expert; default for typed components, API handlers, and shared monorepo packages.
 - **JavaScript / HTML / CSS** — Expert; long-running production experience predating TypeScript adoption.
 - **Tailwind CSS** — Expert; utility-first styling on VoteMate, portfolio apps, and recent client work.
-- **Microfrontend architecture** — Production experience structuring large front-end surfaces (see AI-TaskWizard portfolio project).
+- **Microfrontend architecture** — Production experience structuring large front-end surfaces across professional projects.
 
 ## Backend & APIs
 
 - **Node.js** — Expert; REST APIs, serverless handlers, and full-stack Next.js routes.
 - **Express** — Expert; API layer patterns for Node services.
-- **REST API integration** — Expert; third-party and internal service integration across roles and portfolio work (e.g. AudioGraph analytics APIs).
+- **REST API integration** — Expert; third-party and internal service integration across roles and portfolio work (e.g. Trellix’s REST API).
 
 ## Data & Storage
 
@@ -43,7 +43,7 @@ Eric chooses stack pragmatically: React/TypeScript for UI consistency, Next.js f
 - **Vercel AI SDK** — Expert; streaming chat, tool definitions, UI message streams (portfolio chat assistant).
 - **LangChain** — Expert; chaining and integration patterns for AI features.
 - **MCP** — Intermediate; Model Context Protocol integrations in tooling experiments.
-- **Prompt engineering & AI-first architecture** — Core strength; VoteMate chatbot, portfolio AI assistants, AI-TaskWizard microfrontend patterns.
+- **Prompt engineering & AI-first architecture** — Core strength; VoteMate chatbot, portfolio AI assistants, CodeDrill AI tutoring.
 
 ## Design & DX
 

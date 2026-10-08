@@ -45,6 +45,8 @@ app/api/chat/route.ts → features/ai-chat/api/post-chat.ts
 
 - **POST `/api/chat`** — body `{ messages }` (UIMessage[]); returns UI message stream compatible with `useChat`.
 
+Project-list intents emit the existing `show_projects` tool stream directly from local portfolio data. Sidebar and chat project-list actions share this path; no OpenAI request is needed to browse cards or open their details. Other intents retain the model stream.
+
 ### Tools (registered in route)
 
 | Tool | UI part type (typical) | Data |

@@ -12,6 +12,10 @@ _(idle)_
 
 ## Completed
 
+- portfolio-projects — Only Trellix and CodeDrill are published; cards, chat routing, and suggestions use the filtered project list. Other project content remains archived.
+
+- projects-navigation — Sidebar and chat project-list requests share local tool output, preserving card expansion, links, and suggestions without OpenAI credits.
+
 - chat-error-alert — Visible accessible failure message above the input; sanitized stream errors, no suggestions after failures, clear error when resetting chat.
 
 - sidebar-icon-rail — Desktop sidebar is a fixed icon rail: expand toggle removed; nav labels sit under icons (`AppSidebarShell`)
@@ -103,6 +107,10 @@ _(idle)_
 | 2026-05-30 | Repo root `AGENTS.md` points here | Portfolio Chat primary entry for this repo |
 
 ## Session Notes
+
+- **2026-10-07:** Portfolio limited to Trellix and CodeDrill; unpublished projects preserved. Updated publisher footer handling for the filtered export and chat tests for current projects. All 106 unit tests passed; typecheck remains blocked by the shared design system’s missing `radix-ui` dependency.
+
+- **2026-10-07:** `codex/projects-navigation`: fixed missing “Show projects” intent; direct project display uses a shared payload with the model tool (response-handler option B for project lists). 106 unit tests and 6 browser checks passed (4 navigation/card/detail/mobile cases + 2 error-alert regression cases). Typecheck remains blocked only by missing `radix-ui` in the shared design system.
 
 - **2026-10-07:** Chat failure alert verified with 2 browser tests (HTTP and streamed failure, visibility, safe copy, recovery); all 99 unit tests passed. Typecheck blocked by missing `radix-ui` in the shared design system (out of scope). Production build failed on the same missing dependency and blocked Google Fonts fetches.
 
