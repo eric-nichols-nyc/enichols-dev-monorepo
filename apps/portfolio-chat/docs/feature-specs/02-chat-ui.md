@@ -4,7 +4,7 @@
 
 ## Goal
 
-Present the chat column: empty greeting, turn-grouped messages, streaming loaders, per-part rendering (text, tools, related suggestions), scroll UX, and input—all driven by `usePortfolioChat`.
+Present the chat column: persistent welcome, turn-grouped messages, streaming loaders, per-part rendering (text, tools, related suggestions), scroll UX, and input—all driven by `usePortfolioChat`.
 
 ## User story
 
@@ -16,15 +16,15 @@ As a visitor, I want streamed replies and portfolio sections embedded in the thr
 
 - [x] **R1** — `PortfolioChatProvider` (`contexts/chat-context.tsx`) exposes `messages`, `sendMessage`, `clearMessages`, `status`, `error`
 - [x] **R2** — Transport: `DefaultChatTransport({ api: "/api/chat" })`
-- [x] **R3** — `Chat` composes `Messages`, `Suggestions`, `PromptInput`, artifact state (see 05-artifacts)
+- [x] **R3** — `Chat` composes `Messages` (including welcome suggestions), `PromptInput`, and artifact state (see 05-artifacts)
 
 ### Message list (`components/messages/`)
 
-- [x] **R4** — Empty state: `ConversationEmptyState` + `Greeting`
+- [x] **R4** — `WelcomeMessage` combines the aligned `Greeting` and `Suggestions` cards as the first visual item in the main message scroll area. It stays above later turns and is excluded from AI history; focused details do not duplicate the main chat. See [12-chat-welcome-transition](./12-chat-welcome-transition.md) and [13-project-detail-overlay](./13-project-detail-overlay.md).
 - [x] **R5** — Messages grouped into **turns** (user message + following assistant messages until next user) via `groupMessagesByUserTurn`
 - [x] **R6** — Active turn min-height from scroll container (`use-chat-messages-scroll`, `ACTIVE_TURN_MIN_HEIGHT_OFFSET_PX`) so streaming content appears below a stable viewport
 - [x] **R7** — Thinking header on active assistant turn: shimmer while waiting, **Thought** pinned at top once content starts (not inline per tool)
-- [x] **R8** — Scroll-to-bottom affordance when not near bottom (`NEAR_BOTTOM_THRESHOLD`)
+- [x] **R8** — Scroll-to-bottom affordance when messages exist and the viewport is not near bottom (`NEAR_BOTTOM_THRESHOLD`); hide it during the turn transition. New user turns align once, while streaming growth only updates the affordance; see spec 12.
 - [x] **R9** — Display an accessible, generic failure alert above the input when an error occurs; keep it visible outside the message scroll area and avoid exposing provider details
 
 ### Part rendering (`components/message.tsx`)
@@ -56,8 +56,9 @@ As a visitor, I want streamed replies and portfolio sections embedded in the thr
 
 ### Suggestions & input
 
-- [x] **R16** — `Suggestions` pills trigger `sendMessage` with preset strings
+- [x] **R16** — `Suggestions` prompt cards trigger `sendMessage` with existing preset strings; see [11-suggestion-prompt-cards](./11-suggestion-prompt-cards.md)
 - [x] **R17** — `PromptInput` from design-system ai-elements; local text state in `Chat`
+- [x] **R20** — Main chat has an always-visible, dark icon-only reset button with a white foreground at its top right on desktop and mobile, with accessible name and hover title “Reset chat”. The action row blends into the chat without its own surface or bottom divider. It uses `clearMessages()` to stop/clear the session, clears the local draft, and closes any selected artifact. Embedded chat does not duplicate this global action.
 
 ### Not yet implemented
 
@@ -75,10 +76,10 @@ As a visitor, I want streamed replies and portfolio sections embedded in the thr
 
 ```
 Chat
-├── Messages (scroll, turns, ChatMessage)
-├── Suggestions
+├── Reset chat (main chat only; fixed above message scroll)
+├── Messages (scroll, persistent WelcomeMessage, turns, ChatMessage)
 ├── PromptInput
-└── Artifact slot (05-artifacts)
+└── DetailOverlay (05-artifacts / 13-project-detail-overlay; independent project Q&A)
 
 ChatMessage
 └── MessagePartRenderer (per part)
@@ -95,6 +96,7 @@ ChatMessage
 - [x] Text and all four tool types render without hydration errors
 - [x] Turn min-height behavior preserved during streaming (see reference message-layout)
 - [x] Related suggestions clickable and send new messages
+- [x] Top-right reset verified with keyboard, a populated conversation/draft, and an active request on mobile (2026-10-16). Typecheck/build retain the existing shared Label `radix-ui` dependency blocker.
 - [ ] R18–R19 when scheduled in tracker
 
 ## Implementation prompt

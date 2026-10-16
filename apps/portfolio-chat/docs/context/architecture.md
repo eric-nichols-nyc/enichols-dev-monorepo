@@ -21,7 +21,8 @@ Browser
         ├── CollapsibleSidebarLayout
         │     ├── Sidebar (nav → sendMessage presets)
         │     └── Chat → Messages → MessagePartRenderer
-        └── Artifact panel (projects / experience detail)
+        └── DetailOverlay (fullscreen project / experience details)
+              └── ProjectQuestions (independent useChat → POST /api/chat + projectId)
 
 app/api/chat/route.ts → features/ai-chat/api/post-chat.ts
   ├── features/ai-chat/tools/ (portfolio tools)
@@ -45,6 +46,8 @@ app/api/chat/route.ts → features/ai-chat/api/post-chat.ts
 
 - **POST `/api/chat`** — body `{ messages }` (UIMessage[]); returns UI message stream compatible with `useChat`.
 
+The focused project Q&A uses the same endpoint with `projectId`. The server resolves a published project, validates bounded user/assistant text history, and loads only its full knowledge plus published facts. Project questions always use grounded text answers without portfolio display tools; pronouns and follow-up questions stay bound to the selected project. This independent in-memory session is aborted/discarded on detail-view close and does not mutate the main provider.
+
 Project-list intents emit the existing `show_projects` tool stream directly from local portfolio data. Sidebar and chat project-list actions share this path; no OpenAI request is needed to browse cards or open their details. Other intents retain the model stream.
 
 When `AI_FOLLOW_UP_QUESTIONS_ENABLED=true` and the Knowledge Assistant is enabled, successful eligible responses get one supplementary structured call using bounded public evidence and recent chat. Questions are validated before one `data-related` part is emitted ahead of stream finish. The call has a three-second deadline, no retries, and template fallback. Request abort signals reach both calls; reset/new sends stop the old transport. The feature defaults off and never adds model calls to project-list browsing.
@@ -61,6 +64,9 @@ When `AI_FOLLOW_UP_QUESTIONS_ENABLED=true` and the Knowledge Assistant is enable
 ## Invariants
 
 - Chat state is client-only (no DB); clearing chat = `setMessages([])`.
+- The main chat's persistent `WelcomeMessage` is UI only, preceding real turns without entering `messages` or model context. Detail views do not duplicate the main chat or welcome.
+- The fullscreen detail Dialog has stable viewport dimensions, immediately renders local details, and owns its content scroll. The main chat stays mounted beneath it; focus restoration uses `preventScroll`. There is no loading timer or bounding-box expansion.
+- The message viewport owns scrolling. New user-turn keys trigger placement once; streamed chunks only update content and near-bottom detection. The interruptible visual bridge lives in `features/chat-ui/lib/turn-transition.ts`.
 - Tool part types must stay in sync with `components/message.tsx` handlers.
 - Do not import server-only code into client components without `"use client"` / boundary discipline.
 - Content changes go through `data/*`; prompts in the route should reflect current tool names.

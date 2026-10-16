@@ -15,6 +15,7 @@ import { extractLatestUserText } from "@/features/ai-chat/utils/extract-latest-u
 import { routeIntent } from "@/features/ai-chat/utils/intent-router";
 import { loadKnowledgeContext } from "@/features/ai-chat/utils/load-knowledge-context";
 import { shouldUseAboutStreamLegacy } from "@/features/ai-chat/utils/should-use-about-stream-legacy";
+import { getPublishedProject, parseProjectMessages, projectRouting, withProjectFacts } from "@/features/project-details/lib/project-context";
 
 const isMockStreamEnabled = process.env.CHAT_MOCK_STREAM === "true";
 
@@ -24,8 +25,16 @@ function isKnowledgeAssistantEnabled(): boolean {
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as { messages?: UIMessage[] };
-    const { messages } = body;
+    const body = (await request.json()) as { messages?: UIMessage[]; projectId?: unknown };
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return Response.json({ error: "Invalid chat request" }, { status: 400 });
+    }
+    const projectMode = Object.hasOwn(body, "projectId");
+    const project = projectMode ? getPublishedProject(body.projectId) : undefined;
+    if (projectMode && !project) {
+      return Response.json({ error: "Project not found" }, { status: 404 });
+    }
+    const messages = project ? parseProjectMessages(body.messages) : body.messages;
 
     if (!messages?.length) {
       return new Response(JSON.stringify({ error: "Messages are required" }), {
@@ -41,7 +50,7 @@ export async function POST(request: Request) {
         originalMessages: messages,
         execute: async ({ writer }) => {
           const mockTextId = "mock-stream-response";
-          const mockCopy = selectAboutIntro("Tell me about yourself").copy;
+          const mockCopy = project?.description ?? selectAboutIntro("Tell me about yourself").copy;
 
           await new Promise((resolve) => setTimeout(resolve, 3000));
           await streamCopy(
@@ -62,10 +71,11 @@ export async function POST(request: Request) {
     }
 
     const userText = extractLatestUserText(messages) ?? "";
-    const routing = routeIntent(userText);
-    const knowledgeContext = await loadKnowledgeContext(routing);
+    const routing = project ? projectRouting(project, userText) : routeIntent(userText);
+    const loadedContext = await loadKnowledgeContext(routing);
+    const knowledgeContext = project ? withProjectFacts(loadedContext, project) : loadedContext;
     const useLegacyAboutStream =
-      isKnowledgeAssistantEnabled() && shouldUseAboutStreamLegacy(routing);
+      !project && isKnowledgeAssistantEnabled() && shouldUseAboutStreamLegacy(routing);
 
     console.log("[chat:api] route", {
       intent: routing.intent,
@@ -80,7 +90,7 @@ export async function POST(request: Request) {
         return "The chat assistant is temporarily unavailable. Please try again later.";
       },
       execute: async ({ writer }) => {
-        if (!isKnowledgeAssistantEnabled()) {
+        if (!project && !isKnowledgeAssistantEnabled()) {
           await runChatStream({
             writer: writer as {
               write: (part: {
@@ -116,8 +126,9 @@ export async function POST(request: Request) {
           userText,
           useLegacyAboutStream,
           dynamicSuggestionsEnabled: true,
-          aiFollowUpsEnabled: process.env.AI_FOLLOW_UP_QUESTIONS_ENABLED === "true",
+          aiFollowUpsEnabled: isKnowledgeAssistantEnabled() && process.env.AI_FOLLOW_UP_QUESTIONS_ENABLED === "true",
           messages,
+          project,
           abortSignal: request.signal,
         });
       },

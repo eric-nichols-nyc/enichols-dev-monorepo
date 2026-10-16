@@ -4,13 +4,35 @@
 
 ## Current Phase
 
-**AI follow-up questions — V1 implemented (release checks blocked)**
+**Original app restructuring — focused details and project Q&A implemented**
 
 ## Current Goal
 
-_(idle — V1 implementation complete)_
+Idle. The original app refresh, focused overlay, independent project Q&A, and expand affordance are implemented and code-verified for integration with `main`. Browser acceptance remains deferred ([spec](../feature-specs/13-project-detail-overlay.md)).
 
 ## Completed
+
+- project-expand-affordance — Added a persistent top-right expand icon with a dark background over selectable project previews. Reuses the existing card click/keyboard action without an extra focus stop. Diff checks pass; typecheck retains the shared `radix-ui` blocker. Browser verification remains deferred.
+
+- project-detail-overlay — Replaced the split/animated/loading overlay with a stable fullscreen shared Dialog and immediate details. Added collapsed, independently streamed project Q&A with server-resolved grounding/follow-ups, stop/clear/error handling, and close cancellation. All 193 unit tests pass (32 new); CSS checks pass. Typecheck/build retain the shared `radix-ui` blocker; four new browser cases remain unrun ([spec](../feature-specs/13-project-detail-overlay.md)).
+
+- project-card-stack — Stacked previews, details, and link footers vertically at all viewport widths, including embedded chat; matched skeletons and updated responsive image sizes. CSS checks pass; typecheck/build retain the existing shared `radix-ui` blocker. Browser review remains deferred ([spec](../feature-specs/05-artifacts.md#project-card-layout-refinement--2026-10-16)).
+
+- welcome-intro-static — Removed the entrance animation entirely at the user's request, including welcome animation classes and global tokens/keyframes. Greeting and cards display immediately ([spec](../feature-specs/12-chat-welcome-transition.md)).
+
+- chat-welcome-transition — Kept the welcome above real turns; added interruptible pointer motion, immediate keyboard/reduced-motion placement, reusable cards, composer focus, content-growth detection, and reset-to-top. All 161 unit tests pass; browser cases are added but unrun per user request. Typecheck/build retain the existing shared `radix-ui` blocker ([spec](../feature-specs/12-chat-welcome-transition.md)).
+
+- welcome-personality — Rewrote the rotating intros with warmer copy and a blue second headline line; removed the reset row surface/divider and changed the button to dark with a white icon. Desktop/390px visuals and keyboard draft reset verified; typecheck retains the shared `radix-ui` blocker.
+
+- chat-reset-control — Added a dark top-right icon-only reset button with a white icon and accessible “Reset chat” label, clearing the shared session/active request and local draft/artifact state. Desktop keyboard and 390px active-request reset verified; existing shared `radix-ui` still blocks typecheck/build.
+
+- suggestion-prompt-cards — Replaced welcome pills with the approved Paper prompt cards beneath the greeting; preserved preset messages and follow-ups, added keyboard/focus/phone behavior, and recorded visual patterns. Six existing browser checks pass; typecheck/build retain the existing shared `radix-ui` blocker ([spec](../feature-specs/11-suggestion-prompt-cards.md)).
+
+- original-v2-theme-brand — Applied V2's navy/blue tokens, system fonts, `en.` wordmark and favicons; removed greeting/logo shine and reformatted the greeting. Four project-navigation checks and desktop/mobile review pass. Typecheck/build retain the existing shared `radix-ui` blocker ([spec](../feature-specs/10-v2-theme-brand.md)).
+
+- portfolio-chat-v2 — Renamed the sibling app, refined the chosen Chat studio layout, and integrated real grounded AI, portfolio tools, and contextual follow-ups under feature-owned modules. Typecheck, 111 unit tests, eight browser checks, and production build pass; see [V2 README](../../../portfolio-chat-v2/README.md) and [specification](../../../portfolio-chat-v2/docs/feature-specs/01-portfolio-chat-v2.md).
+
+- portfolio-studio-prototype — Created the initial three-layout design experiment. The selected app is now `portfolio-chat-v2`; original variants remain recoverable on `codex/portfolio-studio-prototype` at `0ecd7f5`. Explicit sibling-app scope expansion authorized on 2026-10-16.
 
 - ai-follow-up-v1 — One structured OpenAI call, deadline/abort handling, partial-candidate validation, safe fallback, held stream finish, real tool context, feature flag, and reset/new-turn cancellation; verified with unit/browser checks and live samples ([spec](../feature-specs/knowledge-assistant/09-ai-follow-up-questions.md#implementation)).
 
@@ -84,6 +106,9 @@ _(idle — V1 implementation complete)_
 
 ## Next Up
 
+- Focused project overlay — When browser review is requested, run the new project-overlay cases and inspect desktop/mobile focus, main-scroll/draft restoration, streamed answers, and close cancellation. Code verification is complete; no live model or visual verification is claimed.
+- Welcome-message transition — Review the implemented motion in the browser when the user chooses. Check welcome reuse, later/instant turns, streaming/manual interruption, keyboard/reduced motion, phone layout, and reset. Browser access was denied and the user explicitly selected code checks only for this implementation.
+- Portfolio Chat V2 — Review the working Chat studio app on 3019; hosting/deployment can follow when requested. This original app retains its existing UI and default follow-up flag.
 - AI follow-up questions — Resolve production-check blockers with separately authorized shared-package work before broad rollout; evaluate latency and question quality during rollout.
 - Project Publisher Stages 3–16 — schema → admin UI → pipeline → publish ([implementation](../feature-specs/project-publisher/implementation.md))
 - knowledge-assistant Stage 7 — integration cleanup (remove static tool `related`, guardrails)
@@ -114,6 +139,40 @@ _(idle — V1 implementation complete)_
 | 2026-05-30 | Repo root `AGENTS.md` points here | Portfolio Chat primary entry for this repo |
 
 ## Session Notes
+
+- **2026-10-16 (merge verification):** Re-ran all 28 unit files/193 tests successfully for the final app state, including the expand affordance. Diff checks pass. Typecheck and production build still fail on the previously documented shared Label import of missing `radix-ui`; shared source/configuration remains outside scope. Browser checks remain unrun under the standing code-only preference. Prepared an app-only integration branch from current `origin/main` using the exact verified `portfolio-chat` tree, excluding the older prototype ancestor and preserving unrelated V2/workspace edits. The focused-overlay source is checkpointed on its feature branch before integration.
+
+- **2026-10-16 (focused overlay):** Committed the original app checkpoint as `45b8c46` on `codex/chat-welcome-transition` (20 app-only files, excluding generated test results), then created `codex/project-detail-overlay` at the user's request. Implemented `features/project-details/` with a stable shared Dialog, immediate existing project/experience details, and a collapsed project Q&A slot below the overview. Removed the duplicated main-chat column, bounds-driven size animation, and artificial one-second loading state; retained a legacy artifact export shim. Q&A has its own useChat/transport and draft, retains on collapse, and aborts/discards on close. Optional `projectId` on the existing API resolves published server data, validates text history, loads full selected-project knowledge plus facts, and keeps answers/follow-ups scoped without global tools. Existing model and follow-up flags remain in place, with no new dependencies or shared source changes. All 28 unit files/193 tests pass, including 32 new cases; typecheck/build fail only on the existing shared `radix-ui` import. Fullscreen CSS checks pass. Added four browser cases but left them unrun per the user's code-only preference. Specs, PRD, architecture/UI notes, tracker, and Imprint registry are synchronized. New implementation remains uncommitted on the new branch.
+
+- **2026-10-16 (project card stack):** User's screenshot showed project cards squeezed into image/copy/link columns in the embedded chat. Removed desktop row/thumbnail/vertical-action overrides so each card uses a full-width preview above its details and link footer on desktop and mobile. Matched loading skeletons and increased the image `sizes` hint. Kept selection, bounding-box callbacks, and external-link handlers. Updated the artifacts spec and UI registry; verification remains code-only.
+
+- **2026-10-16 (entrance removed):** User reported that the entrance still did not animate and explicitly requested immediate removal. Removed the welcome's animation classes and both global animation tokens/keyframes. The full welcome displays immediately with no fade or starting transform. Synced the active spec, UI context, README, and registry. Earlier code checks did not establish visual correctness; no browser verification is claimed.
+
+- **2026-10-16 (entrance snapping report):** User reported movement starting then snapping into place. Code-only timing analysis confirms the former strong ease-out completed 96.6% by the half-second mark. Replaced starting-style transitions with explicit CSS keyframes and a gradual easeInOutSine curve, retaining the requested 500px/1000ms values, one wrapper, and reduced-motion fade. The new curve reaches 50% at halfway and retains its exact final frame. This verifies a timing/configuration correction; the visual snap has not been reproduced in a browser because verification remains deferred. No shared source or API changes.
+
+- **2026-10-16 (explicit entrance values):** Set the whole welcome's entrance to the user's requested 500px upward travel over one second. Kept the shared wrapper, ease-out curve, reduced-motion fade, and persistent mounting. Verification remains code-only.
+
+- **2026-10-16 (gentler welcome entrance):** User found the grouped entrance too quick and the lift too large. Increased its duration from 280ms to 650ms and reduced travel from 16px to 8px, retaining the existing ease-out curve and reduced-motion fade. This is a deliberate slower first appearance; recurring turn placement keeps its existing timing. Verification remains code-only.
+
+- **2026-10-16 (grouped welcome entrance):** User requested that all welcome items animate together. Moved the existing entrance classes from `Greeting` to the parent `WelcomeMessage`, so the intro, section label, and four cards share one fade-and-rise with no stagger or nested motion. Reduced-motion fade, persistent mounting, and interactive buttons are preserved. Synced the spec and registered pattern. Verification stays code-only.
+
+- **2026-10-16 (intro entrance):** User requested intro motion like the live site. Browser security denied the live URL, so used the app-scoped greeting source from `51c9055^` as a safer local reference; no alternate browsing or remote-fetch workaround was attempted. Added one CSS starting-style opacity/transform entrance using Tailwind utilities: 16px rise, 280ms strong ease-out, or 200ms opacity only for reduced motion. Existing persistent mounting prevents replay during conversation/reset, and cards remain immediately available. Standalone Tailwind compilation confirms all entrance/reduced-motion rules. Typecheck still reports only the existing shared Label `radix-ui` dependency. Visual feel and exact current-live comparison remain unverified. No shared package source, global styles, dependencies, or API behavior changed.
+
+- **2026-10-16 (welcome transition):** Implemented on `codex/chat-welcome-transition` after visual checkpoint `51c9055`. `WelcomeMessage` remains a stable visual item above real turns and stays outside model history. The scroll hook reacts once per new turn key and uses a tested controller to bridge pointer-driven placement with a 240ms transform; keyboard/reduced motion place immediately. Manual input preserves the current visible position when cancelling, reset returns to zero, and content growth updates the jump control without auto-scrolling. Reused existing cards and API/session paths, focused the composer after suggestion sends, and omitted the welcome in embedded chat. All 24 unit files/161 tests pass, including seven new motion-controller cases. Typecheck/build fail only on the existing shared `radix-ui` dependency; shared source is unchanged. Added browser regression cases but did not run them after browser access was denied and the user requested code checks only. Browser feel and full interaction acceptance remain deferred. Specs, architecture/UI notes, scrolling README, and UI registry are synchronized.
+
+- **2026-10-16 (visual checkpoint):** User requested saving the current redesign before exploring animated welcome-to-chat behavior on a new branch. Checkpoint scope is only this original app: navy theme/brand, prompt cards, refreshed greeting, reset control, and their docs. Six navigation/error browser checks pass on the final UI; typecheck/build retain the documented shared `radix-ui` blocker. The proposed welcome-as-first-message transition has not been implemented. Generated test results and sibling-app/workspace changes remain outside this checkpoint.
+
+- **2026-10-16 (welcome personality):** Used the user's side-by-side screenshot to refresh the original app's welcome copy, pairing four friendly intros with a pale-blue accent line. Removed the reset toolbar's separate background and bottom divider; switched the button to the dark secondary variant with a white foreground icon. Desktop and 390px layout/keyboard-reset checks pass, with no horizontal overflow. Typecheck reports only the existing shared `radix-ui` dependency failure. No sibling app or shared source changed.
+
+- **2026-10-16 (reset control):** Added the requested prominent reset action in the main chat's top-right toolbar using the shared default Button and existing `clearMessages()`. Verified keyboard reset of a populated thread and draft, mobile reset during an active request, restored welcome cards, 44px touch target, and no mobile overflow. Embedded chat does not duplicate the action. Recorded the pattern in `ui-registry.md`. Typecheck/build show the same pre-existing shared Label `radix-ui` failure; shared source remains untouched.
+
+- **2026-10-16 (suggestion cards):** Created three editable alternatives in Paper's desktop app; user approved the recommended prompt-card direction. Exported JSX/styles and implemented it in `features/chat-ui`, moving welcome suggestions into the scrollable empty state and aligning the greeting. Preserved all four preset messages, local project navigation, and contextual follow-ups. Verified all four keyboard sends/reset, focus, 390px/320px scrolling with no horizontal overflow, and six existing navigation/error browser checks. `pnpm typecheck` and `pnpm build` still fail only on the known shared Label `radix-ui` dependency. No shared source or V2 changes. Imprinted the card patterns into `ui-registry.md`.
+
+- **2026-10-16 (original restructuring):** Applied V2's navy/pale-blue visual identity and static `en.` wordmark to the original app only. Added a reusable feature-owned mark, updated both existing favicon assets, removed the greeting/brand glow, and replaced Google font imports with V2's system stacks. Four existing project-navigation browser checks pass; keyboard reset and 390px welcome/drawer layout verified manually. Typecheck/build fail only on the existing missing shared `radix-ui` dependency from the admin form's Label import. V2 was read as the authorized reference; its source and shared packages were not modified. Patterns captured in `ui-registry.md`.
+
+- **2026-10-16 (V2):** Implemented `apps/portfolio-chat-v2` on `codex/portfolio-chat-v2`. Feature-first Next.js app with its own chat endpoint, published content snapshot, real streaming model/tools, and contextual follow-ups enabled by default. Verified a live IBM/React answer and generated follow-up continuation. Strict typecheck, 111 unit tests, eight browser checks, and production build pass. Owner approved V2's root lockfile importer; a frozen offline workspace install succeeds. Shared package source and original app behavior are unchanged. Build has six nonfatal transitive externalization warnings. No deployment performed.
+
+- **2026-10-16:** Built `apps/portfolio-studio-prototype` on `codex/portfolio-studio-prototype`, starting from the selected Chat studio concept. Local server on port 3019; three shareable variants, public content snapshots, working project/résumé dialogs, and rule-based sample chat. Syntax and browser checks passed, including narrow-phone overflow checks and reset behavior. Captured visual patterns in the prototype's `ui-registry.md`. No production chat integration, shared-package edits, workspace config changes, or deployment.
 
 - **2026-10-14:** Completed V1 on `codex/ai-follow-up-foundation`. All 154 unit tests and 11 targeted browser checks pass. Live Tech questions were generated by AI and clicking a TypeScript question returned a relevant answer; About/Experience review informed excerpt-formatting and unsupported-assumption guards. Typecheck remains blocked only by missing shared `radix-ui`; build also hits blocked Google Fonts fetches. Local dev server runs with the follow-up flag enabled; no secret/env file or shared package was edited.
 

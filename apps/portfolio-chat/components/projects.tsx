@@ -2,7 +2,7 @@
 
 import { Skeleton } from "@repo/design-system/components/ui/skeleton";
 import { cn } from "@repo/design-system/lib/utils";
-import { ExternalLink, Github } from "lucide-react";
+import { ExternalLink, Github, Maximize2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useRef } from "react";
@@ -50,10 +50,10 @@ export function ProjectsSkeleton() {
           (_, i) => `skeleton-${i}`
         ).map((id) => (
           <div
-            className="flex w-full flex-col overflow-hidden border border-border/70 bg-muted/10 sm:flex-row sm:items-stretch"
+            className="flex w-full flex-col overflow-hidden border border-border/70 bg-muted/10"
             key={id}
           >
-            <Skeleton className="aspect-video w-full shrink-0 sm:aspect-auto sm:h-30 sm:w-44 lg:w-48" />
+            <Skeleton className="aspect-video w-full shrink-0" />
             <div className="flex min-w-0 flex-1 flex-col px-3 py-3 sm:px-4 sm:py-4">
               <div className="space-y-2">
                 <Skeleton className="h-5 w-3/4" />
@@ -61,7 +61,7 @@ export function ProjectsSkeleton() {
                 <Skeleton className="h-3 w-full" />
               </div>
             </div>
-            <div className="flex shrink-0 flex-row items-center justify-end gap-2 border-border/40 border-t px-3 py-2 sm:w-13 sm:flex-col sm:items-center sm:justify-end sm:border-border/40 sm:border-t-0 sm:border-l sm:py-4 dark:border-white/10">
+            <div className="flex shrink-0 items-center justify-end gap-2 border-border/40 border-t px-3 py-2 sm:px-4 dark:border-white/10">
               <Skeleton className="size-9 rounded-none" />
               <Skeleton className="size-9 rounded-none" />
             </div>
@@ -108,7 +108,7 @@ export function ProjectCard({ onSelect, project }: ProjectCardProps) {
   return (
     <article
       className={cn(
-        "flex w-full flex-col overflow-hidden border border-border/70 bg-muted/10 sm:flex-row sm:items-stretch",
+        "flex w-full flex-col overflow-hidden border border-border/70 bg-muted/10",
         onSelect &&
           "cursor-pointer transition-colors hover:border-border hover:bg-muted/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       )}
@@ -116,6 +116,7 @@ export function ProjectCard({ onSelect, project }: ProjectCardProps) {
       onKeyDown={
         onSelect
           ? (event) => {
+              if (event.target !== event.currentTarget) return;
               if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
                 handleOpenDetail();
@@ -127,18 +128,26 @@ export function ProjectCard({ onSelect, project }: ProjectCardProps) {
       role={onSelect ? "button" : undefined}
       tabIndex={onSelect ? 0 : undefined}
     >
-      {/* Column 1: preview */}
-      <div className="relative aspect-video w-full shrink-0 bg-muted sm:aspect-auto sm:h-30 sm:w-44 lg:w-48">
+      {/* Preview */}
+      <div className="relative aspect-video w-full shrink-0 bg-muted">
         <Image
           alt={`${project.title} preview`}
           className="object-cover"
           fill
-          sizes="(max-width: 639px) 100vw, 192px"
+          sizes="(max-width: 767px) 100vw, 720px"
           src={imageSrc}
         />
+        {onSelect ? (
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute top-3 right-3 inline-flex size-10 items-center justify-center rounded-lg border border-border/70 bg-background/90 text-foreground shadow-sm"
+          >
+            <Maximize2 className="size-4" />
+          </span>
+        ) : null}
       </div>
 
-      {/* Column 2: copy */}
+      {/* Details */}
       <div className="flex min-w-0 flex-1 flex-col justify-center px-3 py-3 sm:px-4 sm:py-4">
         <div className="min-w-0 space-y-1">
           <h3 className="font-semibold text-foreground text-sm leading-snug tracking-tight sm:text-base">
@@ -155,8 +164,8 @@ export function ProjectCard({ onSelect, project }: ProjectCardProps) {
         </div>
       </div>
 
-      {/* Column 3: links pinned to bottom */}
-      <div className="flex shrink-0 flex-row items-center justify-end gap-2 border-border/40 border-t px-3 py-2 sm:w-13 sm:flex-col sm:items-center sm:justify-end sm:border-border/40 sm:border-t-0 sm:border-l sm:px-2 sm:py-4 dark:border-white/10">
+      {/* Links */}
+      <div className="flex shrink-0 items-center justify-end gap-2 border-border/40 border-t px-3 py-2 sm:px-4 dark:border-white/10">
         {project.githubUrl ? (
           <Link
             aria-label={`View ${project.title} on GitHub (new tab)`}

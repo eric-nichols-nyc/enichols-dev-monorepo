@@ -19,7 +19,7 @@ See [prd.md](../prd.md).
 1. Open site → see greeting and sidebar navigation
 2. Ask or click suggestion → streamed reply
 3. Request "show projects" (or similar) → tool renders `<Projects />` (etc.) in the thread
-4. Open artifact for a featured card → expanded detail in side panel
+4. Open a project card → fullscreen details; expand contextual project questions to ask in place, then return to the same main conversation
 5. Clear chat from sidebar logo → fresh session
 
 ## Success criteria

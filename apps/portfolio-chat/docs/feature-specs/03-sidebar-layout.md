@@ -46,7 +46,7 @@ As a visitor, I want quick section prompts from the sidebar and social links in 
 
 - [x] **R13** — `SidebarBrand`: logo (`GreetingButton`); desktop rail is logo-only; click/keyboard triggers `onClear` → `clearMessages()`
 - [x] **R14** — `aria-label="Clear chat and start fresh"`
-- [x] **R15** — Mobile drawer header uses `SidebarLogo` + "Eric Nichols" (clear via brand only on desktop sidebar)
+- [x] **R15** — Mobile drawer header uses the shared `PortfolioMark` via `GreetingButton` + "Eric Nichols" (clear via brand only on desktop sidebar)
 
 ### Header social links
 

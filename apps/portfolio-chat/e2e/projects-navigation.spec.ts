@@ -7,7 +7,7 @@ for (const entry of ["sidebar", "suggestion", "typed"] as const) {
     if (entry === "sidebar") {
       await page.locator("nav[aria-label=Navigation]:visible").getByRole("button", { name: "Projects", exact: true }).click();
     } else if (entry === "suggestion") {
-      await page.getByRole("button", { name: "Show me some projects", exact: true }).click();
+      await page.getByRole("button", { name: "Explore my work", exact: true }).click();
     } else {
       await page.getByPlaceholder(/type a message/i).fill("Show projects");
       await page.getByPlaceholder(/type a message/i).press("Enter");

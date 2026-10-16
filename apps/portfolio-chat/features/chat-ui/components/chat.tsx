@@ -1,5 +1,7 @@
 "use client";
 
+import { useMemo, useRef, useState } from "react";
+import { RotateCcwIcon } from "lucide-react";
 import {
   PromptInput,
   PromptInputBody,
@@ -8,18 +10,16 @@ import {
   PromptInputSubmit,
   PromptInputTextarea,
 } from "@repo/design-system/components/ai-elements/prompt-input";
-import { useEffect, useMemo, useState } from "react";
+import { Button } from "@repo/design-system/components/ui/button";
 import { usePortfolioChat } from "@/contexts/chat-context";
 import type { ExperienceEntry } from "@/data/experience";
 import type { Project } from "@/data/projects";
-import { Artifact } from "@/components/artifact";
+import { DetailOverlay } from "@/features/project-details/components/detail-overlay";
+import { ProjectDetail } from "@/features/project-details/components/project-detail";
 import { ArtifactEmptyState } from "@/components/artifact-empty-state";
 import type { ExperienceBoundingBox } from "@/components/experience";
 import { FeaturedExperience } from "@/components/featured-experience";
-import { FeaturedProject } from "@/components/featured-project";
-import type { BoundingBox } from "@/components/projects";
 import { Messages } from "@/features/chat-ui/components/messages";
-import { Suggestions } from "@/features/chat-ui/components/suggestions";
 
 export type ChatProps = {
   embedded?: boolean;
@@ -34,27 +34,13 @@ export function Chat({
   onExperienceExpand: onExperienceExpandProp,
 }: ChatProps) {
   const [text, setText] = useState("");
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const [artifactOpen, setArtifactOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [selectedExperience, setSelectedExperience] = useState<
     ExperienceEntry[] | null
   >(null);
-  const [boundingBox, setBoundingBox] = useState<
-    BoundingBox | ExperienceBoundingBox | null
-  >(null);
-  const [artifactLoading, setArtifactLoading] = useState(false);
-  const { error, messages, sendMessage, status } = usePortfolioChat();
-
-  useEffect(() => {
-    const hasContent = Boolean(
-      selectedProject || (selectedExperience && selectedExperience.length > 0)
-    );
-    if (artifactOpen && hasContent) {
-      setArtifactLoading(true);
-      const timer = setTimeout(() => setArtifactLoading(false), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [artifactOpen, selectedProject, selectedExperience]);
+  const { clearMessages, error, messages, sendMessage, status } = usePortfolioChat();
 
   const handleSubmit = (message: PromptInputMessage) => {
     if (!message.text?.trim()) {
@@ -71,11 +57,12 @@ export function Chat({
       sendMessage({ text: suggestion, files: [] });
     }
     setText("");
+    inputRef.current?.focus({ preventScroll: true });
   };
 
   const artifactContent = useMemo(() => {
     if (selectedProject) {
-      return <FeaturedProject project={selectedProject} />;
+      return <ProjectDetail project={selectedProject} />;
     }
     if (selectedExperience && selectedExperience.length > 0) {
       return <FeaturedExperience experience={selectedExperience} />;
@@ -85,26 +72,27 @@ export function Chat({
 
   const handleClose = () => {
     setArtifactOpen(false);
-    setArtifactLoading(false);
     setSelectedProject(null);
     setSelectedExperience(null);
-    setBoundingBox(null);
+  };
+
+  const handleReset = () => {
+    clearMessages();
+    setText("");
+    handleClose();
   };
 
   const handleExperienceExpand = (
-    experience: ExperienceEntry[],
-    box?: ExperienceBoundingBox
+    experience: ExperienceEntry[]
   ) => {
     setSelectedExperience(experience);
     setSelectedProject(null);
-    setBoundingBox(box ?? null);
     setArtifactOpen(true);
   };
 
-  const handleProjectSelect = (project: Project, box?: BoundingBox) => {
+  const handleProjectSelect = (project: Project) => {
     setSelectedProject(project);
     setSelectedExperience(null);
-    setBoundingBox(box ?? null);
     setArtifactOpen(true);
   };
 
@@ -113,16 +101,31 @@ export function Chat({
       className={`overscroll-behavior-contain flex h-full min-h-0 flex-1 flex-col overflow-hidden ${embedded ? "bg-transparent" : "bg-muted/20"}`}
     >
       {!embedded && (
-        <Artifact
-          boundingBox={boundingBox as BoundingBox | null}
-          content={artifactContent}
-          isLoading={artifactLoading}
+        <DetailOverlay
           onClose={handleClose}
           open={artifactOpen}
-        />
+          title={selectedProject?.title ?? "Experience"}
+        >
+          {artifactContent}
+        </DetailOverlay>
+      )}
+      {!embedded && (
+        <div className="flex shrink-0 justify-end px-4 py-3">
+          <Button
+            aria-label="Reset chat"
+            className="min-h-[44px] min-w-[44px] touch-manipulation rounded-xl text-foreground shadow-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none"
+            onClick={handleReset}
+            size="icon"
+            title="Reset chat"
+            type="button"
+            variant="secondary"
+          >
+            <RotateCcwIcon aria-hidden="true" />
+          </Button>
+        </div>
       )}
       <div
-        className="chat-messages-container min-h-0 flex-1 overflow-hidden border border-border"
+        className="chat-messages-container min-h-0 flex-1 overflow-hidden border-x border-b border-border"
         data-testid="chat-messages-container"
       >
 
@@ -134,18 +137,17 @@ export function Chat({
           }
           onProjectSelect={handleProjectSelect}
           onSuggestionClick={handleSuggestionClick}
+          showWelcome={!embedded}
           status={status}
         />
       </div>
 
       <div className="sticky bottom-0 z-10 flex shrink-0 flex-col items-center gap-3 border-border border-t bg-app p-3">
-        {messages.length === 0 && (
-          <Suggestions onSuggestionClick={handleSuggestionClick} />
-        )}
         <div className="w-full max-w-[720px]">
           <PromptInput globalDrop multiple onSubmit={handleSubmit}>
             <PromptInputBody>
               <PromptInputTextarea
+                ref={inputRef}
                 onChange={(e) => setText(e.target.value)}
                 placeholder="Type a message…"
                 value={text}

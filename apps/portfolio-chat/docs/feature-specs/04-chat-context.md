@@ -4,11 +4,11 @@
 
 ## Goal
 
-One shared chat session for the whole app: messages, send, clear, status, and errors—backed by AI SDK `useChat` and a thin React context API.
+One shared main conversation for navigation, suggestions, and input, backed by AI SDK `useChat`. Focused project questions intentionally use a separate ephemeral session; see [13-project-detail-overlay](./13-project-detail-overlay.md).
 
 ## User story
 
-As a visitor, I want the sidebar, chat column, and (when open) artifact mini-chat to share the same conversation without prop drilling.
+As a visitor, I want navigation and main chat to share a conversation, while project questions stay inside their detail view.
 
 ## Requirements
 
@@ -32,15 +32,15 @@ As a visitor, I want the sidebar, chat column, and (when open) artifact mini-cha
 - [x] **R5** — `sendMessage` and `clearMessages` memoized with `useCallback`
 - A new send stops the previous transport request first. An action version prevents an obsolete queued send or reset from affecting newer actions, keeping pending follow-ups out of later turns.
 
-### Consumers (must use context, not raw `useChat`)
+### Main conversation consumers
 
 - [x] **R6** — `CollapsibleSidebarLayout` — `sendMessage`, `clearMessages`
-- [x] **R7** — `Chat` — `messages`, `sendMessage`, `status`, `error`
-- [x] **R8** — `Artifact` embeds `<Chat embedded />` — same provider tree, same session
+- [x] **R7** — `Chat` — `messages`, `sendMessage`, `clearMessages` (top-right reset), `status`, `error`
+- [x] **R8** — Project Q&A uses its own `useChat` and validated project context, without reading or mutating this provider
 
 ### Embedded chat mode
 
-- [x] **R9** — `Chat` with `embedded` skips artifact overlay (`!embedded` guard) but still uses same context messages
+- [x] **R9** — Legacy `Chat embedded` remains compatible, but no current detail overlay mounts it
 
 ### Not yet implemented
 
@@ -57,7 +57,7 @@ As a visitor, I want the sidebar, chat column, and (when open) artifact mini-cha
 
 ## Invariants
 
-- Single provider per page tree — do not nest second `useChat` for main portfolio chat.
+- Single provider for the main portfolio conversation. The project Q&A hook is the explicit independent-session exception and aborts on unmount.
 - API path remains `/api/chat` unless route and transport change together.
 - Clearing messages does not call the server; no thread id.
 
@@ -65,7 +65,7 @@ As a visitor, I want the sidebar, chat column, and (when open) artifact mini-cha
 
 - [x] Nav/suggestions/input share one `messages` array
 - [x] Clear from sidebar empties thread immediately
-- [x] Artifact embedded chat shows same history as main column
+- [ ] Project Q&A/main-conversation isolation verified in browser (cases added, execution deferred)
 - [ ] R10–R12 per product priority
 
 ## Implementation prompt

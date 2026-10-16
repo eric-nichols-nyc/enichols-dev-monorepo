@@ -1,4 +1,3 @@
-import { Geist, Geist_Mono } from "next/font/google";
 import type { Metadata } from "next";
 import "./styles.css";
 import { TooltipProvider } from "@repo/design-system/components/ui/tooltip";
@@ -8,9 +7,7 @@ import { ThemeFavicon } from "@/components/theme-favicon";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3018");
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3018");
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -22,8 +19,7 @@ export const metadata: Metadata = {
     "Chat with an AI assistant to explore Eric Nichols' projects, work experience, and background as a senior frontend engineer in New York.",
   openGraph: {
     title: "Eric Nichols — Portfolio Chat",
-    description:
-      "Interactive AI portfolio: ask about projects, experience, tech stack, and more.",
+    description: "Interactive AI portfolio: ask about projects, experience, tech stack, and more.",
     type: "website",
     locale: "en_US",
     siteName: "Eric Nichols",
@@ -31,8 +27,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Eric Nichols — Portfolio Chat",
-    description:
-      "Interactive AI portfolio: ask about projects, experience, tech stack, and more.",
+    description: "Interactive AI portfolio: ask about projects, experience, tech stack, and more.",
   },
   icons: {
     icon: [
@@ -50,28 +45,12 @@ export const metadata: Metadata = {
   },
 };
 
-const geistSans = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist-sans",
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
-  display: "swap",
-});
-
 type RootLayoutProperties = {
   readonly children: ReactNode;
 };
 
 const RootLayout = ({ children }: RootLayoutProperties) => (
-  <html
-    className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
-    lang="en"
-    suppressHydrationWarning
-  >
+  <html className="dark font-sans antialiased" lang="en" suppressHydrationWarning>
     <body>
       <ThemeProvider>
         <ThemeFavicon />

@@ -1,40 +1,34 @@
 # Messages list and scrolling
 
-Implementation: **`index.tsx`** (`Messages` + helpers). Import from `@/features/chat-ui/components/messages` or legacy `@/components/messages` (re-export shim).
+Import `Messages` from `@/features/chat-ui/components/messages` or the legacy `@/components/messages` shim. The behavior is specified in [12-chat-welcome-transition](../../../../docs/feature-specs/12-chat-welcome-transition.md).
 
-`Messages` renders the chat transcript inside the scroll region used by `Chat`. This note describes how scrolling, “near bottom” detection, and the active-turn min-height interact.
+## DOM ownership
 
-## DOM layout
+- The outer shell fills the area provided by `Chat` and positions the floating jump control.
+- The viewport (`scrollRef`) is the sole scroll owner. `overscroll-contain` prevents scroll chaining and `overflow-anchor: none` prevents browser anchoring from competing with turn placement.
+- The content column (`contentRef`) contains one persistent `WelcomeMessage`, followed by real message turns. This column receives the temporary turn transform; the welcome has no entrance animation.
+- The error alert sits outside the scroll viewport so it remains visible above the composer.
 
-- **Outer shell** (`relative flex h-full min-h-0 flex-1 flex-col`): fills the area given by `Chat` and is the positioning context for the floating control.
-- **Scroll viewport** (`flex-1 overflow-y-auto`, `scrollRef`): the only element that scrolls. `overscroll-contain` keeps scroll chaining predictable on trackpads.
-- **Inner column** (`max-w-[720px] …`): message list and error banner.
+The welcome contains the greeting and topic cards, displays immediately, stays mounted across sends, and never enters AI message history. There is no entrance animation or fade. Cards are disabled while busy and reusable when ready. Embedded artifact chat sets `showWelcome={false}`.
 
-The parent in `chat.tsx` wraps this tree in a node with class **`chat-messages-container`**. That wrapper’s height is measured so the **last turn** can use a matching `min-height` (see below).
+## New-turn placement
 
-## “Near bottom” and the scroll-to-bottom button
+`useChatMessagesScroll` groups each user message and its following assistant messages into one turn. A new latest-turn key places that turn 16px below the viewport top once, after the active-turn height is measured. This also catches immediate local responses whose submitted status can be batched away. Streaming chunks do not trigger placement.
 
-- **`NEAR_BOTTOM_THRESHOLD`** (px): if the distance from the scroll viewport’s bottom is at most this value, we treat the user as “at bottom.”
-- **`updateScrollState`**: reads `scrollHeight`, `scrollTop`, and `clientHeight`, then sets `isAtBottom` from the distance-from-bottom check.
-- **Listeners**: `scroll` on the viewport (passive) plus a **`ResizeObserver`** on the same viewport so layout changes (new messages, wrapped text) recompute distance from bottom.
-- **Floating button**: when `!isAtBottom`, a button calls **`scrollLatestTurnIntoView`** (same handler as the auto-scroll path).
+The hook adapts the DOM to `features/chat-ui/lib/turn-transition.ts`, which owns placement and cancellation independently of React:
 
-## Auto-scroll when sending
+1. Cancel prior motion and rebase scrolling to the currently visible position.
+2. Assign the bounded target scroll position once.
+3. After pointer input, bridge the visual displacement with a content `translateY` returning to zero over 240ms, using `cubic-bezier(0.23, 1, 0.32, 1)`.
 
-When **`status === "submitted"`** (message accepted, waiting for / receiving the stream), we call **`scrollLatestTurnIntoView`**:
-
-1. If **`activeTurnRef`** (prop or internal ref on the **last** turn wrapper) points to a node, we **`scrollIntoView`** on it with `behavior: "smooth"`, `block: "end"`, `inline: "nearest"` inside `requestAnimationFrame`.
-2. Otherwise we fall back to **`scrollTo({ top: scrollHeight, behavior: "smooth" })`** on the scroll viewport.
-
-So the scrollable ancestor is the messages viewport, not the window.
+Keyboard and reduced-motion actions use immediate placement. Wheel, touch, pointer, and keyboard input cancel motion at the visible position. A new turn retargets from that position; stale animation completion cannot override it. Reset cancels without restoring old scrolling and immediately sets `scrollTop` to zero. Unmount also cancels motion.
 
 ## Active-turn min-height
 
-- On mount, a **`ResizeObserver`** watches **`.chat-messages-container`** (the parent from `chat.tsx`) and stores **`clientHeight`** in state (minus a fixed pixel offset in code).
-- That value is applied as **`minHeight`** on the **last turn** wrapper only, so the active “beat” can reserve vertical space aligned with the chat column height.
+A `ResizeObserver` measures the parent `.chat-messages-container` from `Chat`. Only the latest turn receives `minHeight`, using the measured height plus `ACTIVE_TURN_MIN_HEIGHT_OFFSET_PX` (-30px). This reserves space for the new answer and makes start alignment possible even before a short answer arrives. Older turns return to their natural height.
 
-If `Messages` is ever used without an ancestor matching `.chat-messages-container`, no min-height is applied (measurement never runs).
+## Near-bottom detection and jumping
 
-## Turns
+The viewport scroll listener and `ResizeObserver` on both viewport and content update `isAtBottom` using `NEAR_BOTTOM_THRESHOLD`. Content growth can therefore expose the jump control without moving a visitor reading older content. The control appears only when real messages exist, the viewport is away from the bottom, and no transition is running. It explicitly places the viewport at the content end, using the same modality and motion rules.
 
-Messages are grouped into **turns**: each **user** message starts a new group; following assistant (and tool) messages stay in that group until the next user message. The **last** group is the active turn (refs and min-height target).
+The controller has seven unit cases covering continuity, immediate placement, bounds, reset, interruption in both directions, and rapid retargeting. Browser regression cases are in `e2e/welcome-transition.spec.ts`; they were added but left unrun at the user's request for code checks only.

@@ -10,10 +10,14 @@ import {
   useRef,
   useState,
 } from "react";
+import { createTurnTransition } from "@/features/chat-ui/lib/turn-transition";
 import {
   ACTIVE_TURN_MIN_HEIGHT_OFFSET_PX,
   CHAT_MESSAGES_CONTAINER_SELECTOR,
   NEAR_BOTTOM_THRESHOLD,
+  TURN_TOP_INSET_PX,
+  TURN_TRANSITION_DURATION_MS,
+  TURN_TRANSITION_EASING,
 } from "./constants";
 
 export type MessageWithIndex = { globalIndex: number; msg: UIMessage };
@@ -79,7 +83,9 @@ export type UseChatMessagesScrollArgs = {
 
 export type UseChatMessagesScrollResult = {
   scrollRef: RefObject<HTMLDivElement | null>;
+  contentRef: RefObject<HTMLDivElement | null>;
   isAtBottom: boolean;
+  isTransitioning: boolean;
   scrollLatestTurnIntoView: () => void;
   messageTurns: MessageWithIndex[][];
   /** Pass spread onto each turn wrapper `div`. */
@@ -94,11 +100,15 @@ export type UseChatMessagesScrollResult = {
 
 export function useChatMessagesScroll({
   messages,
-  status,
   activeTurnRef: activeTurnRefProp,
 }: UseChatMessagesScrollArgs): UseChatMessagesScrollResult {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const transitionRef = useRef<ReturnType<typeof createTurnTransition> | null>(null);
+  const pointerActionRef = useRef(false);
+  const lastPlacedTurnRef = useRef<string | null>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [activeTurnMinHeightPx, setActiveTurnMinHeightPx] = useState<
     number | null
   >(null);
@@ -131,6 +141,7 @@ export function useChatMessagesScroll({
     () => groupMessagesByUserTurn(messages),
     [messages]
   );
+  const latestTurnKey = messageTurns.at(-1)?.[0]?.msg.id ?? null;
 
   const updateScrollState = useCallback(() => {
     const el = scrollRef.current;
@@ -142,23 +153,90 @@ export function useChatMessagesScroll({
     setIsAtBottom(distanceFromBottom <= NEAR_BOTTOM_THRESHOLD);
   }, []);
 
+  const cancelTransition = useCallback((preservePosition = false) => {
+    if (transitionRef.current?.cancel(preservePosition)) {
+      setIsTransitioning(false);
+      updateScrollState();
+    }
+  }, [updateScrollState]);
+
+  useLayoutEffect(() => {
+    const viewport = scrollRef.current;
+    const content = contentRef.current;
+    if (!viewport || !content) return;
+    const transition = createTurnTransition(viewport, {
+      readOffset: () => {
+        const transform = getComputedStyle(content).transform;
+        return transform === "none" ? 0 : new DOMMatrixReadOnly(transform).m42;
+      },
+      start: (distance) => content.animate(
+        [{ transform: `translateY(${distance}px)` }, { transform: "translateY(0)" }],
+        { duration: TURN_TRANSITION_DURATION_MS, easing: TURN_TRANSITION_EASING }
+      ),
+    }, () => {
+      setIsTransitioning(false);
+      updateScrollState();
+    });
+    transitionRef.current = transition;
+    return () => {
+      transition.cancel();
+      transitionRef.current = null;
+    };
+  }, [updateScrollState]);
+
+  const placeLatestTurn = useCallback((alignment: "start" | "end") => {
+    const viewport = scrollRef.current;
+    const content = contentRef.current;
+    if (!viewport || !content) return;
+
+    cancelTransition(true);
+    const activeTurn = activeTurnRef.current;
+    const maximumTop = Math.max(0, viewport.scrollHeight - viewport.clientHeight);
+    const targetTop = alignment === "start" && activeTurn
+      ? viewport.scrollTop + activeTurn.getBoundingClientRect().top
+        - viewport.getBoundingClientRect().top - TURN_TOP_INSET_PX
+      : maximumTop;
+    const moving = transitionRef.current?.move(
+      targetTop,
+      pointerActionRef.current && !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    );
+    setIsTransitioning(moving ?? false);
+    updateScrollState();
+  }, [activeTurnRef, cancelTransition, updateScrollState]);
+
   const scrollLatestTurnIntoView = useCallback(() => {
-    const activeTurnEl = activeTurnRef.current;
-    if (activeTurnEl) {
-      requestAnimationFrame(() => {
-        activeTurnEl.scrollIntoView({
-          behavior: "smooth",
-          block: "end",
-          inline: "nearest",
-        });
-      });
-      return;
-    }
-    const el = scrollRef.current;
-    if (el) {
-      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
-    }
-  }, [activeTurnRef]);
+    placeLatestTurn("end");
+  }, [placeLatestTurn]);
+
+  useEffect(() => {
+    const viewport = scrollRef.current;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onPointer = () => {
+      cancelTransition(true);
+      pointerActionRef.current = true;
+    };
+    const onKeyboard = () => {
+      cancelTransition(true);
+      pointerActionRef.current = false;
+    };
+    const onGesture = () => cancelTransition(true);
+    const onMotionPreference = () => {
+      if (reducedMotion.matches) cancelTransition();
+    };
+    document.addEventListener("pointerdown", onPointer, true);
+    document.addEventListener("keydown", onKeyboard, true);
+    viewport?.addEventListener("wheel", onGesture, { passive: true });
+    viewport?.addEventListener("touchstart", onGesture, { passive: true });
+    reducedMotion.addEventListener("change", onMotionPreference);
+    return () => {
+      document.removeEventListener("pointerdown", onPointer, true);
+      document.removeEventListener("keydown", onKeyboard, true);
+      viewport?.removeEventListener("wheel", onGesture);
+      viewport?.removeEventListener("touchstart", onGesture);
+      reducedMotion.removeEventListener("change", onMotionPreference);
+      cancelTransition();
+    };
+  }, [cancelTransition]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -169,17 +247,25 @@ export function useChatMessagesScroll({
     el.addEventListener("scroll", updateScrollState, { passive: true });
     const ro = new ResizeObserver(updateScrollState);
     ro.observe(el);
+    if (contentRef.current) ro.observe(contentRef.current);
     return () => {
       el.removeEventListener("scroll", updateScrollState);
       ro.disconnect();
     };
   }, [updateScrollState]);
 
-  useEffect(() => {
-    if (status === "submitted") {
-      scrollLatestTurnIntoView();
+  useLayoutEffect(() => {
+    if (latestTurnKey === null) {
+      lastPlacedTurnRef.current = null;
+      cancelTransition();
+      if (scrollRef.current) scrollRef.current.scrollTop = 0;
+      updateScrollState();
+      return;
     }
-  }, [status, scrollLatestTurnIntoView]);
+    if (latestTurnKey === lastPlacedTurnRef.current || activeTurnMinHeightPx === null) return;
+    lastPlacedTurnRef.current = latestTurnKey;
+    placeLatestTurn("start");
+  }, [latestTurnKey, activeTurnMinHeightPx, cancelTransition, placeLatestTurn, updateScrollState]);
 
   const getTurnWrapperProps = useCallback(
     (turnIndex: number, turnCount: number) => {
@@ -200,7 +286,9 @@ export function useChatMessagesScroll({
 
   return {
     scrollRef,
+    contentRef,
     isAtBottom,
+    isTransitioning,
     scrollLatestTurnIntoView,
     messageTurns,
     getTurnWrapperProps,
