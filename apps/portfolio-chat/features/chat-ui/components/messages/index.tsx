@@ -1,6 +1,5 @@
 "use client";
 
-import { ConversationEmptyState } from "@repo/design-system/components/ai-elements/conversation";
 import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
 import type { UIMessage } from "ai";
@@ -9,9 +8,9 @@ import type { MutableRefObject } from "react";
 import type { ExperienceBoundingBox } from "@/components/experience";
 import type { BoundingBox } from "@/components/projects";
 import type { Project } from "@/data/projects";
-import { Greeting } from "@/features/chat-ui/components/greeting";
 import { ChatMessage } from "@/features/chat-ui/components/message";
 import { ThinkingMessage } from "@/features/chat-ui/components/thinking-message";
+import { WelcomeMessage } from "@/features/chat-ui/components/welcome-message";
 import { getTurnKey, useChatMessagesScroll } from "./use-chat-messages-scroll";
 
 export type MessagesProps = {
@@ -24,6 +23,7 @@ export type MessagesProps = {
   onProjectSelect?: (project: Project, boundingBox?: BoundingBox) => void;
   onSuggestionClick: (suggestion: string) => void;
   status: "streaming" | "submitted" | "ready" | "error";
+  showWelcome?: boolean;
   /** Latest turn wrapper element. Defaults to an internal ref if omitted. */
   activeTurnRef?: MutableRefObject<HTMLDivElement | null>;
 };
@@ -35,11 +35,14 @@ export function Messages({
   onProjectSelect,
   onSuggestionClick,
   status,
+  showWelcome = true,
   activeTurnRef: activeTurnRefProp,
 }: MessagesProps) {
   const {
     scrollRef,
+    contentRef,
     isAtBottom,
+    isTransitioning,
     scrollLatestTurnIntoView,
     messageTurns,
     getTurnWrapperProps,
@@ -51,75 +54,75 @@ export function Messages({
 
   return (
     <div className="relative flex h-full min-h-0 flex-1 flex-col">
-      <div className="flex-1 overflow-y-auto overscroll-contain" ref={scrollRef} role="log">
-        <div className="mx-auto flex w-full max-w-[720px] flex-col gap-8 p-4">
-          {messages.length === 0 ? (
-            <ConversationEmptyState>
-              <Greeting />
-            </ConversationEmptyState>
-          ) : (
-            messageTurns.map((turn, turnIndex) => {
-              const turnCount = messageTurns.length;
-              const turnKey = getTurnKey(turn, turnIndex);
-              const { ref: turnRef, style: turnStyle } = getTurnWrapperProps(
-                turnIndex,
-                turnCount
-              );
-
-              const isActiveTurn = turnIndex === turnCount - 1;
-              const lastTurnEntry = turn.at(-1);
-              const hasAssistantInTurn = turn.some(
-                ({ msg: turnMsg }) => turnMsg.role === "assistant"
-              );
-              const showPendingAssistantThinking =
-                isActiveTurn &&
-                status === "submitted" &&
-                !hasAssistantInTurn &&
-                lastTurnEntry?.msg.role === "user";
-
-              return (
-                <div
-                  className="flex flex-col gap-8"
-                  key={turnKey}
-                  ref={turnRef}
-                  style={turnStyle}
-                >
-                  {turn.map(({ globalIndex: i, msg }) => {
-                    const isActiveAssistant =
-                      isActiveTurn &&
-                      msg.role === "assistant" &&
-                      lastTurnEntry?.msg.role === "assistant" &&
-                      lastTurnEntry.globalIndex === i;
-
-                    return (
-                      <div
-                        className={cn(
-                          "flex w-full gap-2",
-                          msg.role === "user" ? "ml-auto" : ""
-                        )}
-                        key={msg.id}
-                      >
-                        <ChatMessage
-                          chatStatus={status}
-                          isActiveAssistant={isActiveAssistant}
-                          msg={msg}
-                          onExperienceExpand={onExperienceExpand}
-                          onProjectSelect={onProjectSelect}
-                          onSuggestionClick={onSuggestionClick}
-                        />
-                      </div>
-                    );
-                  })}
-                  {showPendingAssistantThinking ? (
-                    <div className="flex w-full gap-2">
-                      <ThinkingMessage variant="active" />
-                    </div>
-                  ) : null}
-                </div>
-              );
-            })
+      <div className="flex-1 overflow-y-auto overscroll-contain [overflow-anchor:none]" ref={scrollRef} role="log">
+        <div className="mx-auto flex w-full max-w-[720px] flex-col gap-8 p-4" ref={contentRef}>
+          {showWelcome && (
+            <WelcomeMessage
+              busy={status === "submitted" || status === "streaming"}
+              onSuggestionClick={onSuggestionClick}
+            />
           )}
+          {messageTurns.map((turn, turnIndex) => {
+            const turnCount = messageTurns.length;
+            const turnKey = getTurnKey(turn, turnIndex);
+            const { ref: turnRef, style: turnStyle } = getTurnWrapperProps(
+              turnIndex,
+              turnCount
+            );
 
+            const isActiveTurn = turnIndex === turnCount - 1;
+            const lastTurnEntry = turn.at(-1);
+            const hasAssistantInTurn = turn.some(
+              ({ msg: turnMsg }) => turnMsg.role === "assistant"
+            );
+            const showPendingAssistantThinking =
+              isActiveTurn &&
+              status === "submitted" &&
+              !hasAssistantInTurn &&
+              lastTurnEntry?.msg.role === "user";
+
+            return (
+              <div
+                className="flex flex-col gap-8"
+                data-testid="chat-turn"
+                key={turnKey}
+                ref={turnRef}
+                style={turnStyle}
+              >
+                {turn.map(({ globalIndex: i, msg }) => {
+                  const isActiveAssistant =
+                    isActiveTurn &&
+                    msg.role === "assistant" &&
+                    lastTurnEntry?.msg.role === "assistant" &&
+                    lastTurnEntry.globalIndex === i;
+
+                  return (
+                    <div
+                      className={cn(
+                        "flex w-full gap-2",
+                        msg.role === "user" ? "ml-auto" : ""
+                      )}
+                      key={msg.id}
+                    >
+                      <ChatMessage
+                        chatStatus={status}
+                        isActiveAssistant={isActiveAssistant}
+                        msg={msg}
+                        onExperienceExpand={onExperienceExpand}
+                        onProjectSelect={onProjectSelect}
+                        onSuggestionClick={onSuggestionClick}
+                      />
+                    </div>
+                  );
+                })}
+                {showPendingAssistantThinking ? (
+                  <div className="flex w-full gap-2">
+                    <ThinkingMessage variant="active" />
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
       </div>
       {(error != null || status === "error") && (
@@ -130,7 +133,7 @@ export function Messages({
           </div>
         </div>
       )}
-      {!isAtBottom && (
+      {messages.length > 0 && !isAtBottom && !isTransitioning && (
         <Button
           aria-label="Scroll to bottom"
           className="-translate-x-1/2 absolute bottom-10 left-[50%] z-20 rounded-full"

@@ -7,12 +7,7 @@ import { ChevronLeft, Menu, Plus, type LucideIcon } from "lucide-react";
 import { cn } from "@repo/design-system/lib/utils";
 import type { AdminNavLink } from "@/features/project-publisher/lib/get-admin-nav-link";
 import { GreetingButton } from "./greeting-button";
-import {
-  NAV_ITEMS,
-  type NavItemId,
-  SIDEBAR_WIDTH,
-  socialLinks,
-} from "./constants";
+import { NAV_ITEMS, type NavItemId, SIDEBAR_WIDTH, socialLinks } from "./constants";
 import { SidebarBrand, SidebarBrandText } from "./sidebar-brand";
 
 type SidebarNavLayout = "rail" | "drawer";
@@ -26,16 +21,14 @@ const NAV_ITEM_RAIL_BASE =
 const NAV_ITEM_INACTIVE_CLASS =
   "bg-muted/30 text-muted-foreground hover:bg-muted hover:text-foreground";
 
-const NAV_ITEM_ACTIVE_CLASS = "bg-muted text-foreground";
+const NAV_ITEM_ACTIVE_CLASS = "bg-accent text-accent-foreground";
 
 const NAV_SECTION_LABEL_CLASS =
   "mb-2 px-3 font-medium text-muted-foreground text-xs uppercase tracking-wide";
 
-const SIDEBAR_ASIDE_CLASS =
-  "bg-sidebar border-sidebar-r flex shrink-0 flex-col";
+const SIDEBAR_ASIDE_CLASS = "bg-sidebar border-sidebar-r flex shrink-0 flex-col";
 
-const SHELL_HEADER_CLASS =
-  "flex h-[4.5rem] shrink-0 items-center border-border border-b px-3";
+const SHELL_HEADER_CLASS = "flex h-[4.5rem] shrink-0 items-center border-border border-b px-3";
 
 const SOCIAL_ICON_CLASS = "size-[1.125rem]";
 
@@ -54,11 +47,7 @@ function SidebarNavItemVisual({
     <>
       <Icon className="size-4 shrink-0" />
       <span
-        className={
-          layout === "rail"
-            ? "w-full text-center text-[10px] leading-tight"
-            : "truncate"
-        }
+        className={layout === "rail" ? "w-full text-center text-[10px] leading-tight" : "truncate"}
       >
         {label}
       </span>
@@ -83,34 +72,26 @@ function SidebarNavList({
   onExploreNavClick,
   adminNavLink = null,
 }: SidebarNavListProps) {
-  const isAdminLinkActive =
-    adminNavLink !== null && activeAdminPath === adminNavLink.href;
-  const itemBaseClass =
-    layout === "rail" ? NAV_ITEM_RAIL_BASE : NAV_ITEM_DRAWER_BASE;
+  const isAdminLinkActive = adminNavLink !== null && activeAdminPath === adminNavLink.href;
+  const itemBaseClass = layout === "rail" ? NAV_ITEM_RAIL_BASE : NAV_ITEM_DRAWER_BASE;
 
   return (
     <nav aria-label="Navigation" className="flex flex-1 flex-col overflow-y-auto p-2">
       <div className="flex-1">
-        {layout === "drawer" ? (
-          <p className={NAV_SECTION_LABEL_CLASS}>Explore</p>
-        ) : null}
+        {layout === "drawer" ? <p className={NAV_SECTION_LABEL_CLASS}>Explore</p> : null}
         <ul className="flex flex-col gap-1">
           {NAV_ITEMS.map(({ id, label, icon, message }) => {
             const isActive = navMode === "chat" && activeNavId === id;
             const itemClassName = cn(
               itemBaseClass,
-              isActive ? NAV_ITEM_ACTIVE_CLASS : NAV_ITEM_INACTIVE_CLASS
+              isActive ? NAV_ITEM_ACTIVE_CLASS : NAV_ITEM_INACTIVE_CLASS,
             );
 
             return (
               <li key={id}>
                 {navMode === "link" ? (
                   <Link className={itemClassName} href="/">
-                    <SidebarNavItemVisual
-                      icon={icon}
-                      label={label}
-                      layout={layout}
-                    />
+                    <SidebarNavItemVisual icon={icon} label={label} layout={layout} />
                   </Link>
                 ) : (
                   <button
@@ -119,11 +100,7 @@ function SidebarNavList({
                     onClick={() => onExploreNavClick(message)}
                     type="button"
                   >
-                    <SidebarNavItemVisual
-                      icon={icon}
-                      label={label}
-                      layout={layout}
-                    />
+                    <SidebarNavItemVisual icon={icon} label={label} layout={layout} />
                   </button>
                 )}
               </li>
@@ -134,26 +111,18 @@ function SidebarNavList({
 
       {adminNavLink ? (
         <div className="border-border mt-2 border-t pt-2">
-          {layout === "drawer" ? (
-            <p className={NAV_SECTION_LABEL_CLASS}>Admin</p>
-          ) : null}
+          {layout === "drawer" ? <p className={NAV_SECTION_LABEL_CLASS}>Admin</p> : null}
           <ul className="flex flex-col gap-1">
             <li>
               <Link
                 aria-current={isAdminLinkActive ? "page" : undefined}
                 className={cn(
                   itemBaseClass,
-                  isAdminLinkActive
-                    ? NAV_ITEM_ACTIVE_CLASS
-                    : NAV_ITEM_INACTIVE_CLASS
+                  isAdminLinkActive ? NAV_ITEM_ACTIVE_CLASS : NAV_ITEM_INACTIVE_CLASS,
                 )}
                 href={adminNavLink.href}
               >
-                <SidebarNavItemVisual
-                  icon={Plus}
-                  label={adminNavLink.label}
-                  layout={layout}
-                />
+                <SidebarNavItemVisual icon={Plus} label={adminNavLink.label} layout={layout} />
               </Link>
             </li>
           </ul>
@@ -189,7 +158,7 @@ export function AppSidebarShell({
       onExploreNavClick(message);
       setMobileOpen(false);
     },
-    [onExploreNavClick]
+    [onExploreNavClick],
   );
 
   const sidebarHeaderBrand =
@@ -208,14 +177,9 @@ export function AppSidebarShell({
 
   return (
     <div className="flex h-dvh">
-      <aside
-        className={cn(SIDEBAR_ASIDE_CLASS, "hidden md:flex")}
-        style={{ width: SIDEBAR_WIDTH }}
-      >
+      <aside className={cn(SIDEBAR_ASIDE_CLASS, "hidden md:flex")} style={{ width: SIDEBAR_WIDTH }}>
         <div className="flex h-full flex-col overflow-hidden">
-          <div className={cn(SHELL_HEADER_CLASS, "justify-center")}>
-            {sidebarHeaderBrand}
-          </div>
+          <div className={cn(SHELL_HEADER_CLASS, "justify-center")}>{sidebarHeaderBrand}</div>
 
           <SidebarNavList
             activeAdminPath={activeAdminPath}
@@ -239,7 +203,7 @@ export function AppSidebarShell({
       <aside
         className={cn(
           SIDEBAR_ASIDE_CLASS,
-          "fixed inset-y-0 left-0 z-50 w-64 transition-transform duration-200 md:hidden"
+          "fixed inset-y-0 left-0 z-50 w-64 transition-transform duration-200 md:hidden",
         )}
         style={{
           transform: mobileOpen ? "translateX(0)" : "translateX(-100%)",
@@ -279,7 +243,7 @@ export function AppSidebarShell({
         <header
           className={cn(
             SHELL_HEADER_CLASS,
-            "sticky top-0 z-10 justify-between bg-background px-4 md:justify-end"
+            "sticky top-0 z-10 justify-between bg-background px-4 md:justify-end",
           )}
         >
           <button
@@ -291,10 +255,7 @@ export function AppSidebarShell({
           >
             <Menu className="size-5" />
           </button>
-          <nav
-            aria-label="Social links"
-            className="flex items-center gap-2 md:ml-0"
-          >
+          <nav aria-label="Social links" className="flex items-center gap-2 md:ml-0">
             {socialLinks.map(({ href, icon: Icon, label }) => (
               <Link
                 aria-label={label}
@@ -309,9 +270,7 @@ export function AppSidebarShell({
             ))}
           </nav>
         </header>
-        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-          {children}
-        </div>
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">{children}</div>
       </div>
     </div>
   );

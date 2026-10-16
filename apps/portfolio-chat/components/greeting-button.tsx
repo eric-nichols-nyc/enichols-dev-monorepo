@@ -1,12 +1,11 @@
 "use client";
 
 import { Button } from "@repo/design-system/components/ui/button";
-import { ShineBorder } from "@repo/design-system/components/ui/shine-border";
 import { cn } from "@repo/design-system/lib/utils";
-import { Zap } from "lucide-react";
+import { PortfolioMark } from "@/features/branding/components/portfolio-mark";
 
 const greetingIconClassName =
-  "relative flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-[#39383d] via-[#232225] to-purple-accent p-0";
+  "inline-flex size-10 shrink-0 items-center justify-center rounded-md bg-transparent p-0 text-foreground shadow-none";
 
 type GreetingButtonProps = React.ComponentPropsWithoutRef<typeof Button> & {
   className?: string;
@@ -14,30 +13,16 @@ type GreetingButtonProps = React.ComponentPropsWithoutRef<typeof Button> & {
   as?: "button" | "div";
 };
 
-export function GreetingButton({
-  className,
-  as = "button",
-  ...props
-}: GreetingButtonProps) {
+export function GreetingButton({ className, as = "button", ...props }: GreetingButtonProps) {
   const resolvedClassName = cn(greetingIconClassName, className);
-  const content = (
-    <>
-      <ShineBorder
-        borderWidth={3}
-        className="z-10 rounded-full"
-        duration={8}
-        shineColor={["#6366f1", "#a21caf", "#f472b6"]}
-      />
-      <Zap className="h-6 w-6" color="white" />
-    </>
-  );
+  const content = <PortfolioMark />;
 
   if (as === "div") {
     return <div className={resolvedClassName}>{content}</div>;
   }
 
   return (
-    <Button className={resolvedClassName} {...props}>
+    <Button variant="ghost" className={resolvedClassName} {...props}>
       {content}
     </Button>
   );

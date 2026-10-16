@@ -15,9 +15,7 @@ export function SidebarBrandText({
   return (
     <span className="min-w-0 text-left">
       <span className="block truncate font-semibold text-lg">{name}</span>
-      <span className="block truncate text-muted-foreground text-xs">
-        {subtitle}
-      </span>
+      <span className="block truncate text-muted-foreground text-xs">{subtitle}</span>
     </span>
   );
 }
@@ -28,25 +26,16 @@ type SidebarBrandProps = {
   showText?: boolean;
 };
 
-export function SidebarBrand({
-  name,
-  onClear,
-  showText = true,
-}: SidebarBrandProps) {
+export function SidebarBrand({ name, onClear, showText = true }: SidebarBrandProps) {
   return (
     <button
       aria-label="Clear chat and start fresh"
       className={
         showText
           ? "flex min-w-0 flex-1 cursor-pointer items-center gap-2 border-none bg-transparent p-0 text-left"
-          : "flex cursor-pointer items-center justify-center border-none bg-transparent p-0"
+          : "flex size-11 cursor-pointer items-center justify-center rounded-md border-none bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4"
       }
       onClick={onClear}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          onClear();
-        }
-      }}
       tabIndex={0}
       type="button"
     >

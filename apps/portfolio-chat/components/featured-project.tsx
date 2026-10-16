@@ -4,12 +4,14 @@ import type { Project } from "@/data/projects";
 import { ExternalLink, Github } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 type FeaturedProjectProps = {
   project: Project;
+  afterOverview?: ReactNode;
 };
 
-export function FeaturedProject({ project }: FeaturedProjectProps) {
+export function FeaturedProject({ project, afterOverview }: FeaturedProjectProps) {
   return (
     <article className="space-y-6">
       <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted">
@@ -43,6 +45,7 @@ export function FeaturedProject({ project }: FeaturedProjectProps) {
           ))}
         </div>
         <p className="mb-4 leading-relaxed">{project.description}</p>
+        {afterOverview}
 
         {project.problem ? (
           <div className="mb-4 space-y-2">

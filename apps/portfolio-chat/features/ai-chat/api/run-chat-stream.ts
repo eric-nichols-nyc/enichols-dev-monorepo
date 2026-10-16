@@ -1,6 +1,7 @@
 import { stepCountIs, streamText } from "@repo/ai";
 import { models } from "@repo/ai/lib/models";
-import projects from "@/data/projects";
+import projects, { type Project } from "@/data/projects";
+import { getProjectQuestions } from "@/features/project-details/lib/project-questions";
 import { getProjectsDisplayOutput } from "@/features/ai-chat/utils/get-projects-display-output";
 import {
   createAboutStreamModeState,
@@ -57,6 +58,7 @@ type RunChatStreamParams = {
   aiFollowUpsEnabled?: boolean;
   messages?: readonly FollowUpMessage[];
   abortSignal?: AbortSignal;
+  project?: Project;
 };
 
 function stripStaticRelated(output: unknown): unknown {
@@ -101,7 +103,8 @@ function buildStreamTextOptions(
     return {
       model: models.chat as any,
       stopWhen: stepCountIs(1),
-      system: buildGroundedSystemPrompt(knowledgeContext, routing.intent),
+      system: buildGroundedSystemPrompt(knowledgeContext, routing.intent)
+        + (params.project ? `\n\n## Current project view\nThe visitor is reading ${JSON.stringify(params.project.title)}. References to this project, it, or its stack mean this selected project. Answer only from its supplied knowledge and published facts. Keep answers concise and conversational. If a requested detail is missing, say so. For other projects or broader career questions, suggest returning to the main chat. Do not switch projects or display portfolio tools here.` : ""),
       messages: modelMessages,
     };
   }
@@ -302,7 +305,7 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
   }
 
   if (dynamicSuggestionsEnabled && !mainResponseFailed) {
-    let suggestions = generateSuggestions({
+    let suggestions = params.project ? getProjectQuestions(params.project, params.messages) : generateSuggestions({
       routingResult: routing,
       loadedContext: knowledgeContext,
       assistantText: assistantText.trim() || undefined,

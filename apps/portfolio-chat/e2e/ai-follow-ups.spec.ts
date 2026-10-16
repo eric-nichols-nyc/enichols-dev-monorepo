@@ -99,7 +99,8 @@ test("content appears before delayed follow-ups and clearing chat cancels pendin
     await expect(page.getByText("The main answer is already available.", { exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Related Questions" })).toHaveCount(0);
     await page.getByRole("button", { name: "Clear chat and start fresh" }).click();
-    await expect(page.getByText("Hello there!", { exact: true })).toBeVisible();
+    await expect(page.getByTestId("chat-welcome-message")).toBeInViewport();
+    await expect(page.getByTestId("chat-turn")).toHaveCount(0);
     await expect.poll(() => disconnected).toBe(true);
     await expect(page.getByRole("button", { name: "How have you used React?", exact: true })).toHaveCount(0);
   } finally { await fixture.close(); }

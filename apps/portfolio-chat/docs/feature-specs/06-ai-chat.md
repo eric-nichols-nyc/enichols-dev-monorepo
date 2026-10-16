@@ -14,7 +14,7 @@ As a visitor, when I ask about Eric's work, the assistant declines off-topic req
 
 ### Request / response
 
-- [x] **R1** — `POST /api/chat` accepts JSON `{ messages: UIMessage[] }`
+- [x] **R1** — `POST /api/chat` accepts JSON `{ messages: UIMessage[], projectId?: string }`; a supplied ID enables scoped project Q&A as defined in spec 13
 - [x] **R2** — Returns `createUIMessageStreamResponse` compatible with `useChat` / `DefaultChatTransport`
 - [x] **R3** — `400` when `messages` missing or empty
 - [x] **R4** — `500` with generic JSON error; log `[chat:api] error:` server-side
@@ -47,15 +47,17 @@ As a visitor, when I ask about Eric's work, the assistant declines off-topic req
 
 - **Optional AI follow-ups:** `AI_FOLLOW_UP_QUESTIONS_ENABLED=true` enables one bounded structured call after successful response content, with evidence/routing checks and template fallback ([spec](./knowledge-assistant/09-ai-follow-up-questions.md)). Request cancellation is forwarded to main and supplementary work; suggestions precede the finish event. Project lists retain zero model calls.
 
+- **Project Q&A:** A supplied `projectId` must resolve to a published server-side project (`404` otherwise). Validate bounded user/assistant text history (`400` on invalid data), load only that project's full knowledge and published facts, force the grounded response path without display tools, and bind follow-ups/pronouns to it. This path stays grounded even if the legacy assistant mode is configured; the AI follow-up flag is unchanged. See [13-project-detail-overlay](./13-project-detail-overlay.md).
+
 ### Dev / test
 
-- [x] **R14** — `CHAT_MOCK_STREAM=true` bypasses LLM; after 3s streams `about.paragraphs` (for e2e/dev)
+- [x] **R14** — `CHAT_MOCK_STREAM=true` bypasses LLM; after 3s streams the selected project description in project mode, or the existing about copy in main mode (for e2e/dev)
 - [x] **R15** — E2E `e2e/about-streaming.spec.ts`: "Tell me about yourself" shows streamed copy, **no** "About" card title
 
 ### Not yet implemented
 
 - [ ] **R16** — Rate limiting / abuse protection (not implemented)
-- [ ] **R17** — Request body Zod validation (currently trusts shape)
+- [ ] **R17** — Full main-chat body validation remains pending; project mode has explicit text/role/length validation
 - [x] **R18** — Migrated to `features/ai-chat/` with thin `app/api/chat/route.ts`
 
 ## System boundaries
@@ -71,10 +73,11 @@ As a visitor, when I ask about Eric's work, the assistant declines off-topic req
 ```
 POST /api/chat
 Content-Type: application/json
-Body: { messages: UIMessage[] }
+Body: { messages: UIMessage[], projectId?: string }
 
 200: UI message stream (SSE/data stream per AI SDK)
 400: { error: "Messages are required" }
+404: { error: "Project not found" } (project mode only)
 500: { error: "Failed to process chat request. Please try again." }
 ```
 

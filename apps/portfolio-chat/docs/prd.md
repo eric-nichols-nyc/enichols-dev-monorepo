@@ -15,7 +15,7 @@ Eric Nichols' AI portfolio: a single-page chat experience where visitors explore
 2. **Chat** → user message → streamed assistant reply via `/api/chat`.
 3. **Tools** → model calls `show_about`, `show_projects`, `show_experience`, `show_tech_stack` → inline UI in message stream + artifact panel for detail.
 4. **Clear** → sidebar logo clears session (`clearMessages`).
-5. **Artifacts** → selecting featured project/experience opens side artifact with expand affordances.
+5. **Details** → selecting a project/experience opens a focused fullscreen view. Projects offer a collapsed contextual Q&A section below their overview, with an independent temporary session. Closing returns to the main conversation.
 
 ### Internal (owner only)
 
@@ -32,7 +32,7 @@ Eric Nichols' AI portfolio: a single-page chat experience where visitors explore
 | P5 | Suggestion pills for common prompts | Shipped |
 | P5b | AI follow-up questions reflecting the current response and recent conversation | V1 implemented; release checks blocked — [spec](./feature-specs/knowledge-assistant/09-ai-follow-up-questions.md) |
 | P6 | E2E coverage for about streaming (`e2e/about-streaming.spec.ts`) | Shipped |
-| P7 | Project detail in artifact panel (click project card in chat) | Shipped |
+| P7 | Focused project details with in-place contextual questions (click project card in chat) | Implemented; browser review deferred — [spec](./feature-specs/13-project-detail-overlay.md) |
 | P7b | Multi-route detail chats per project/role | [TBD] |
 | P8 | Rate limiting / abuse protection on `/api/chat` | Not implemented |
 | P9 | Project Publisher — AI-assisted project authoring (internal admin) | Not started — [spec](./feature-specs/project-publisher/00-index.md) |

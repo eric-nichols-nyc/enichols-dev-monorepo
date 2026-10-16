@@ -2,17 +2,23 @@
 
 Permanent map of features. Update **Status** when shipping; use **progress-tracker.md** for live session work.
 
+The separate [Portfolio Chat V2 app](../../../portfolio-chat-v2/README.md) uses the selected Chat studio design. Its [feature registry](../../../portfolio-chat-v2/docs/feature-specs/00-index.md) tracks that version independently.
+
 | Feature | Spec | App UI (legacy → target) | API / BFF | Status |
 |---------|------|--------------------------|-----------|--------|
 | Design system (shared) | [01-design-system.md](./01-design-system.md) | `features/*` + `@repo/design-system` | — | Shipped (rules) |
 | Chat UI | [02-chat-ui.md](./02-chat-ui.md) | `features/chat-ui/` (legacy shims: `components/chat`, `messages`, …) | — | Shipped |
 | Sidebar & layout | [03-sidebar-layout.md](./03-sidebar-layout.md) | `components/collapsible-sidebar-layout.tsx` → `features/sidebar-layout/` | — | Shipped |
 | Chat context | [04-chat-context.md](./04-chat-context.md) | `contexts/chat-context.tsx` → `features/chat-context/` | — | Shipped |
-| Artifacts | [05-artifacts.md](./05-artifacts.md) | `artifact.tsx`, `featured-*`, `about.tsx`, etc. → `features/artifacts/` | — | Shipped |
+| Artifacts | [05-artifacts.md](./05-artifacts.md) | `features/project-details/` shell + legacy rich content | — | Focused overlay implemented; browser review deferred |
 | AI chat API & tools | [06-ai-chat.md](./06-ai-chat.md) | `features/ai-chat/` (thin `app/api/chat/route.ts`) | POST `/api/chat` | Shipped |
 | Portfolio data | [07-portfolio-data.md](./07-portfolio-data.md) | `data/*` (stays at app root) | Tools read data | Shipped |
 | Tech stack table UI | [08-tech-stack-table.md](./08-tech-stack-table.md) | `components/tech-stack.tsx` | `show_tech_stack` (display only) | Shipped |
 | Sidebar nav visibility | [09-sidebar-nav-visibility.md](./09-sidebar-nav-visibility.md) | `collapsible-sidebar-layout.tsx` → `features/sidebar-layout/` | — | In progress (P6 open) |
+| V2 theme and brand alignment | [10-v2-theme-brand.md](./10-v2-theme-brand.md) | `features/branding`, greeting, legacy brand wrappers, global theme | — | Implemented; local UI verified (shared dependency blocks build) |
+| Suggestion prompt cards | [11-suggestion-prompt-cards.md](./11-suggestion-prompt-cards.md) | `features/chat-ui/` welcome state | Existing preset messages | Implemented; local UI verified (shared dependency blocks build) |
+| Welcome conversation transition | [12-chat-welcome-transition.md](./12-chat-welcome-transition.md) | Persistent welcome + turn scrolling in `features/chat-ui/` | Existing messages only | Implemented; unit checks pass; browser review deferred by user |
+| Focused project details and questions | [13-project-detail-overlay.md](./13-project-detail-overlay.md) | `features/project-details/` | Scoped project mode on POST `/api/chat` | Implemented; unit/code checks pass; browser review deferred |
 | Agent documentation | — | `docs/**` | — | Shipped |
 | Knowledge Assistant | [knowledge-assistant/](./knowledge-assistant/00-implementation-stages.md) | — (uses existing chat UI) | Extends POST `/api/chat` | In progress |
 | Concise about intro | [knowledge-assistant/08-concise-about-intro.md](./knowledge-assistant/08-concise-about-intro.md) | `components/about.tsx`, `data/about.ts` | `candidate_overview` / `show_about` stream | Shipped |
