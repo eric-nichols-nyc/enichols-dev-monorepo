@@ -1,4 +1,3 @@
-import type { UIMessage } from "@repo/ai";
 import { stepCountIs, streamText } from "@repo/ai";
 import { models } from "@repo/ai/lib/models";
 import projects from "@/data/projects";
@@ -8,6 +7,8 @@ import {
   getAboutStreamModeDecision,
 } from "@/features/ai-chat/lib/about-stream-mode";
 import { streamCopy } from "@/features/ai-chat/lib/stream-copy";
+import { generateAiFollowUps } from "@/features/ai-chat/lib/generate-ai-follow-ups";
+import type { FollowUpMessage, FollowUpToolResult } from "@/features/ai-chat/types/follow-up-context";
 import type { SimpleModelMessage } from "@/features/ai-chat/lib/to-simple-model-messages";
 import type { LoadedKnowledgeContext } from "@/features/ai-chat/types/loaded-knowledge-context";
 import type {
@@ -24,6 +25,7 @@ import {
   getPortfolioAssistantSystemPrompt,
 } from "@/lib/ai/prompts/portfolio-assistant";
 import { generateSuggestions } from "@/features/ai-chat/utils/generate-suggestions";
+import { buildFollowUpContext } from "@/features/ai-chat/utils/build-follow-up-context";
 import { selectAboutIntro } from "@/features/ai-chat/utils/select-about-intro";
 import { aboutRelated } from "@/lib/ai/tools/about";
 import { portfolioChatTools } from "@/lib/ai/tools/portfolio-tools";
@@ -52,6 +54,9 @@ type RunChatStreamParams = {
   userText: string;
   useLegacyAboutStream: boolean;
   dynamicSuggestionsEnabled?: boolean;
+  aiFollowUpsEnabled?: boolean;
+  messages?: readonly FollowUpMessage[];
+  abortSignal?: AbortSignal;
 };
 
 function stripStaticRelated(output: unknown): unknown {
@@ -118,7 +123,9 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
     userText,
     useLegacyAboutStream,
     dynamicSuggestionsEnabled = false,
+    aiFollowUpsEnabled = false,
   } = params;
+  if (params.abortSignal?.aborted) return;
   if (routing.intent === "show_projects") {
     const toolCallId = crypto.randomUUID();
     const output = getProjectsDisplayOutput();
@@ -168,7 +175,7 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
         : undefined;
 
   const result = streamText(
-    buildStreamTextOptions({ ...params, forcedTool })
+    { ...buildStreamTextOptions({ ...params, forcedTool }), abortSignal: params.abortSignal }
   );
 
   const uiStream = result.toUIMessageStream({
@@ -180,6 +187,10 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
   const aboutStreamModeState = createAboutStreamModeState();
   let assistantText = routing.clarificationNeeded ? CLARIFICATION_COPY : "";
   let lastToolName: string | undefined;
+  const toolNames = new Map<string, string>();
+  const toolResults: FollowUpToolResult[] = [];
+  let finishChunk: Parameters<StreamWriter["write"]>[0] | undefined;
+  let mainResponseFailed = false;
 
   for await (const chunk of uiStream) {
     const c = chunk as {
@@ -189,7 +200,24 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
       output?: unknown;
       delta?: string;
       text?: string;
+      finishReason?: string;
     };
+
+    if (params.abortSignal?.aborted || c.type === "abort") return;
+    if (c.type === "finish") {
+      mainResponseFailed ||= c.finishReason === "error";
+      finishChunk = chunk;
+      continue;
+    }
+    if (c.type === "tool-output-error") mainResponseFailed = true;
+    if (c.toolCallId && c.toolName) toolNames.set(c.toolCallId, c.toolName);
+    if (c.type === "tool-output-available") {
+      const toolName = c.toolName ?? toolNames.get(c.toolCallId ?? "") ?? routing.tool;
+      lastToolName = toolName;
+      if (toolName === "show_about" || toolName === "show_experience" || toolName === "show_tech_stack") {
+        toolResults.push({ toolName, output: c.output });
+      }
+    }
 
     if (c.type === "error") {
       writer.write(chunk);
@@ -210,7 +238,7 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
 
     if (aboutDecision.shouldStreamAboutText && aboutIntro) {
       lastToolName = c.toolName ?? "show_about";
-      await streamCopy(writeChunk, textIdAbout, aboutIntro.copy);
+      await streamCopy(writeChunk, textIdAbout, aboutIntro.copy, params.abortSignal);
       assistantText += aboutIntro.copy;
 
       if (!dynamicSuggestionsEnabled) {
@@ -232,7 +260,6 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
       c.output &&
       typeof c.output === "object"
     ) {
-      lastToolName = c.toolName;
       writeChunk.write({
         ...(chunk as Record<string, unknown>),
         type: c.type ?? "tool-output-available",
@@ -241,9 +268,6 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
     } else {
       writer.write(chunk);
 
-      if (c.type === "tool-output-available") {
-        lastToolName = c.toolName;
-      }
     }
 
     if (
@@ -261,7 +285,7 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
           .map((project) => project.title)
           .join(", ");
         const projectsFollowUp = `From ${sampleTitles}—here are some of my projects spanning AI and full-stack work. Each has a live demo you can explore. Pick one and I'll dive in, or ask me about the stack, challenges, or anything else.`;
-        await streamCopy(writeChunk, textIdProjects, projectsFollowUp);
+        await streamCopy(writeChunk, textIdProjects, projectsFollowUp, params.abortSignal);
         assistantText += projectsFollowUp;
       } else if ("technologies" in c.output) {
         const techFollowUp = getTechStackPostToolText(
@@ -270,22 +294,46 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
           useLegacyAboutStream
         );
         if (techFollowUp) {
-          await streamCopy(writeChunk, textIdTechStack, techFollowUp);
+          await streamCopy(writeChunk, textIdTechStack, techFollowUp, params.abortSignal);
           assistantText += techFollowUp;
         }
       }
     }
   }
 
-  if (dynamicSuggestionsEnabled) {
-    const suggestions = generateSuggestions({
+  if (dynamicSuggestionsEnabled && !mainResponseFailed) {
+    let suggestions = generateSuggestions({
       routingResult: routing,
       loadedContext: knowledgeContext,
       assistantText: assistantText.trim() || undefined,
       toolName: lastToolName,
     });
 
-    if (suggestions.length > 0) {
+    if (aiFollowUpsEnabled && !routing.clarificationNeeded) {
+      const followUpStartedAt = Date.now();
+      const context = buildFollowUpContext({
+        routingResult: routing,
+        loadedContext: knowledgeContext,
+        assistantText,
+        messages: params.messages,
+        toolResults,
+      });
+      const generated = await generateAiFollowUps({
+        context, fallbackSuggestions: suggestions, abortSignal: params.abortSignal,
+      });
+      console.info("[chat:follow-ups]", {
+        intent: routing.intent,
+        outcome: generated.outcome,
+        reason: generated.reason,
+        durationMs: Date.now() - followUpStartedAt,
+        suggestionCount: generated.suggestions.length,
+        ...(generated.rejections ? { rejections: generated.rejections } : {}),
+      });
+      if (generated.outcome === "cancelled") return;
+      suggestions = generated.suggestions;
+    }
+
+    if (suggestions.length > 0 && !params.abortSignal?.aborted) {
       writeChunk.write({
         type: "data-related",
         id: "dynamic-suggestions",
@@ -293,4 +341,5 @@ export async function runChatStream(params: RunChatStreamParams): Promise<void> 
       });
     }
   }
+  if (finishChunk && !params.abortSignal?.aborted) writer.write(finishChunk);
 }

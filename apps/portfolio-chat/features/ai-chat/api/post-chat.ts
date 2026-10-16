@@ -96,6 +96,7 @@ export async function POST(request: Request) {
             userText,
             useLegacyAboutStream: true,
             dynamicSuggestionsEnabled: false,
+            abortSignal: request.signal,
           });
           return;
         }
@@ -115,6 +116,9 @@ export async function POST(request: Request) {
           userText,
           useLegacyAboutStream,
           dynamicSuggestionsEnabled: true,
+          aiFollowUpsEnabled: process.env.AI_FOLLOW_UP_QUESTIONS_ENABLED === "true",
+          messages,
+          abortSignal: request.signal,
         });
       },
     });

@@ -85,6 +85,8 @@ type SuggestionInput = {
 
 - [ ] **DS9** — Optional LLM call with strict prompt: “Generate 3 follow-up questions answerable from this context only” — only if rule-based quality is insufficient; feature-flagged
 
+Follow-on feature: [09 — AI follow-up questions](./09-ai-follow-up-questions.md) implements response-aware generation, validation, cancellation, and fallback behind `AI_FOLLOW_UP_QUESTIONS_ENABLED=true`. It is verified locally; release checks remain blocked. The template path described here remains the default when the flag is unset.
+
 ### Integration points
 
 - [ ] **DS10** — Response handler calls `generateSuggestions()` at end of turn; writes `data-related` or merges into tool output `related`

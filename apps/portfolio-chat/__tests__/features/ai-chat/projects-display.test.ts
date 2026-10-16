@@ -3,9 +3,9 @@ import projects from "@/data/projects";
 import { runChatStream } from "@/features/ai-chat/api/run-chat-stream";
 import { routeIntent } from "@/features/ai-chat/utils/intent-router";
 import { getProjectsDisplayOutput } from "@/features/ai-chat/utils/get-projects-display-output";
-import { streamText } from "@repo/ai";
+import { generateObject, streamText } from "@repo/ai";
 
-vi.mock("@repo/ai", () => ({ streamText: vi.fn(), stepCountIs: vi.fn() }));
+vi.mock("@repo/ai", () => ({ streamText: vi.fn(), generateObject: vi.fn(), stepCountIs: vi.fn() }));
 vi.mock("@repo/ai/lib/models", () => ({ models: { chat: {} } }));
 vi.mock("@/lib/ai/tools/about", () => ({ aboutRelated: [] }));
 vi.mock("@/lib/ai/tools/portfolio-tools", () => ({ portfolioChatTools: {} }));
@@ -23,9 +23,11 @@ describe("direct project list", () => {
       userText: "Show projects",
       useLegacyAboutStream: !dynamicSuggestionsEnabled,
       dynamicSuggestionsEnabled,
+      aiFollowUpsEnabled: true,
     });
     const chunks = write.mock.calls.map(([chunk]) => chunk);
     expect(streamText).not.toHaveBeenCalled();
+    expect(generateObject).not.toHaveBeenCalled();
     expect(chunks.map((chunk) => chunk.type)).toEqual([
       "start", "tool-input-available", "tool-output-available", "data-related", "finish",
     ]);

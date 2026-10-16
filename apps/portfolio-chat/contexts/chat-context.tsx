@@ -3,7 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "@repo/ai";
 import type { UIMessage } from "ai";
-import { createContext, type ReactNode, useCallback, useContext } from "react";
+import { createContext, type ReactNode, useCallback, useContext, useRef } from "react";
 
 type ChatContextValue = {
   clearMessages: () => void;
@@ -16,23 +16,35 @@ type ChatContextValue = {
 const ChatContext = createContext<ChatContextValue | null>(null);
 
 export function PortfolioChatProvider({ children }: { children: ReactNode }) {
-  const { error, messages, sendMessage, setMessages, status, clearError } = useChat({
+  const { error, messages, sendMessage, setMessages, status, clearError, stop } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
   });
 
-  const clearMessages = useCallback(() => {
+  const actionVersion = useRef(0);
+  const clearMessages = useCallback(async () => {
+    const version = ++actionVersion.current;
+    const stopping = stop();
     setMessages([]);
     clearError();
-  }, [setMessages, clearError]);
+    await stopping;
+    if (version === actionVersion.current) {
+      setMessages([]);
+      clearError();
+    }
+  }, [setMessages, clearError, stop]);
 
   const handleSendMessage = useCallback(
-    (message: { text: string; files?: unknown[] }) => {
-      sendMessage({
+    async (message: { text: string; files?: unknown[] }) => {
+      const version = ++actionVersion.current;
+      await stop();
+      if (version !== actionVersion.current) return;
+      clearError();
+      await sendMessage({
         text: message.text,
         files: message.files ?? [],
       } as Parameters<typeof sendMessage>[0]);
     },
-    [sendMessage]
+    [sendMessage, stop, clearError]
   );
 
   return (

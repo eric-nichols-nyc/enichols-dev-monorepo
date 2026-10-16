@@ -45,6 +45,8 @@ As a visitor, when I ask about Eric's work, the assistant declines off-topic req
 
 - Stream failures send a generic error to the client and stop follow-up suggestions. Provider details remain server-side.
 
+- **Optional AI follow-ups:** `AI_FOLLOW_UP_QUESTIONS_ENABLED=true` enables one bounded structured call after successful response content, with evidence/routing checks and template fallback ([spec](./knowledge-assistant/09-ai-follow-up-questions.md)). Request cancellation is forwarded to main and supplementary work; suggestions precede the finish event. Project lists retain zero model calls.
+
 ### Dev / test
 
 - [x] **R14** — `CHAT_MOCK_STREAM=true` bypasses LLM; after 3s streams `about.paragraphs` (for e2e/dev)

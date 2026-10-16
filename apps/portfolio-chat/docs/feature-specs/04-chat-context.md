@@ -24,12 +24,13 @@ As a visitor, I want the sidebar, chat column, and (when open) artifact mini-cha
 |--------|------|----------|
 | `messages` | `UIMessage[]` | From `useChat` |
 | `sendMessage` | `(message: { text: string; files?: unknown[] }) => void` | Wraps SDK `sendMessage`; normalizes `files` to `[]` |
-| `clearMessages` | `() => void` | `setMessages([])` — new session, no server persistence |
+| `clearMessages` | `() => void` | Stop the active request and clear messages/error immediately; re-clear after stopping if no newer action superseded the reset |
 | `status` | `"streaming" \| "submitted" \| "ready" \| "error"` | From `useChat` |
 | `error` | `unknown` | Last request error |
 
 - [x] **R4** — `usePortfolioChat()` throws if used outside provider: `"usePortfolioChat must be used within PortfolioChatProvider"`
 - [x] **R5** — `sendMessage` and `clearMessages` memoized with `useCallback`
+- A new send stops the previous transport request first. An action version prevents an obsolete queued send or reset from affecting newer actions, keeping pending follow-ups out of later turns.
 
 ### Consumers (must use context, not raw `useChat`)
 

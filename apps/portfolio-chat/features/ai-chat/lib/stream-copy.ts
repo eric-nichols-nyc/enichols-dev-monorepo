@@ -8,11 +8,14 @@ export type StreamCopyWriter = {
 export async function streamCopy(
   writer: StreamCopyWriter,
   textId: string,
-  copy: string
+  copy: string,
+  abortSignal?: AbortSignal
 ) {
+  if (abortSignal?.aborted) return;
   writer.write({ type: "text-start", id: textId });
   const words = copy.split(SPLIT_WORDS_AND_SPACES);
   for (const word of words) {
+    if (abortSignal?.aborted) return;
     writer.write({ type: "text-delta", id: textId, delta: word });
     await new Promise((r) => setTimeout(r, 20));
   }

@@ -30,6 +30,7 @@ Eric Nichols' AI portfolio: a single-page chat experience where visitors explore
 | P3 | About tool with optional word-by-word stream mode | Shipped |
 | P4 | Responsive collapsible sidebar + mobile menu | Shipped |
 | P5 | Suggestion pills for common prompts | Shipped |
+| P5b | AI follow-up questions reflecting the current response and recent conversation | V1 implemented; release checks blocked — [spec](./feature-specs/knowledge-assistant/09-ai-follow-up-questions.md) |
 | P6 | E2E coverage for about streaming (`e2e/about-streaming.spec.ts`) | Shipped |
 | P7 | Project detail in artifact panel (click project card in chat) | Shipped |
 | P7b | Multi-route detail chats per project/role | [TBD] |
@@ -71,6 +72,7 @@ Eric Nichols' AI portfolio: a single-page chat experience where visitors explore
 | `PROJECT_PUBLISHER_ENABLE_WRITES` | Set to `true` in `.env.local` to allow local file publish |
 | `GITHUB_TOKEN` | Optional for public repos; required for private; improves rate limits |
 | `CHAT_MOCK_STREAM` | Optional mock streaming for dev/tests |
+| `AI_FOLLOW_UP_QUESTIONS_ENABLED` | Set to `true` for bounded AI follow-ups; defaults off, requires Knowledge Assistant, preserves zero-call project lists |
 
 ## Conflict resolution
 

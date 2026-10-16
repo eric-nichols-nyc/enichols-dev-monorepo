@@ -47,6 +47,8 @@ app/api/chat/route.ts → features/ai-chat/api/post-chat.ts
 
 Project-list intents emit the existing `show_projects` tool stream directly from local portfolio data. Sidebar and chat project-list actions share this path; no OpenAI request is needed to browse cards or open their details. Other intents retain the model stream.
 
+When `AI_FOLLOW_UP_QUESTIONS_ENABLED=true` and the Knowledge Assistant is enabled, successful eligible responses get one supplementary structured call using bounded public evidence and recent chat. Questions are validated before one `data-related` part is emitted ahead of stream finish. The call has a three-second deadline, no retries, and template fallback. Request abort signals reach both calls; reset/new sends stop the old transport. The feature defaults off and never adds model calls to project-list browsing.
+
 ### Tools (registered in route)
 
 | Tool | UI part type (typical) | Data |
